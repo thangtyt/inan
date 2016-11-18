@@ -1,0 +1,184 @@
+{% extends '_layout.' + getConfig('viewExtension') %}
+{% block cssExtends %}
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+{% endblock %}
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            <form id="edit-form" method="post">
+                {{ toolbar | safe }}
+                <div class="box box-solid">
+                    <div class="box-body">
+                        <div class="col-md-4">
+                            <div class="box box-primary">
+                                <div class="box-body box-profile">
+                                    <div class="form-group">
+                                        <label for="desc">Title <span class="required">*</span></label>
+                                        <input class="form-control" name="title" id="title"
+                                               value="{{ subject.title }}"/>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="desc">Class <span class="required">*</span></label>
+                                        <select name="class" class="form-control" required="required">
+                                            <option value="0"> -- Choose class --</option>
+                                            <option value="12" {% if subject.class == 12 %} selected{% endif %}> 12</option>
+                                            <option value="11" {% if subject.class == 11 %} selected{% endif %}> 11</option>
+                                            <option value="10" {% if subject.class == 10 %} selected{% endif %}> 10</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="desc">Description</label>
+                                        <textarea class="form-control" name="desc" rows="5"
+                                                  id="desc">{{ subject.desc }}</textarea>
+                                        <input type="hidden" name="chapter" id="chapter" value="{{ chapter }}">
+                                    </div>
+                                </div>
+                                <!-- /.box-body -->
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="box box-primary">
+                                <div class="box-header with-border">
+                                    <h4>Chapter of subject</h4>
+                                </div>
+                                <div class="box-body box-profile">
+                                    <div class="form-group">
+                                        <div class="input-group input-group">
+                                            <input class="form-control" name="titleElement" id="titleElement"
+                                                   value="" placeholder="Add chapter/lesson ..."/>
+                                            <span class="input-group-btn">
+                                              <button type="button" class="btn btn-info btn-flat"
+                                                      onclick="addElement()">ADD
+                                              </button>
+                                            </span>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <!-- /.box-body -->
+                                <div class="box-footer">
+                                    <div class="dd" id="chapterNestable">
+                                        <ol class="dd-list" id="chapterList">
+
+                                        </ol>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </div>
+{% endblock %}
+{% block jsExtends %}
+    {#<script src="https://code.jquery.com/jquery-1.12.4.js"></script>#}
+    {#<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>#}
+    {#<script src="/backend/adminLTE/assets/plugins/jQueryUI/jquery-ui.min.js" type="text/javascript"></script>#}
+    <script src="/backend/adminLTE/dist/js/jquery.nestable.js"></script>
+    <script>
+        var elementHtml = '<li class="dd-item dd3-item" data-id="::id::">' +
+                '<div class="dd3-content" id="::id::">::value::</div>' +
+                '<div class="dd-handle dd3-handle"><i class="icon-move"></i></div>' +
+
+                '</li>';
+        var editForm = $('#edit-form');
+        var chapters = [];
+        {% if subject.chapters %}
+        {% for c in subject.chapters %}
+            chapters.push({
+                id: '{{ c.id }}',
+                title: '{{ c.title }}',
+                lessons: JSON.parse('{{ c.lessons | safe }}'),
+                index: {{ c.index }}
+            });
+        {% endfor %}
+        {% endif %}
+        $(function () {
+            renderNestable(chapters);
+            //add data to chapters
+
+            editForm.submit(function () {
+                convertSortable(JSON.stringify($('.dd').nestable('serialize')));
+                //return false;
+            });
+
+            $('#chapterNestable').nestable({
+                maxDepth: 2
+            }).on('change', function () {
+                convertSortable(JSON.stringify($('.dd').nestable('serialize')));
+                //console.log(JSON.stringify($('#chapterNestable').data()));
+            });
+        });
+        function addElement() {
+            $('#chapterList').append(elementHtml.replace(/::id::/g, uuid()).replace('::value::', $('#titleElement').val()));
+            $('#titleElement').val('');
+        }
+        function convertSortable(data) {
+            var chapterData = [];
+            if (typeof data === 'string') {
+                var index = 0;
+                data = JSON.parse(data);
+                data.map(function (val) {
+                    var temp = {
+                        id: val.id,
+                        index:index,
+                        title: $('#' + val.id).text(),
+                        lessons: []
+                    }
+                    if (val.hasOwnProperty('children')) {
+                        val.children.map(function (val) {
+                            temp.lessons.push({
+                                id: val.id,
+                                title: $('#' + val.id).text()
+                            })
+                        })
+                    }
+                    chapterData.push(temp);
+                    index++;
+                })
+            }
+            $('#chapter').attr('value', JSON.stringify(chapterData));
+            //console.log(JSON.stringify(chapterData,3,3));
+        }
+        function uuid() {
+            var uuid = "", i, random;
+            for (i = 0; i < 32; i++) {
+                random = Math.random() * 16 | 0;
+                if (i == 8 || i == 12 || i == 16 || i == 20) {
+                    uuid += "-"
+                }
+                uuid += (i == 12 ? 4 : (i == 16 ? (random & 3 | 8) : random)).toString(16);
+            }
+            return uuid;
+        }
+        function deleteRecords() {
+            window.location.href = '{{ baseRoute }}page/1';
+        }
+        function renderNestable(data){
+            data.map(function (chapter) {
+                var html = '';
+                html+='<li class="dd-item dd3-item" data-id="'+chapter.id+'">' +
+                '<div class="dd3-content" id="'+chapter.id+'">'+chapter.title+'</div>' +
+                '<div class="dd-handle dd3-handle"><i class="icon-move"></i></div>';
+                if(chapter.lessons.length > 0){
+
+                    chapter.lessons.map(function (lesson) {
+                        html+='<ol class="dd-list">';
+                        html+='<li class="dd-item dd3-item" data-id="'+lesson.id+'">' +
+                        '<div class="dd3-content" id="'+lesson.id+'">'+lesson.title+'</div>' +
+                        '<div class="dd-handle dd3-handle"><i class="icon-move"></i></div>';
+                        html+='</ol>'
+                    })
+
+                }
+                html+='</li>';
+                $('#chapterList').append(html);
+            })
+        }
+    </script>
+
+    {#</ol>#}
+{% endblock %}

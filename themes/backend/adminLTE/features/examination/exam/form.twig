@@ -1,0 +1,300 @@
+{% extends '_layout.' + getConfig('viewExtension') %}
+{% block cssExtends %}
+    {#<link rel="stylesheet" href="/backend/adminLTE/assets/plugins/mathquill/mathquill.css"/>#}
+{% endblock %}
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            <form id="edit-form" method="post">
+                {{ toolbar | safe }}
+                <div class="nav-tabs-custom">
+                    <ul class="nav nav-tabs">
+                        <li class="active">
+                            <a href="#questionTab" data-toggle="tab" aria-expanded="true">
+                                <i class="fa fa-question-circle padd-right-5"></i> &nbsp;&nbsp;&nbsp;Question</a>
+                        </li>
+                        <li class="">
+                            <a href="#answerTab" data-toggle="tab" aria-expanded="false">
+                                <span class="glyphicon glyphicon-ok-sign"> </span> &nbsp;&nbsp;&nbsp;Answers
+                            </a>
+                        </li>
+                        <li class="">
+                            <a href="#listAnswers" data-toggle="tab" aria-expanded="false">
+                                <span class="fa fa-list"> </span> &nbsp;&nbsp;&nbsp;List Answers
+                            </a>
+                        </li>
+                    </ul>
+                    <div class="tab-content">
+                        {#Tab question#}
+                        <div class="row tab-pane active" id="questionTab">
+                            <div class="col-md-9 col-sm-9">
+                                <div class="form-group">
+                                    <label for="quesion">Section<span class="required">*</span></label>
+                                    <select class="form-control" value="0">
+                                        <option value="1">Chon dap an dung</option>
+                                        <option value="2">dien tu vao o trong</option>
+                                        <option value="3">Chon tu thay the</option>
+                                        <option value="4">Tra loi cau hoi </option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="quesion">Question <span class="required">*</span></label>
+                                    <textarea class="form-control" name="question" id="question">{{ question.title }}</textarea>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-3">
+                                <div class="form-group">
+                                    <label>Class</label>
+                                    <select class="form-control">
+                                        <option>10</option>
+                                        <option>11</option>
+                                        <option>12</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Subject</label>
+                                    <select class="form-control">
+                                        <option>Toan</option>
+                                        <option>Anh Van</option>
+                                        <option>Vat Ly</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Chapter</label>
+                                    <select class="form-control">
+                                        <option>Chuong 1 -Khao sat ham so</option>
+                                        <option>Chuong 2 - Giai phuong trinh bac 2</option>
+                                        <option>Chuong 3 - giai phuong tring bac 3</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Lesson</label>
+                                    <select class="form-control">
+                                        <option>Cuc dai - Cuc Tieu</option>
+                                        <option>Khao sat ham so</option>
+                                        <option>Ve do thi</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Level</label>
+                                    <select class="form-control">
+                                        <option>Co ban</option>
+                                        <option>Binh thuong</option>
+                                        <option>Nang cao</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        {#tab content answer#}
+                        <div class="row tab-pane" id="answerTab">
+                            {#<div class="col-md-9 col-sm-9">#}
+                                {##}
+                                {#<div class="form-group">#}
+                                    {#<label></label>#}
+                                {#</div>#}
+                            {#</div>#}
+                            {#<div class="col-md-3 col-sm-3">#}
+                            <div class="col-md-12 col-sm-12">
+                                <div class="form-group">
+                                    <label>Content</label>
+                                    <textarea class="form-control" name="answerContent" id="answerContent">{{ question.title }}</textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label>Answer Choose</label>
+                                    <div class="input-group input-group-sm">
+                                        <input class="form-control" name="answerChoose" id="answerChoose"/>
+                                        <span class="input-group-btn">
+                                          <button type="button" class="btn btn-info btn-flat">ADD</button>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-xs-12 table-responsive">
+                                        <table class="table table-striped">
+                                            <tbody>
+                                            <tr>
+                                                <td>
+                                                    <input type="radio" name="answerRight" id="answerRight1" value="value1">
+                                                </td>
+                                                <td width="80%">Cau tra loi 1</td>
+                                                <td>
+                                                    <div class="pull-right">
+                                                        <button type="button" class="btn btn-box-tool">
+                                                            <i class="fa fa-fw fa-edit"></i>
+                                                        </button>
+                                                        <button type="button" class="btn btn-box-tool">
+                                                            <i class="fa fa-fw fa-remove"></i>
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <input type="radio" name="answerRight" id="answerRight1" value="value1">
+                                                </td>
+                                                <td width="80%">Cau tra loi 2</td>
+                                                <td>
+                                                    <div class="pull-right">
+                                                        <button type="button" class="btn btn-box-tool">
+                                                            <i class="fa fa-fw fa-edit"></i>
+                                                        </button>
+                                                        <button type="button" class="btn btn-box-tool">
+                                                            <i class="fa fa-fw fa-remove"></i>
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <input type="radio" name="answerRight" id="answerRight1" value="value1">
+                                                </td>
+                                                <td width="80%">Cau tra loi 3</td>
+                                                <td>
+                                                    <div class="pull-right">
+                                                        <button type="button" class="btn btn-box-tool">
+                                                            <i class="fa fa-fw fa-edit"></i>
+                                                        </button>
+                                                        <button type="button" class="btn btn-box-tool">
+                                                            <i class="fa fa-fw fa-remove"></i>
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <input type="radio" name="answerRight" id="answerRight1" value="value1">
+                                                </td>
+                                                <td width="80%">Cau tra loi 4</td>
+                                                <td>
+                                                    <div class="pull-right">
+                                                        <button type="button" class="btn btn-box-tool">
+                                                            <i class="fa fa-fw fa-edit"></i>
+                                                        </button>
+                                                        <button type="button" class="btn btn-box-tool">
+                                                            <i class="fa fa-fw fa-remove"></i>
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    {#<button type="submit" class="btn btn-default">Cancel</button>#}
+                                    <button type="button" class="btn btn-info pull-left">Add Answer</button>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="row tab-pane" id="listAnswers">
+                            <div class="margin">
+                                <div class="col-lg-12">
+                                    <b>Cau 1 : </b>
+                                    <p>
+                                        The word <underline><b>plausible</b></underline> in the passage is closest in meaning to _______.
+                                    </p>
+                                </div>
+                                <div class="col-lg-12">
+                                    <div class="col-md-3" style="color: #0063dc"><b>A.</b>impossible</div>
+                                    <div class="col-md-3"><b>B.</b> reasonable</div>
+                                    <div class="col-md-3"><b>C.</b> typical</div>
+                                    <div class="col-md-3"><b>D.</b> unlikely</div>
+                                </div>
+                            </div>
+
+                            <div class="margin">
+                                <div class="col-lg-12">
+                                    <b>Cau 2 : </b>
+                                    <p>
+                                        The word <underline><b>plausible</b></underline> in the passage is closest in meaning to _______.
+                                    </p>
+                                </div>
+                                <div class="col-lg-12">
+                                    <div class="col-md-3" style="color: #0063dc"><b>A.</b>impossible</div>
+                                    <div class="col-md-3"><b>B.</b> reasonable</div>
+                                    <div class="col-md-3"><b>C.</b> typical</div>
+                                    <div class="col-md-3"><b>D.</b> unlikely</div>
+                                </div>
+                            </div>
+                            <div class="margin">
+                                <div class="col-lg-12">
+                                    <b>Cau 3 : </b>
+                                    <p>
+                                        The word <underline><b>plausible</b></underline> in the passage is closest in meaning to _______.
+                                    </p>
+                                </div>
+                                <div class="col-lg-12">
+                                    <div class="col-md-3" style="color: #0063dc"><b>A.</b> impossible</div>
+                                    <div class="col-md-3"><b>B.</b> reasonable</div>
+                                    <div class="col-md-3"><b>C.</b> typical</div>
+                                    <div class="col-md-3"><b>D.</b> unlikely</div>
+                                </div>
+                            </div>
+                            <div class="margin">
+                                <div class="col-lg-12">
+                                    <b>Cau 4 : </b>
+                                    <p>
+                                        The word <underline><b>plausible</b></underline> in the passage is closest in meaning to _______.
+                                    </p>
+                                </div>
+                                <div class="col-lg-12">
+                                    <div class="col-md-3" style="color: #0063dc"><b>A.</b> impossible</div>
+                                    <div class="col-md-3"><b>B.</b> reasonable</div>
+                                    <div class="col-md-3"><b>C.</b> typical</div>
+                                    <div class="col-md-3"><b>D.</b> unlikely</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+{% block jsExtends %}
+    {#<script src="/backend/adminLTE/assets/plugins/jQuery/jQuery-2.1.4.min.js"></script>#}
+    <script src="/backend/adminLTE/assets/plugins/ckeditor/ckeditor.js"></script>
+    {#<script src="/backend/adminLTE/assets/plugins/mathquill/mathquill.min.js"></script>#}
+    {#<script type="text/javascript" async#}
+            {#src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=AM_CHTML"></script>#}
+    {#<script type="text/javascript"#}
+            {#src="http://www.maths.nottingham.ac.uk/personal/drw/LaTeXMathML.js">#}
+    {#</script>#}
+    <script>
+
+        CKEDITOR.replace( 'question', {
+            height: 200
+        } );
+        CKEDITOR.replace( 'answerContent', {
+            height: 100,
+            toolbar : [
+                ['Styles','Format','Font','FontSize'],
+                ['Bold','Italic','Underline','StrikeThrough','-','Undo','Redo','-','Cut','Copy','Paste','Find','Replace'],
+                ['NumberedList','BulletedList','-','JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock'],
+                ['Image','Table','-','TextColor','BGColor','Source']
+            ]
+        } );
+        if ( CKEDITOR.env.ie && CKEDITOR.env.version == 8 ) {
+            document.getElementById( 'ie8-warning' ).className = 'tip alert';
+        }
+
+//        function latex(input){
+//            console.log(input.value);
+//            $('#answerDisplay').text(input.value) ;
+//        }
+//        var mathFieldSpan = document.getElementById('answer');
+//        var latexSpan = document.getElementById('answerDisplay');
+//
+//        var MQ = MathQuill.getInterface(2); // for backcompat
+//        var mathField = MQ.MathField(mathFieldSpan, {
+//            spaceBehavesLikeTab: true, // configurable
+//            handlers: {
+//                edit: function() { // useful event handlers
+//                    latexSpan.textContent = mathField.latex(); // simple API
+//                }
+//            }
+//        });
+
+    </script>
+{% endblock %}

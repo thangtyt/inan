@@ -1,0 +1,65 @@
+{% extends '_layout.' + getConfig('viewExtension') %}
+{% block cssExtends %}
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+{% endblock %}
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            <form id="edit-form" method="post">
+                {{ toolbar | safe }}
+                <div class="box box-primary">
+                    <div class="box-body">
+                        <div class="col-md-8">
+                            <div class="form-group">
+                                <label>Title<span class="required">*</span></label>
+                                <input class="form-control" name="title" required="required" id="title" value="{{ section.title }}">
+                            </div>
+                            <div class="form-group">
+                                <label>Content</label>
+                                <textarea class="form-control" name="content" required="required" id="content" >{{ section.content }}
+                                </textarea>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Subject<span class="required">*</span></label>
+                                <select class="form-control" name="subject_id" id="subject_id">
+                                    <option value="0">-- Choose subject --</option>
+                                    {% for subject in subjects %}
+                                    <option value="{{ subject.id }}">{{ subject.title }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Total Mark</label>
+                                <input class="form-control" name="total_mark" id="total_mark" value="{{ section.total_mark }}" type="number"/>
+                            </div>
+                            <div class="form-group">
+                                <label>Total Answers/Question</label>
+                                <input class="form-control" name="total_answers" id="total_answers" value="{{ section.total_mark }}" type="number"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </div>
+{% endblock %}
+{% block jsExtends %}
+    <script src="/backend/adminLTE/assets/plugins/ckeditor/ckeditor.js"></script>
+    <script>
+        CKEDITOR.replace( 'content', {
+            height: 200,
+            toolbar : [
+                //['Styles','Format','Font','FontSize'],
+                ['Bold','Italic','Underline','StrikeThrough','-','Undo','Redo','-','Cut','Copy','Paste','Find','Replace'],
+                ['NumberedList','BulletedList','-','JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock'],
+                ['Image','Table','-','TextColor','BGColor','Source']
+            ]
+        } );
+        if ( CKEDITOR.env.ie && CKEDITOR.env.version == 8 ) {
+            document.getElementById( 'ie8-warning' ).className = 'tip alert';
+        }
+    </script>
+{% endblock %}

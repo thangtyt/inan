@@ -1,0 +1,7 @@
+node_modules/
+log/
+.log
+.idea
+.bowerrc
+.DS_Store
+dump.rdb

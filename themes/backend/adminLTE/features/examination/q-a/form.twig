@@ -1,0 +1,371 @@
+{% extends '_layout.' + getConfig('viewExtension') %}
+{% block cssExtends %}
+    {#<link rel="stylesheet" href="/backend/adminLTE/assets/plugins/mathquill/mathquill.css"/>#}
+{% endblock %}
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            <form id="edit-form" method="post">
+                {{ toolbar | safe }}
+                <div class="nav-tabs-custom">
+                    <ul class="nav nav-tabs">
+                        <li class="active">
+                            <a href="#questionTab" data-toggle="tab" aria-expanded="true">
+                                <i class="fa fa-question-circle padd-right-5"></i> &nbsp;&nbsp;&nbsp;Question</a>
+                        </li>
+                        <li class="">
+                            <a href="#answerTab" data-toggle="tab" aria-expanded="false">
+                                <span class="glyphicon glyphicon-ok-sign"> </span> &nbsp;&nbsp;&nbsp;Answers
+                            </a>
+                        </li>
+                        <li class="">
+                            <a href="#listAnswers" data-toggle="tab" aria-expanded="false">
+                                <span class="fa fa-list"> </span> &nbsp;&nbsp;&nbsp; Preview
+                            </a>
+                        </li>
+                    </ul>
+                    <div class="tab-content">
+                        {#Tab question#}
+                        <div class="row tab-pane active" id="questionTab">
+                            <div class="col-md-9 col-sm-9">
+                                <div class="form-group">
+                                    <label for="quesion">Section<span class="required">*</span></label>
+                                    <select class="form-control" id="section_id" name="section_id">
+                                        <option value="0">-- Choose --</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="quesion">Question <span class="required">*</span></label>
+                                    <textarea class="form-control" name="content" id="content" required="required">{{ question.content }}</textarea>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-3">
+                                <div class="form-group">
+                                    <label>Subject<span class="required">*</span></label>
+                                    <select class="form-control" id="subject_id" name="subject_id" onchange="loadChapter()" required="required">
+                                        <option value="0">-- Choose --</option>
+                                        {% for subject in subjects %}
+                                        <option value="{{ subject.id }}">{{ subject.title }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Chapter</label>
+                                    <select class="form-control" name="chapter_id" id="chapter_id" onchange="loadLesson()" required="required">
+                                        <option>-- Choose --</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Lesson</label>
+                                    <select class="form-control" name="lesson" id="lesson" required="required">
+                                        <option>-- choose --</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Type</label>
+                                    <select class="form-control" name="question_type" id="question_type">
+                                        <option value="0">Choice</option>
+                                        <option value="1">Essay</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Level</label>
+                                    <select class="form-control" name="level">
+                                        <option value="0">Easy</option>
+                                        <option value="1">Normal</option>
+                                        <option value="3">Difficult</option>
+                                        <option value="4">Very Difficlut</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <input type="hidden" name="answers">
+                        {#tab content answer#}
+                        <div class="row tab-pane" id="answerTab">
+                            <div class="col-md-12 col-sm-12">
+
+                                <div class="form-group">
+                                    <label>Content</label>
+                                    <textarea class="form-control" name="answerContent" id="answerContent">{{ question.content }}</textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label>Explanation</label>
+                                    <textarea class="form-control" name="answerExplanation" id="answerExplanation">{{ question.explanation }}</textarea>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Mark</label>
+                                            <input name="answerMark" type="text" id="answerMark" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Time</label>
+                                            <input name="answerTime" type="text" id="answerTime" class="form-control">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Answer Choose</label>
+                                    <div class="input-group input-group-sm">
+                                        <input class="form-control" type="text" name="answerChoose" id="answerChoose"/>
+                                        <span class="input-group-btn">
+                                          <button type="button" onclick="addAnswerItem()" class="btn btn-info btn-flat">ADD</button>
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="col-xs-12 table-responsive">
+                                        <table class="table table-bordered table-hover dataTable">
+                                            <thead style="background-color: #d2d6de">
+                                                <th width="5%">
+                                                    ?
+                                                </th>
+                                                <th>
+                                                    Answer Key
+                                                </th>
+                                                <th width="10%">
+                                                    #
+                                                </th>
+                                            </thead>
+                                            <tbody id="answerList">
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    {#<button type="submit" class="btn btn-default">Cancel</button>#}
+                                    <button type="button" onclick="addAnswer()" class="btn btn-info pull-left">Add Answer</button>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="row tab-pane" id="listAnswers">
+                            {#<div class="margin">#}
+                                {#<div class="col-lg-12">#}
+                                    {#<p>#}
+
+                                    {#</p>#}
+                                {#</div>#}
+                                {#<div class="col-lg-12">#}
+                                    {#<b>#1 : </b>#}
+                                    {#<p>#}
+                                        {#The word <underline><b>plausible</b></underline> in the passage is closest in meaning to _______.#}
+                                    {#</p>#}
+                                {#</div>#}
+                                {#<div class="col-lg-12">#}
+                                    {#<div class="col-md-3" style="color: #0063dc"><b>A.</b>impossible</div>#}
+                                    {#<div class="col-md-3"><b>B.</b> reasonable</div>#}
+                                    {#<div class="col-md-3"><b>C.</b> typical</div>#}
+                                    {#<div class="col-md-3"><b>D.</b> unlikely</div>#}
+                                {#</div>#}
+                            {#</div>#}
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+{% block jsExtends %}
+    <script src="/backend/adminLTE/assets/plugins/ckeditor/ckeditor.js"></script>
+    <script>
+        var chapters,
+            answers = [],
+            answerItems = [],
+            answerItemId = 0,
+            answerId= 0,
+            answerItemTr = `<tr id="answerItem_:id:">
+                            <td>
+                                <input type="radio" name=":answerID:" value=":id:">
+                            </td>
+                            <td width="80%">:text:</td>
+                            <td>
+                                <div class="pull-left">
+                                    <button type="button" class="btn btn-box-tool">
+                                        <i class="fa fa-fw fa-edit"></i>
+                                    </button>
+                                    <button type="button" onclick="removeAnswer()" class="btn btn-box-tool">
+                                        <i class="fa fa-fw fa-remove"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>`;
+        CKEDITOR.replace( 'content', {
+            height: 200
+        } );
+        CKEDITOR.replace( 'answerContent', {
+            height: 100,
+            toolbar : [
+                ['Styles','Format','Font','FontSize'],
+                ['Bold','Italic','Underline','StrikeThrough','-','Undo','Redo','-','Cut','Copy','Paste','Find','Replace'],
+                ['NumberedList','BulletedList','-','JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock'],
+                ['Image','Table','-','TextColor','BGColor','Source']
+            ]
+        } );
+        CKEDITOR.replace( 'answerExplanation', {
+            height: 100,
+            toolbar : [
+                ['Styles','Format','Font','FontSize'],
+                ['Bold','Italic','Underline','StrikeThrough','-','Undo','Redo','-','Cut','Copy','Paste','Find','Replace'],
+                ['NumberedList','BulletedList','-','JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock'],
+                ['Image','Table','-','TextColor','BGColor','Source']
+            ]
+        } );
+        if ( CKEDITOR.env.ie && CKEDITOR.env.version == 8 ) {
+            document.getElementById( 'ie8-warning' ).className = 'tip alert';
+        }
+
+        $(function () {
+            answerId = uuid();
+
+            $('#edit-form').submit(function () {
+                $('input[name="answers"]').val(JSON.stringify(answers));
+            })
+        })
+        function loadChapter(){
+            var subId = $('#subject_id option:selected').val();
+            //console.log(subId);
+            if( Number(subId) !==0 ){
+                $.ajax({
+                    url: '/admin/examination/q-a/list-chapter/'+subId,
+                    type: 'GET'
+                }).done(function(result){
+                    $('#chapter_id').empty();
+                    //$('#chapter_id').append();
+                    chapters = result;
+                    $('#chapter_id').append(new Option('-- Choose --',0));
+                    chapters.map(function (val) {
+                        var opt = new Option(val.title,val.id);
+                        $('#chapter_id').append(opt);
+                    })
+                });
+                $.ajax({
+                    url: '/admin/examination/q-a/list-section/'+subId,
+                    type: 'GET'
+                }).done(function(results){
+                  if(!results.hasOwnProperty('error')){
+                      $('#section_id').empty();
+                      $('#section_id').append(new Option('-- Choose --',0));
+                      results.map(function (val) {
+                          var opt = new Option(val.title,val.id);
+                          $('#section_id').append(opt);
+                      })
+                  }
+                });
+            }else{
+                $('#chapter_id').empty();
+                $('#chapter_id').append(new Option('-- Choose --',0));
+            }
+
+        }
+        function loadLesson(){
+            var chapId = $('#chapter_id option:selected').val();
+            $('#lesson').empty();
+            $('#lesson').append(new Option('-- Choose --'));
+            chapters.map(function (val) {
+                if (val.id === chapId ){
+                    var lessons = JSON.parse(val.lessons);
+                    lessons.map(function (lesson) {
+                        var opt = new Option(lesson.title,lesson.title);
+                        $('#lesson').append(opt);
+                    })
+                }
+            })
+        }
+        function addAnswerItem(){
+            $('#answerList').append(answerItemTr.replace(/:answerID:/g,answerId).replace(/:id:/g,answerItemId).replace(/:text:/g,$('#answerChoose').val()));
+            answerItems.push({
+                answer: $('#answerChoose').val(),
+                explanation: CKEDITOR.instances.answerExplanation.getData(),//$('#answerExplanation').val(),
+                index: answerItemId,
+                isTrue: false
+            })
+            answerItemId++;
+        }
+        function addAnswer(){
+            let rightItemIndex = $('input[name="'+answerId+'"]:checked').prop('value');
+            answerItems=answerItems.filter(function (val) {
+                if (val.index == rightItemIndex){
+                    val.isTrue = true
+                }
+                return val;
+            });
+            let temp = {
+                id: answerId,
+                explanation: CKEDITOR.instances.answerExplanation.getData(),//$('#answerExplanation').val(),
+                content: CKEDITOR.instances.answerContent.getData(),//$('#answerContent').val(),
+                mark: $('#answerMark').val(),
+                time: $('#answerTime').val(),
+                answer_keys: answerItems
+            }
+            answers.push(temp);
+            resetAnswerField();
+            renderView();
+        }
+
+        function resetAnswerField(){
+            answerId = uuid();
+            answerItems = [];
+            CKEDITOR.instances.answerContent.setData('')
+            CKEDITOR.instances.answerExplanation.setData('')
+            $('#answerMark').prop('value','');
+            $('#answerTime').prop('value','');
+            $('#answerChoose').prop('value','');
+            $('#answerList').empty();
+        }
+        function renderView(){
+            $('#listAnswers').empty();
+            var html = '';
+            var answerIndex = 1;
+            console.log($('#content').prop('value'));
+            html+=`<div class="margin">
+                        <div class="col-lg-12">
+                            <p>`+
+                                CKEDITOR.instances.content.getData()
+                            +`</p>
+                        </div>`;
+            if( $('#question_type').prop('value') == 0 ){
+                var keyCode= 65;
+                console.log(JSON.stringify(answers,3,3));
+                answers.map(function (answer) {
+                            if(answer.content !== null && answer.content !== ''){
+                                html += '<div class="col-lg-12">' +
+                                    //'<b>Cau: '+answerIndex+' : </b>' +
+                                '<p><b>Cau: '+answerIndex+' : </b>'+answer.content+'</p>' +
+                                '</div>' ;
+                            }
+
+
+                                html += '<div class="col-lg-12">';
+                            answer.answer_keys.map(function (val) {
+                                var tempStyle = '';
+                                if(val.isTrue){
+                                    tempStyle = ' style="color: #0063dc"';
+                                }
+                                html+='<div class="col-md-3"'+tempStyle+'><b>'+String.fromCharCode(keyCode)+'.</b>'+val.answer+'</div>';
+                                keyCode++;
+                            })
+                    html+=       '</div>' ;
+                    answerIndex++;
+                })
+            }
+            html+='</div>';
+            $('#listAnswers').append(html);
+        }
+        function uuid() {
+            var uuid = "", i, random;
+            for (i = 0; i < 32; i++) {
+                random = Math.random() * 16 | 0;
+                if (i == 8 || i == 12 || i == 16 || i == 20) {
+                    uuid += "-"
+                }
+                uuid += (i == 12 ? 4 : (i == 16 ? (random & 3 | 8) : random)).toString(16);
+            }
+            return uuid;
+        }
+    </script>
+{% endblock %}
