@@ -3,7 +3,12 @@ const nodeMailer = require('nodemailer');
 module.exports = function (controller, component, app) {
     let mailConfig = app.getConfig('mailer_config');
     controller.view = function (req, res) {
-        res.backend.render('login');
+        if(req.user){
+            res.redirect('/admin');
+        }else{
+            res.backend.render('login');
+        }
+
     };
 
     controller.logout = function (req, res) {
@@ -18,7 +23,7 @@ module.exports = function (controller, component, app) {
         if (req.session.prelink) {
             return res.redirect(req.session.prelink);
         }
-        res.redirect('/');
+        res.redirect('/admin/login');
     };
 
     controller.forgotview = function (req,res) {

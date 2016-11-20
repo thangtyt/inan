@@ -141,6 +141,46 @@ module.exports = function (component, app) {
                 permissions: permission.exam
             }
         },
+        "exam/page/:page": {
+            get: {
+                handler: controller.eList,
+                authenticate: true,
+                permissions: permission.exam
+            }
+        },
+        "exam/page/:page/sort/:sort/(:order)?": {
+            get: {
+                handler: controller.eList,
+                authenticate: true,
+                permissions: permission.exam
+            }
+        },
+        "exam/create-manual": {
+            get: {
+                handler: controller.eCreateManual,
+                authenticate: true,
+                permissions: permission.exam
+            },
+            post: {
+                handler: controller.eSaveManual,
+                authenticate: true,
+                permissions: permission.exam
+            }
+        },
+        "exam/list-section/:subjectId": {
+            get: {
+                handler: controller.eGetSections,
+                authenticate: true,
+                permission: permission.exam
+            }
+        },
+        "exam/list-question/:sectionId": {
+            get: {
+                handler: controller.eGetQuestions,
+                authenticate: true,
+                permission: permission.exam
+            }
+        },
         //END EXAM
         //SECTION
         "section" : {

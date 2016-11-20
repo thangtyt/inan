@@ -22,12 +22,12 @@ module.exports = function (controller,component,app) {
         toolbar.addRefreshButton(baseRoute);
         toolbar.addSearchButton(isAllow(req, permission.index));
         toolbar.addGeneralButton(true,{
-            link: baseRoute+'/create/auto-generate',
+            link: baseRoute+'/create-auto',
             title: '<i class="fa fa-plus"></i>  Create Exam Auto',
             buttonClass: 'btn btn-primary'
         });
         toolbar.addGeneralButton(true,{
-            link: baseRoute+'/create/auto-manual',
+            link: baseRoute+'/create-manual',
             title: '<i class="fa fa-plus"></i>  Create Exam Manual',
             buttonClass: 'btn btn-primary'
         })
@@ -117,4 +117,68 @@ module.exports = function (controller,component,app) {
             toolbar : toolbar
         })
     }
+    controller.eCreateManual = function (req,res) {
+        let actions = app.feature.examination.actions;
+        actions.sFindAll()
+        .then(function (subjects) {
+            res.backend.render('exam/create-manual',{
+                title: 'Create Exam Manual',
+                subjects: subjects
+            });
+        }).catch(function (err) {
+            req.flash.error(err.message);
+            res.backend.render('exam/create-manual',{
+                title: 'Create Exam Manual'
+            });
+        })
+
+    }
+    controller.eGetSections = function (req,res) {
+        let actions = app.feature.examination.actions;
+        actions.secFindAll({
+            where: {
+                subject_id: req.params.subjectId
+            },
+            include: [
+                {
+                    model: app.models.question,
+                    include: [
+                        {
+                            model: app.models.answer,
+                            as: 'answers'
+                        }
+                    ],
+                    as: 'questions'
+                }
+            ]
+        })
+        .then(function (sections) {
+            res.jsonp(JSON.parse(JSON.stringify(sections)));
+        }).catch(function (err) {
+            res.jsonp(err);
+        })
+    }
+    controller.eGetQuestions = function (req,res) {
+        let actions = app.feature.examination.actions;
+        actions.questionFindAll({
+            where: {
+                section_id: req.params.sectionId,
+                include: [
+                    {
+                        model: app.models.answer,
+                        as: 'answers'
+                    }
+                ]
+            }
+        })
+        .then(function (sections) {
+            res.jsonp(JSON.parse(JSON.stringify(sections)));
+        }).catch(function (err) {
+            res.jsonp(null);
+        })
+    }
+    controller.eSaveManual = function (req,res) {
+        res.backend.render('exam/list');
+    }
+
 }

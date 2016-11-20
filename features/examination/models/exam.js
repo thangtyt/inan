@@ -62,7 +62,7 @@ module.exports = function (sequelize,DataTypes) {
         content: {
             type: DataTypes.JSONB
         },
-        info: {
+        desc: {
             type: DataTypes.TEXT
         },
         /*
@@ -73,18 +73,22 @@ module.exports = function (sequelize,DataTypes) {
          */
         level: {
             type: DataTypes.INTEGER,
-            defaultValue: 0,
+            defaultValue: 1,
             validate: {
-                min: 0,
-                max: 3
+                min: 1,
+                max: 5
             }
+        },
+        status: {
+            type: DataTypes.INTEGER,
+            defaultValue: 0
         },
         created_by: {
             type: DataTypes.BIGINT,
             allowNull: false,
             validate: {
                 isNumeric: {
-                    msg: "Worng data type of created user !"
+                    msg: "Wrong data type of created user !"
                 }
             }
         },
