@@ -99,8 +99,8 @@ module.exports = function (controller,component,app) {
         }).then(function (sections) {
             //console.log(JSON.stringify(sections,2,2));
             res.jsonp({
-                status: 200,
-                body: JSON.parse(JSON.stringify(sections))
+                status : 200,
+                item : JSON.parse(JSON.stringify(sections))
             })
         }).catch(function (err) {
             res.jsonp({
