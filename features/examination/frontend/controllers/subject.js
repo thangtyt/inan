@@ -8,10 +8,11 @@ module.exports = function (controller,component,app) {
         let actions = app.feature.examination.actions;
         actions.sFindAll()
         .then(function (subjects) {
+            res.status(200);
             res.jsonp(JSON.parse(JSON.stringify(subjects)));
         }).catch(function (err) {
+            res.status(300);
             res.jsonp({
-                status: 300,
                 message: err.message
             })
         })

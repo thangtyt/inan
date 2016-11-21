@@ -172,20 +172,20 @@ module.exports = function (controller, component, app) {
 
     }
     controller.notHavePermission = function (req, res) {
+        res.status(403);
         res.jsonp({
-            status: 403,
             message: 'The request was a valid request'
         })
     }
     controller.timeOut = function (req, res) {
+        res.status(440);
         res.jsonp({
-            status: 440,
             message: 'The client\'s session has expired and must log in again.'
         })
     }
     controller.requireToken = function (req,res) {
+        res.status(499);
         res.jsonp({
-            status: 499,
             message: 'Token is required'
         })
     }
@@ -199,15 +199,15 @@ module.exports = function (controller, component, app) {
         user.role = [];
         user.role_id = [];
         user.role_ids = [];
+        res.status(200);
         res.jsonp({
-            status: 200,
             message: 'login successful !',
             token: jwtSign(jwt_conf,user)
         })
     }
     controller.jwtFailure = function (req,res) {
+        res.status(400);
         res.jsonp({
-            status: 400,
             message: 'Login failure'
         })
     }
@@ -220,8 +220,8 @@ module.exports = function (controller, component, app) {
         delete user.salt;
         delete user.reset_password_expires;
         delete user.reset_password_token;
+        res.status(200);
         res.jsonp({
-            status: 200,
             message: 'login successful !',
             user: user
         })

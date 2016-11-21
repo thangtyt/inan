@@ -42,7 +42,7 @@ module.exports = function (controller,component,app) {
             limit: itemOfPage
         });
 
-        console.log('test',filter.conditions);
+        //console.log('test',filter.conditions);
         actions.examFindAndCountAll({
             where: filter.conditions,
             include: [{
@@ -53,17 +53,17 @@ module.exports = function (controller,component,app) {
             limit: itemOfPage,
             offset: (page - 1) * itemOfPage
         }).then(function (result) {
-            console.log(JSON.stringify(result.rows,2,2));
+            //console.log(JSON.stringify(result.rows,2,2));
+            res.status(200);
             res.jsonp({
-                status: 200,
                 currentPage: page,
                 totalPage: Math.ceil(result.count / itemOfPage),
                 items: JSON.parse(JSON.stringify(result.rows))
             })
         }).catch(function (err) {
-            console.log(err);
+            //console.log(err);
+            res.status(300);
             res.jsonp({
-                status: 300,
                 message: err.message
             })
         })
@@ -110,8 +110,8 @@ module.exports = function (controller,component,app) {
             })
         }).then(function (sections) {
             //console.log(JSON.stringify(sections,2,2));
+            res.status(200);
             res.jsonp({
-                status : 200,
                 item : JSON.parse(JSON.stringify(sections))
             })
         }).catch(function (err) {
