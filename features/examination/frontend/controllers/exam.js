@@ -15,22 +15,34 @@ module.exports = function (controller,component,app) {
                 header : 'id'
             },
             {
-                column : 'subject.id',
-                header: 'subject-id'
-            },{
-                column: 'level',
-                header: 'level'
+                column : 'subject.title',
+                header: 'subject-title',
+                filter: {
+                    data_type: 'string',
+                    filter_key: 'subject.title'
+                }
             },
             {
-                column : 'subject.title',
-                header: 'subject-title'
+                column: 'level',
+                header: 'level',
+                filter: {
+                    data_type: 'integer'
+                }
+            },
+            {
+                column : 'subject.id',
+                header: 'subject-id',
+                filter: {
+                    data_type: 'string',
+                    filter_key: 'subject.id'
+                }
             }
         ];
         let filter = ArrowHelper.createFilter(req, res, table, {
             limit: itemOfPage
         });
 
-        console.log(filter.conditions);
+        console.log('test',filter.conditions);
         actions.examFindAndCountAll({
             where: filter.conditions,
             include: [{

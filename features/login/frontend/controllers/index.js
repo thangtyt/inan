@@ -211,7 +211,21 @@ module.exports = function (controller, component, app) {
             message: 'Login failure'
         })
     }
-
+    controller.getUserInfo = function (req,res) {
+        let user = req.user;
+        delete user.role;
+        delete user.role_id;
+        delete user.role_ids;
+        delete user.user_pass;
+        delete user.salt;
+        delete user.reset_password_expires;
+        delete user.reset_password_token;
+        res.jsonp({
+            status: 200,
+            message: 'login successful !',
+            user: user
+        })
+    }
 };
 let tokenGenerate = function (length) {
     let text = "";

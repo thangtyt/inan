@@ -70,9 +70,15 @@ module.exports = function (component, app) {
                 handler: controller.timeOut
             }
         },
-        "499": {
+        "/499": {
             get: {
                 handler: controller.requireToken
+            }
+        },
+        "/user-info": {
+            get: {
+                handler: controller.getUserInfo,
+                authenticate: true
             }
         }
 
