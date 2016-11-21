@@ -194,10 +194,15 @@ module.exports = function (controller, component, app) {
     }
     controller.jwtSuccess = function (req,res) {
         //console.log(jwtVerify(jwtSign(jwt_conf, req.user), jwt_conf));
+        //console.log(JSON.stringify(req.user,2,2));
+        let user = req.user;
+        user.role = [];
+        user.role_id = [];
+        user.role_ids = [];
         res.jsonp({
             status: 200,
             message: 'login successful !',
-            token: jwtSign(jwt_conf,req.user)
+            token: jwtSign(jwt_conf,user)
         })
     }
     controller.jwtFailure = function (req,res) {

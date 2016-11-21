@@ -9,7 +9,6 @@ module.exports = function (passport, app) {
             done(null, user.id);
         },
         deserializeUser: function (id, done) {
-            console.log('deserializeUser',id);
             let redis = app.redisClient;
             let key = app.getConfig('redis_prefix') + 'current-user-' + id;
             redis.get(key, function (err, result) {
@@ -31,7 +30,6 @@ module.exports = function (passport, app) {
                             user_status: 'publish'
                         }
                     }).then(function (user) {
-                        console.log(user);
                         let user_tmp;
                         try {
                             user_tmp = JSON.parse(JSON.stringify(user));

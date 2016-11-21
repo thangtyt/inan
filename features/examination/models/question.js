@@ -9,6 +9,10 @@ module.exports = function (sequelize, DataTypes) {
             defaultValue: DataTypes.UUIDV4,
             allowNull: false
         },
+        title: {
+            type: DataTypes.STRING,
+            allowNull: false
+        },
         question_type: {
             type: DataTypes.INTEGER,
             defaultValue: 0

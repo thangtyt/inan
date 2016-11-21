@@ -10,7 +10,6 @@ module.exports = function (passport, config, app) {
     // Use local strategy
     passport.use(new LocalStrategy(
         function (username, password, done) {
-            console.log('local');
             app.models.user.find({
                 where: [
                     "lower(user_email) = ? and user_status='publish'", username.toLowerCase()

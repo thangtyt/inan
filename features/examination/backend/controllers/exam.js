@@ -48,63 +48,6 @@ module.exports = function (controller,component,app) {
                 filter : {
                     data_type : 'string'
                 }
-            //},
-            //{
-            //    column : 'subject.title',
-            //    width : '15%',
-            //    header : 'Subject',
-            //    filter : {
-            //        data_type : 'string'
-            //    }
-            //},
-            //{
-            //    column : 'chapter.title',
-            //    width : '15%',
-            //    header : 'Chapter',
-            //    filter : {
-            //        data_type : 'string'
-            //    }
-            //},
-            //{
-            //    column : 'lesson',
-            //    width : '10%',
-            //    header : 'Lesson',
-            //    filter : {
-            //        data_type : 'string'
-            //    }
-            //},
-            //{
-            //    column : 'level',
-            //    width : '10%',
-            //    header : 'Level',
-            //    type : 'custom',
-            //    alias : {
-            //        "0" : 'Basic' ,
-            //        "1" : 'Medium',
-            //        "2" : 'Difficult',
-            //        "3" : 'Very Difficult'
-            //    },
-            //    filter : {
-            //        type : 'select',
-            //        filter_key : 'level',
-            //        data_source : [
-            //            {
-            //                name : 'Easy',
-            //                value : 0
-            //            },{
-            //                name : 'Medium',
-            //                value : 1
-            //            },{
-            //                name : 'Difficult',
-            //                value : 2
-            //            },{
-            //                name : 'Very Difficult',
-            //                value : 3
-            //            }
-            //        ],
-            //        display_key : 'name',
-            //        value_key : 'value'
-            //    }
             }
         ];
         let filter = ArrowHelper.createFilter(req, res, table, {
@@ -112,23 +55,43 @@ module.exports = function (controller,component,app) {
             limit: itemOfPage,
             backLink: 'qa_back_link'
         });
-        res.backend.render('exam/list',{
-            title: 'List Of Exam',
-            toolbar : toolbar
+        actions.examFindAll({
+            where: filter.conditions,
+            order: filter.order || 'created_at DESC',
+            limit: filter.limit,
+            offset: (page-1)*itemOfPage
+        }).then(function (items) {
+            res.backend.render('exam/list',{
+                title: 'List Of Exam',
+                toolbar : toolbar,
+                items: items
+            })
+        }).catch(function (err) {
+            req.flash.error(err.message);
+            res.backend.render('exam/list',{
+                title: 'List Of Exam',
+                toolbar : toolbar
+            })
         })
+
     }
     controller.eCreateManual = function (req,res) {
         let actions = app.feature.examination.actions;
+        let toolbar = new ArrowHelper.Toolbar();
+        toolbar.addBackButton(req, 'qCreate_back_link');
+        toolbar.addSaveButton();
         actions.sFindAll()
         .then(function (subjects) {
             res.backend.render('exam/create-manual',{
                 title: 'Create Exam Manual',
-                subjects: subjects
+                subjects: subjects,
+                toolbar: toolbar.render()
             });
         }).catch(function (err) {
             req.flash.error(err.message);
             res.backend.render('exam/create-manual',{
-                title: 'Create Exam Manual'
+                title: 'Create Exam Manual',
+                toolbar: toolbar.render()
             });
         })
 
@@ -138,47 +101,81 @@ module.exports = function (controller,component,app) {
         actions.secFindAll({
             where: {
                 subject_id: req.params.subjectId
-            },
-            include: [
-                {
-                    model: app.models.question,
-                    include: [
-                        {
-                            model: app.models.answer,
-                            as: 'answers'
-                        }
-                    ],
-                    as: 'questions'
-                }
-            ]
+            }//,
+            //include: [
+            //    {
+            //        model: app.models.question,
+            //        include: [
+            //            {
+            //                model: app.models.answer,
+            //                as: 'answers'
+            //            }
+            //        ],
+            //        as: 'questions'
+            //    }
+            //]
         })
         .then(function (sections) {
+
             res.jsonp(JSON.parse(JSON.stringify(sections)));
         }).catch(function (err) {
+                console.log(err);
             res.jsonp(err);
         })
     }
     controller.eGetQuestions = function (req,res) {
+        console.log(req.params.sectionId);
         let actions = app.feature.examination.actions;
         actions.questionFindAll({
             where: {
-                section_id: req.params.sectionId,
-                include: [
-                    {
-                        model: app.models.answer,
-                        as: 'answers'
-                    }
-                ]
-            }
+                section_id: req.params.sectionId
+            },
+            include: [
+                {
+                    model: app.models.answer,
+                    as: 'answers',
+                    where: ['1=1']
+                }
+            ]
         })
-        .then(function (sections) {
-            res.jsonp(JSON.parse(JSON.stringify(sections)));
+        .then(function (questions) {
+            res.jsonp(JSON.parse(JSON.stringify(questions)));
         }).catch(function (err) {
             res.jsonp(null);
         })
     }
     controller.eSaveManual = function (req,res) {
-        res.backend.render('exam/list');
+        let actions = app.feature.examination.actions;
+        let form = req.body;
+        console.log(JSON.stringify(form));
+        form.created_by = req.user.id;
+        if(typeof form.sections == 'string'){
+            try{
+                form.sections = JSON.parse(form.sections);
+            }catch(err){
+                console.log('error',form.sections);
+                form.sections = [form.sections];
+            }
+        }
+        try{
+            form.content = JSON.parse(form.content);
+        }catch(err){
+            form.content = [];
+        }
+
+        console.log(JSON.stringify(form,2,2));
+        actions.examCreate(form)
+        .then(function (exam) {
+            console.log('create ok');
+            res.redirect(baseRoute);
+        }).catch(function (err) {
+                console.log(err);
+            res.redirect(baseRoute);
+        })
+        
+        //console.log(JSON.stringify(form,2,2));
+        
+        //res.backend.render('exam/list');
     }
 
 }

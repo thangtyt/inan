@@ -39,7 +39,13 @@ module.exports = {
         models.exam.belongsTo(models.user, {foreignKey: 'created_by'});
 
         models.chapter.hasMany(models.question, { foreignKey: 'chapter_id' });
-        models.question.belongsTo(models.chapter, { foreignKey: 'chapter_id' })
+        models.question.belongsTo(models.chapter, { foreignKey: 'chapter_id' });
+
+        models.section.hasMany(models.question, {foreignKey: 'section_id'});
+        models.question.belongsTo(models.section, {foreignKey: 'section_id'});
+
+        models.section.hasMany(models.exam, {foreignKey: 'section_id'});
+        models.exam.belongsTo(models.section, {foreignKey: 'section_id'});
 
     }
 };

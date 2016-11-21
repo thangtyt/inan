@@ -16,46 +16,49 @@ module.exports = function (sequelize,DataTypes) {
         },
         subject_id: {
             type: DataTypes.UUID,
-            allowNull: false,
-            validate: {
-                isUUID : {
-                    msg: "Invalid data input of subject"
-                }
-            }
+            allowNull: false
         },
         total_mark: {
             type: DataTypes.INTEGER,
             allowNull: false,
-            validate: {
-                isNumber: {
-                    msg: "Invalid data input of total mark"
+            set: function (val) {
+                if(typeof val !== 'number'){
+                    this.setDataValue('total_mark', Number(val));
+                }else{
+                    this.setDataValue('total_mark', val);
                 }
             }
         },
         total_question: {
             type: DataTypes.INTEGER,
             allowNull: false,
-            validate: {
-                isNumber: {
-                    msg: "Invalid data input of total mark"
+            set: function (val) {
+                if(typeof val !== 'number'){
+                    this.setDataValue('total_question', Number(val));
+                }else{
+                    this.setDataValue('total_question', val);
                 }
             }
         },
         total_time: {
             type: DataTypes.INTEGER,
             allowNull: false,
-            validate: {
-                isNumber: {
-                    msg: "Invalid data input of total mark"
+            set: function (val) {
+                if(typeof val !== 'number'){
+                    this.setDataValue('total_time', Number(val));
+                }else{
+                    this.setDataValue('total_time', val);
                 }
             }
         },
         sections: {
             type: DataTypes.ARRAY(DataTypes.UUID),
             defaultValue: [],
-            validate: {
-                isUUID : {
-                    msg: "Invalid data input of subject"
+            set: function (val) {
+                if(typeof val !== 'object'){
+                    this.setDataValue('sections', [val]);
+                }else{
+                    this.setDataValue('sections',val);
                 }
             }
         },
@@ -74,6 +77,13 @@ module.exports = function (sequelize,DataTypes) {
         level: {
             type: DataTypes.INTEGER,
             defaultValue: 1,
+            set: function (val) {
+                if(typeof val !== 'number'){
+                    this.setDataValue('level', Number(val));
+                }else{
+                    this.setDataValue('level', val);
+                }
+            },
             validate: {
                 min: 1,
                 max: 5
@@ -81,14 +91,23 @@ module.exports = function (sequelize,DataTypes) {
         },
         status: {
             type: DataTypes.INTEGER,
+            set: function (val) {
+                if(typeof val !== 'number'){
+                    this.setDataValue('status', Number(val));
+                }else{
+                    this.setDataValue('status', val);
+                }
+            },
             defaultValue: 0
         },
         created_by: {
             type: DataTypes.BIGINT,
             allowNull: false,
-            validate: {
-                isNumeric: {
-                    msg: "Wrong data type of created user !"
+            set: function (val) {
+                if(typeof val !== 'number'){
+                    this.setDataValue('created_by', Number(val));
+                }else{
+                    this.setDataValue('created_by', val);
                 }
             }
         },

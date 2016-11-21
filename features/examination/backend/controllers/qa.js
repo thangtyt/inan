@@ -37,7 +37,7 @@ module.exports = function (controller,component,app) {
                 type : 'checkbox'
             },
             {
-                column : 'content',
+                column : 'title',
                 width : '20%',
                 header : 'Question',
                 link : baseRoute + '/' + '{id}',
