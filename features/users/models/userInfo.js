@@ -21,7 +21,7 @@ module.exports = function (sequelize, DataTypes) {
         district: {
             type: DataTypes.STRING
         },
-        target: {
+        uni: {
             type: DataTypes.STRING
         },
         /*

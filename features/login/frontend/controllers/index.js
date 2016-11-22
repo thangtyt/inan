@@ -245,13 +245,19 @@ module.exports = function (controller, component, app) {
             })
         ])
         .then(function (results) {
-            let _user = optimizeUser(JSON.parse(JSON.stringify(results[0])));
-            let _userInfo = optimizeUser(JSON.parse(JSON.stringify(results[1])));
+            if(results){
+                let _user = optimizeUser(JSON.parse(JSON.stringify(results[0])));
+                let _userInfo = optimizeUser(JSON.parse(JSON.stringify(results[1])));
                 _user.userInfo = _userInfo;
-            res.status(200);
-            res.jsonp({
-                user: _user
-            })
+                _user.user_image = req.protocol + '://'+req.get('host')+_user.user_image;
+                res.status(200);
+                res.jsonp({
+                    user: _user
+                })
+            }else{
+                return new Error('Not Found user');
+            }
+
         }).catch(function (err) {
             console.log(err);
             res.status(503);
@@ -267,7 +273,7 @@ module.exports = function (controller, component, app) {
         app.feature.users.actions.findByEmail(form.username)
         .then(function (user) {
             if(user){
-                res.status(300)
+                res.status(300);
                 res.jsonp({
                     error: "Email is registered ! Please choose another email !"
                 })
@@ -283,8 +289,8 @@ module.exports = function (controller, component, app) {
             if(user){
                 res.status(200);
                 res.jsonp({
-                    token: jwtSign(jwt_conf,user),
-                    dataUserInfo: dataUserInfo
+                    token: jwtSign(jwt_conf,optimizeUser(user)),
+                    dataUserInfo: dataUserInfo //city,district,...
                 })
             }else{
                 return new Error('Cannot create user');
@@ -300,13 +306,16 @@ module.exports = function (controller, component, app) {
     };
     controller.userRegisterInfo = function (req,res) {
         let user = req.user;
+        //console.log('userRegisterInfo',user);
         let userInfo = req.body;
+        console.log('fsdfsd',userInfo);
         user = optimizeUser(user);
-        if(req.body){
+        if(userInfo){
             user.userInfo = userInfo;
             userInfo.user_id = user.id;
-            app.models.userInfo.create(userInfo)
+            Promise.all([app.models.userInfo.create(userInfo)])
             .then(function (result) {
+                    console.log('Promise',result);
                 if(result){
                     return app.models.user.find({
                         where: {
@@ -314,27 +323,33 @@ module.exports = function (controller, component, app) {
                         }
                     });
                 }else{
-                    return new Error();
+                    return new Error('Not create userInfo');
                 }
 
             })
-            .then(function (_user) {//todo:check full_name
+            .then(function (_user) {
                 if(_user){
                     return _user.updateAttributes({
-                        display_name : userInfo.full_name | '[no name]'
+                        display_name : userInfo.full_name || '[no name]'
+
                     })
                 }else{
-                    return new Error();
+                    return new Error('Not found user');
                 }
             })
             .then(function (_user) {
-                    console.log(_user);
+                    console.log('update auttribute',JSON.stringify(_user,2,2));
+                   _user = optimizeUser(JSON.parse(JSON.stringify(_user)));
+                    console.log('after optimize',JSON.parse(JSON.stringify(_user)));
+                    _user.userInfo = userInfo;
+                    _user.user_image = req.protocol + '://'+req.get('host')+_user.user_image;
                     res.status(200);
                     res.jsonp({
                         user: _user
                     })
             })
             .catch(function (err) {
+                    console.log(err);
                 res.status(503);
                 res.jsonp({
                     error: 'Cannot add user\'s informations'
@@ -351,8 +366,13 @@ module.exports = function (controller, component, app) {
     }
 };
 function optimizeUser(user,result){
-    if(user.hasOwnProperty('display_name')){
-        result = {
+    console.log('optimize');
+    if(!user){
+        console.log(user);
+        return null;
+    }else if(user.hasOwnProperty('display_name')){
+        console.log('display_name');
+        return result = {
             id : user.id,
             user_email : user.user_email,
             full_name : user.display_name,
@@ -360,10 +380,10 @@ function optimizeUser(user,result){
             userInfo: user.userInfo
         };
     }else{
-        result = user
+        console.log(user);
+        return user
     }
 
-    return result;
 }
 let tokenGenerate = function (length) {
     let text = "";
