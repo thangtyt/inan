@@ -3,17 +3,36 @@ const nodeMailer = require('nodemailer');
 let jwt = require('jsonwebtoken');
 
 module.exports = function (controller, component, app) {
+
+    controller.checkToken = function (req,res,next) {
+        let token = req.body.token || req.query.token || req.headers['x-access-token'];
+        if(token){
+            jwt.verify(token,jwt_conf.jwtSecretKey, function (err,decoded) {
+                if(err||!decoded){
+                    res.redirect('/api/440')
+                }else{
+                    req.user = decoded.data;
+                    next();
+                }
+            })
+        }else{
+            res.redirect('/api/499');
+        }
+    };
+
+
     let jwt_conf = app.getConfig('jwt');
     //jwt
     let jwtSign = function (conf,user) {
+        let userOpt = optimizeUser(user);
         return jwt.sign({
             ignoreExpiration: true,
-            data: user
+            data: userOpt
         }, conf.jwtSecretKey);
-    }
-    let jwtVerify = function (token,conf) {
-        return jwt.verify(token,conf.jwtSecretKey);
-    }
+    };
+    //let jwtVerify = function (token,conf) {
+    //    return jwt.verify(token,conf.jwtSecretKey);
+    //}
 
 
     let mailConfig = app.getConfig('mailer_config');
@@ -38,7 +57,7 @@ module.exports = function (controller, component, app) {
 
     controller.forgotview = function (req,res) {
         res.frontend.render('forgot');
-    }
+    };
     controller.cPassView = function (req,res) {
         let token = req.params.token;
         app.feature.users.actions.find({
@@ -66,7 +85,7 @@ module.exports = function (controller, component, app) {
             });
         })
 
-    }
+    };
     controller.cPassSave = function (req,res) {
         let token = req.params.token;
         let data = req.body;
@@ -115,7 +134,7 @@ module.exports = function (controller, component, app) {
                 }
             });
         })
-    }
+    };
     controller.forgot = function (req,res) {
         app.feature.users.actions.findByEmail( req.body.email)
             .then(function (user) {
@@ -136,7 +155,7 @@ module.exports = function (controller, component, app) {
                                 href += '/'+userUpdated.reset_password_token;
                                 let transporter = nodeMailer.createTransport(mailConfig);
                                 let message = {
-                                    to : 'thangtyt@gmail.com',//userUpdated.user_email,
+                                    to : userUpdated.user_email,
                                     subject : 'Confirm email to reset password',
                                     html : `<p>You have just process reset your password</p>
                                 <p>Please click link below to continue reset your password</>
@@ -170,63 +189,182 @@ module.exports = function (controller, component, app) {
             });
         })
 
-    }
+    };
     controller.notHavePermission = function (req, res) {
         res.status(403);
         res.jsonp({
             message: 'The request was a valid request'
         })
-    }
+    };
     controller.timeOut = function (req, res) {
         res.status(440);
         res.jsonp({
             message: 'The client\'s session has expired and must log in again.'
         })
-    }
+    };
     controller.requireToken = function (req,res) {
         res.status(499);
         res.jsonp({
             message: 'Token is required'
         })
-    }
-    controller.test = function (req,res) {
-        res.frontend.render('/');
-    }
+    };
     controller.jwtSuccess = function (req,res) {
-        //console.log(jwtVerify(jwtSign(jwt_conf, req.user), jwt_conf));
-        //console.log(JSON.stringify(req.user,2,2));
         let user = req.user;
-        user.role = [];
-        user.role_id = [];
-        user.role_ids = [];
-        res.status(200);
-        res.jsonp({
-            message: 'login successful !',
-            token: jwtSign(jwt_conf,user)
-        })
-    }
+        if(user){
+            user.role = [];
+            user.role_id = [];
+            user.role_ids = [];
+            res.status(200);
+            res.jsonp({
+                message: 'login successful !',
+                token: jwtSign(jwt_conf,user)
+            })
+        }else{
+            res.status(499);
+        }
+    };
     controller.jwtFailure = function (req,res) {
         res.status(400);
         res.jsonp({
             message: 'Login failure'
         })
-    }
+    };
     controller.getUserInfo = function (req,res) {
         let user = req.user;
-        delete user.role;
-        delete user.role_id;
-        delete user.role_ids;
-        delete user.user_pass;
-        delete user.salt;
-        delete user.reset_password_expires;
-        delete user.reset_password_token;
-        res.status(200);
-        res.jsonp({
-            message: 'login successful !',
-            user: user
+        Promise.all([
+            app.models.user.find({
+                where: {
+                    id: user.id
+                }
+
+            }),
+            app.models.userInfo.find({
+                where: {
+                    user_id : user.id
+                }
+            })
+        ])
+        .then(function (results) {
+            let _user = optimizeUser(JSON.parse(JSON.stringify(results[0])));
+            let _userInfo = optimizeUser(JSON.parse(JSON.stringify(results[1])));
+                _user.userInfo = _userInfo;
+            res.status(200);
+            res.jsonp({
+                user: _user
+            })
+        }).catch(function (err) {
+            console.log(err);
+            res.status(503);
+            res.jsonp({
+                user: null
+            })
         })
+
+    };
+    controller.userRegister = function (req,res) {
+        let dataUserInfo = app.getConfig('userInfo');
+        let form  = req.body;
+        app.feature.users.actions.findByEmail(form.username)
+        .then(function (user) {
+            if(user){
+                res.status(300)
+                res.jsonp({
+                    error: "Email is registered ! Please choose another email !"
+                })
+            }else{
+                return app.feature.users.actions.create({
+                    user_email: form.username,
+                    user_pass: form.password,
+                    user_status: 'publish'
+                });
+            }
+        })
+        .then(function (user) {
+            if(user){
+                res.status(200);
+                res.jsonp({
+                    token: jwtSign(jwt_conf,user),
+                    dataUserInfo: dataUserInfo
+                })
+            }else{
+                return new Error('Cannot create user');
+            }
+        })
+        .catch(function (err) {
+            res.status(503);
+            res.jsonp({
+                error: err.message
+
+            })
+        });
+    };
+    controller.userRegisterInfo = function (req,res) {
+        let user = req.user;
+        let userInfo = req.body;
+        user = optimizeUser(user);
+        if(req.body){
+            user.userInfo = userInfo;
+            userInfo.user_id = user.id;
+            app.models.userInfo.create(userInfo)
+            .then(function (result) {
+                if(result){
+                    return app.models.user.find({
+                        where: {
+                            id: user.id
+                        }
+                    });
+                }else{
+                    return new Error();
+                }
+
+            })
+            .then(function (_user) {//todo:check full_name
+                if(_user){
+                    return _user.updateAttributes({
+                        display_name : userInfo.full_name | '[no name]'
+                    })
+                }else{
+                    return new Error();
+                }
+            })
+            .then(function (_user) {
+                    console.log(_user);
+                    res.status(200);
+                    res.jsonp({
+                        user: _user
+                    })
+            })
+            .catch(function (err) {
+                res.status(503);
+                res.jsonp({
+                    error: 'Cannot add user\'s informations'
+                })
+            })
+
+        }else{
+            res.status(503);
+            res.jsonp({
+                error: 'Cannot add user\'s informations'
+            })
+        }
+
     }
 };
+function optimizeUser(user,result){
+    if(user.hasOwnProperty('display_name')){
+        result = {
+            id : user.id,
+            user_email : user.user_email,
+            full_name : user.display_name,
+            user_image : user.user_image_url,
+            userInfo: user.userInfo
+        };
+    }else{
+        result = user
+    }
+
+    return result;
+}
 let tokenGenerate = function (length) {
     let text = "";
     let possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"+Date.now();

@@ -77,8 +77,17 @@ module.exports = function (component, app) {
         },
         "/user-info": {
             get: {
-                handler: controller.getUserInfo,
-                authenticate: true
+                handler: [controller.checkToken,controller.getUserInfo]
+            }
+        },
+        "/register": {
+            post: {
+                handler: controller.userRegister
+            }
+        },
+        "/register/user-info": {
+            post: {
+                handler: [controller.checkToken,controller.userRegisterInfo]
             }
         }
 

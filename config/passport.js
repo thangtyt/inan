@@ -52,10 +52,11 @@ module.exports = function (passport, app) {
                 let token = req.body.token || req.query.token || req.headers['x-access-token'];
                 if(token){
                     jwt.verify(token,jwt_conf.jwtSecretKey, function (err,decoded) {
+                        console.log('checkauthen',decoded.data.id);
                         if(err){
                             res.redirect('/api/440')
                         }else{
-                            res.locals.user = decoded;
+                            res.locals.user = decoded.data;
                             next();
                         }
                     })
@@ -103,6 +104,14 @@ module.exports = function (passport, app) {
                 successRedirect: '/api/jwt',
                 failureRedirect: '/api/jwt/failure',
                 failureFlash: true
+            }
+        },
+        front_user_register: {
+            strategy: 'local',
+            option: {
+                successRedirect: '/api/register/success',
+                failureRedirect: '/api/register/failure',
+                failureFlash: false
             }
         },
         facebook_login: {

@@ -9,34 +9,28 @@ module.exports = function (component, app) {
     return {
         "/exam": {
             get: {
-                handler: controller.examLists,
-                authenticate: true
+                handler: [controller.checkToken,controller.examLists]
             }
         },
         "/exam/page/:page": {
             get: {
-                handler: controller.examLists,
-                authenticate: true
+                handler: [controller.checkToken,controller.examLists]
             }
         },
         "/exam/page/:page/sort/:sort/(:order)?": {
             get: {
-                handler: controller.examLists,
-                authenticate: true
+                handler: [controller.checkToken,controller.examLists]
             }
         },
         "/exam/:examId":{
             get : {
-                handler: controller.getExamDetail,
-                authenticate: true
+                handler: [controller.checkToken,controller.getExamDetail]
             }
         },
-
         ///
         "/subjects" : {
             get: {
-                handler: controller.getSubjects,
-                authenticate: true
+                handler: [controller.checkToken,controller.getSubjects]
             }
         }
     }

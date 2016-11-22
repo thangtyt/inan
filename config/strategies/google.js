@@ -19,7 +19,7 @@ module.exports = function (passport, config, app) {
                 user_image_url : profile.photos[0].value || '',
                 user_status : 'publish'
 
-            }
+            };
             let conditions = {};
             let isEmpty = false;
             try{
@@ -54,7 +54,7 @@ module.exports = function (passport, config, app) {
                             done(err,null);
                         })
                 }else{
-                    done(new Error('Error when using connect to Facebook'),null);
+                    done(new Error('Error when connect to Facebook'),null);
                 }
 
             }catch (err){

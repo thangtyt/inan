@@ -47,5 +47,6 @@ module.exports = {
         models.section.hasMany(models.exam, {foreignKey: 'section_id'});
         models.exam.belongsTo(models.section, {foreignKey: 'section_id'});
 
+        models.userInfo.belongsTo(models.user, { foreignKey: 'user_id' });
     }
 };
