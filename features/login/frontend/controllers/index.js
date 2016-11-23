@@ -5,8 +5,8 @@ let jwt = require('jsonwebtoken');
 module.exports = function (controller, component, app) {
     let jwt_conf = app.getConfig('jwt');
     //create token
-    let jwtSign = function (conf,user,req) {
-        let userOpt = optimizeUser(user,req);
+    let jwtSign = function (conf,user,host) {
+        let userOpt = optimizeUser(user,host);
         return jwt.sign({
             ignoreExpiration: true,
             data: userOpt
@@ -186,6 +186,7 @@ module.exports = function (controller, component, app) {
         })
     };
     controller.jwtSuccess = function (req,res) {
+        let host = req.protocol + '://'+req.get('host');
         let user = req.user;
         if(user){
             user.role = [];
@@ -196,7 +197,7 @@ module.exports = function (controller, component, app) {
             res.status(200);
             res.jsonp({
                 message: 'login successful !',
-                token: jwtSign(jwt_conf,user,req)
+                token: jwtSign(jwt_conf,user,host)
             })
         }else{
             res.status(499);
@@ -209,6 +210,7 @@ module.exports = function (controller, component, app) {
         })
     };
     controller.getUserInfo = function (req,res) {
+        let host = req.protocol + '://'+req.get('host');
         let user = req.user;
         Promise.all([
             app.models.user.find({
@@ -225,8 +227,8 @@ module.exports = function (controller, component, app) {
         ])
         .then(function (results) {
             if(results){
-                let _user = optimizeUser(JSON.parse(JSON.stringify(results[0])),req);
-                let _userInfo = optimizeUser(JSON.parse(JSON.stringify(results[1])),req);
+                let _user = optimizeUser(JSON.parse(JSON.stringify(results[0])),host);
+                let _userInfo = optimizeUser(JSON.parse(JSON.stringify(results[1])),host);
                 _user.userInfo = _userInfo;
                 res.status(200);
                 res.jsonp({
@@ -246,6 +248,7 @@ module.exports = function (controller, component, app) {
 
     };
     controller.userRegister = function (req,res) {
+        let host = req.protocol + '://'+req.get('host');
         let dataUserInfo = app.getConfig('userInfo');
         let form  = req.body;
         app.feature.users.actions.findByEmail(form.username)
@@ -267,7 +270,7 @@ module.exports = function (controller, component, app) {
             if(user){
                 res.status(200);
                 res.jsonp({
-                    token: jwtSign(jwt_conf,optimizeUser(user,req)),
+                    token: jwtSign(jwt_conf,optimizeUser(user,host)),
                     dataUserInfo: dataUserInfo //city,district,...
                 })
             }else{
@@ -284,6 +287,7 @@ module.exports = function (controller, component, app) {
     };
 
     controller.login = function (req,res) {
+        let host = req.protocol + '://'+req.get('host');
         let form = req.body;
         if(form){
             app.models.user.find({
@@ -302,8 +306,8 @@ module.exports = function (controller, component, app) {
                             user = JSON.parse(JSON.stringify(user));
                             user.userInfo = userInfo;
                             res.status(200).jsonp({
-                                token: jwtSign(jwt_conf,user,req),
-                                user: optimizeUser(user,req)
+                                token: jwtSign(jwt_conf,user,host),
+                                user: optimizeUser(user,host)
                             })
                         }).catch(function (err) {
                             return err;
@@ -332,10 +336,11 @@ module.exports = function (controller, component, app) {
         }
     }
     controller.userRegisterInfo = function (req,res) {
+        let host = req.protocol + '://'+req.get('host');
         let user = req.user;
         //console.log('userRegisterInfo',user);
         let userInfo = req.body;
-        user = optimizeUser(user,req);
+        user = optimizeUser(user,host);
         if(userInfo){
             user.userInfo = userInfo;
             userInfo.user_id = user.id;
@@ -363,9 +368,9 @@ module.exports = function (controller, component, app) {
                 }
             })
             .then(function (_user) {
-                   _user = optimizeUser(JSON.parse(JSON.stringify(_user)),req);
+                   _user = optimizeUser(JSON.parse(JSON.stringify(_user)),host);
                     _user.userInfo = userInfo;
-                    _user.user_image = req.protocol + '://'+req.get('host')+_user.user_image;
+                    _user.user_image = _user.user_image;//todo:dasdas
                     res.status(200);
                     res.jsonp({
                         user: _user
@@ -387,7 +392,7 @@ module.exports = function (controller, component, app) {
 
     }
 };
-function optimizeUser(user,req){
+function optimizeUser(user,host){
     if(!user){
         return null;
     }else if(user.hasOwnProperty('display_name')){
@@ -395,7 +400,7 @@ function optimizeUser(user,req){
             id : user.id,
             user_email : user.user_email,
             full_name : user.display_name,
-            user_image : req.protocol + '://'+req.get('host')+user.user_image_url,
+            user_image : host+user.user_image_url,
             mark : Math.floor((Math.random() * 100) + 1),
             level : Math.floor((Math.random() * 1000) + 1),
             userInfo: user.userInfo
