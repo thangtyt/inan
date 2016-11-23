@@ -283,6 +283,43 @@ module.exports = function (controller, component, app) {
             })
         });
     };
+
+    controller.login = function (req,res) {
+        let form = req.body;
+        if(form){
+            app.models.user.find({
+                where: {
+                    user_email : form['username'].toLowerCase()
+                }
+            }).then(function (user) {
+                if(user){
+                    if(user.authenticate(form['password'])){
+                        res.status(200).jsonp({
+                            token: jwtSign(jwt_conf,user)
+                        })
+                    }else{
+                        res.status(401).jsonp({
+                            message: 'Wrong password !'
+                        })
+                    }
+
+                }else{
+                    res.status(401).jsonp({
+                        message: 'Wrong username !'
+                    })
+                }
+            }).catch(function (err) {
+                console.log(err);
+                res.status(451).jsonp({
+                    message: 'Error !!'
+                })
+            })
+        }else{
+            res.status(411).jsonp({
+                message: 'Cannot get data form client !'
+            })
+        }
+    }
     controller.userRegisterInfo = function (req,res) {
         let user = req.user;
         //console.log('userRegisterInfo',user);

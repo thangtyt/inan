@@ -26,7 +26,8 @@ module.exports = function (component, app) {
         },
         "/login": {
             post: {
-                authenticate: 'front_local'
+                handler: controller.login
+                //authenticate: 'front_local'
             }
         },
         "/forgot/:token": {

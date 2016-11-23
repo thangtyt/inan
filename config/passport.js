@@ -48,22 +48,7 @@ module.exports = function (passport, app) {
             });
         },
         checkAuthenticate: function (req, res, next) {
-            if(req.originalUrl.indexOf('/api') !== -1){
-                let token = req.body.token || req.query.token || req.headers['x-access-token'];
-                if(token){
-                    jwt.verify(token,jwt_conf.jwtSecretKey, function (err,decoded) {
-                        if(err){
-                            res.redirect('/api/440')
-                        }else{
-                            res.locals.user = decoded.data;
-                            next();
-                        }
-                    })
-                }else{
-                    res.redirect('/api/499');
-                }
-
-            }else if (req.isAuthenticated()) {
+            if (req.isAuthenticated()) {
                 try {
                     req.session.permissions = res.locals.permissions = JSON.parse(req.user.role.permissions);
                 } catch (err) {
