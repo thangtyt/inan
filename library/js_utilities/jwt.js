@@ -4,17 +4,22 @@
 let jwt = require('jsonwebtoken');
 exports.jwt = function (req,res,next) {
     let jwt_conf = this.getConfig('jwt');
-    let token = req.body.token || req.query.token || req.headers['x-access-token'];
+    //let token = req.body.token || req.query.token || req.headers['x-access-token'];
+    let token = req.headers['authorization'].split(' ').pop();
         if(token){
             jwt.verify(token,jwt_conf.jwtSecretKey, function (err,decoded) {
                 if(err||!decoded){
-                    res.redirect('/api/440')
+                    res.status(440).jsonp({
+                        messgage: 'Wrong token'
+                    })
                 }else{
                     req.user = decoded.data;
                     next();
                 }
             })
         }else{
-            res.redirect('/api/499');
+            res.status(499).jsonp({
+                messgage: 'Token required !'
+            })
         }
 }

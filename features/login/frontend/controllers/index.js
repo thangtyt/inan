@@ -212,6 +212,9 @@ module.exports = function (controller, component, app) {
     controller.getUserInfo = function (req,res) {
         let host = req.protocol + '://'+req.get('host');
         let user = req.user;
+
+        console.log(user);
+
         Promise.all([
             app.models.user.find({
                 where: {
@@ -228,8 +231,10 @@ module.exports = function (controller, component, app) {
         .then(function (results) {
             if(results){
                 let _user = optimizeUser(JSON.parse(JSON.stringify(results[0])),host);
-                let _userInfo = optimizeUser(JSON.parse(JSON.stringify(results[1])),host);
-                _user.userInfo = _userInfo;
+                if(results[1]){
+                    //let _userInfo = optimizeUser(JSON.parse(JSON.stringify(results[1])),host);
+                    _user.userInfo = optimizeUser(JSON.parse(JSON.stringify(results[1])),host);;
+                }
                 res.status(200);
                 res.jsonp({
                     user: _user
