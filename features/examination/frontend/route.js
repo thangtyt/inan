@@ -9,29 +9,29 @@ module.exports = function (component, app) {
     return {
         "/exam": {
             get: {
-                handler: [controller.examLists]
+                handler: [controller.setHeaderCORS,controller.examLists]
             }
         },
         "/exam/page/:page": {
             get: {
-                handler: [controller.examLists]
+                handler: [controller.setHeaderCORS,controller.examLists]
             }
         },
         "/exam/page/:page/sort/:sort/(:order)?": {
             get: {
-                handler: [controller.examLists]
+                handler: [controller.setHeaderCORS,controller.examLists]
             }
         },
         "/exam/:examId":{
             get : {
-                handler: [controller.getExamDetail]
+                handler: [controller.setHeaderCORS,controller.getExamDetail]
             }
         },
 
         ///
         "/subjects" : {
             get: {
-                handler: [controller.getSubjects]
+                handler: [controller.setHeaderCORS,controller.getSubjects]
             }
         }
     }

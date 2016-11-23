@@ -31,63 +31,63 @@ module.exports = function (component, app) {
         },
         "/forgot/:token": {
             get: {
-                handler : controller.cPassView
+                handler : [controller.setHeaderCORS,controller.cPassView]
             },
             post: {
-                handler: controller.cPassSave
+                handler: [controller.setHeaderCORS,controller.cPassSave]
             }
         },
         "/forgot": {
             get: {
-                handler: controller.forgotview
+                handler: [controller.setHeaderCORS,controller.forgotview]
             },
             post: {
-                handler: controller.forgot
+                handler: [controller.setHeaderCORS,controller.forgot]
             }
         },
         "/logout": {
             get: {
-                handler: controller.logout
+                handler: [controller.setHeaderCORS,controller.logout]
             }
         },
         "/jwt": {
             get: {
-                handler: controller.jwtSuccess
+                handler: [controller.setHeaderCORS,controller.jwtSuccess]
             }
         },
         "/jwt/failure": {
             get: {
-                handler: controller.jwtFailure
+                handler: [controller.setHeaderCORS,controller.jwtFailure]
             }
         },
         "/403": {
             get: {
-                handler: controller.notHavePermission
+                handler: [controller.setHeaderCORS,controller.notHavePermission]
             }
         },
         "/440": {
             get: {
-                handler: controller.timeOut
+                handler: [controller.setHeaderCORS,controller.timeOut]
             }
         },
         "/499": {
             get: {
-                handler: controller.requireToken
+                handler: [controller.setHeaderCORS,controller.requireToken]
             }
         },
         "/user-info": {
             get: {
-                handler: [controller.checkToken,controller.getUserInfo]
+                handler: [controller.setHeaderCORS,controller.checkToken,controller.getUserInfo]
             }
         },
         "/register": {
             post: {
-                handler: controller.userRegister
+                handler: [controller.setHeaderCORS,controller.userRegister]
             }
         },
         "/register/user-info": {
             post: {
-                handler: [controller.checkToken,controller.userRegisterInfo]
+                handler: [controller.setHeaderCORS,controller.checkToken,controller.userRegisterInfo]
             }
         }
 
