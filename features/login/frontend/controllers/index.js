@@ -294,8 +294,20 @@ module.exports = function (controller, component, app) {
             }).then(function (user) {
                 if(user){
                     if(user.authenticate(form['password'])){
-                        res.status(200).jsonp({
-                            token: jwtSign(jwt_conf,user)
+                        app.models.userInfo.find({
+                            where: {
+                                user_id: user.id
+                            },
+                            attributes: ['school','class','city','district','uni','sex']
+                        }).then(function (userInfo) {
+                            user = JSON.parse(JSON.stringify(user));
+                            user.userInfo = userInfo;
+                            res.status(200).jsonp({
+                                token: jwtSign(jwt_conf,user),
+                                user: optimizeUser(user)
+                            })
+                        }).catch(function (err) {
+                            return err;
                         })
                     }else{
                         res.status(401).jsonp({
@@ -385,6 +397,8 @@ function optimizeUser(user){
             user_email : user.user_email,
             full_name : user.display_name,
             user_image : user.user_image_url,
+            mark : Math.floor((Math.random() * 100) + 1),
+            level : Math.floor((Math.random() * 1000) + 1),
             userInfo: user.userInfo
         };
     }else{
