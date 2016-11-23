@@ -3,7 +3,7 @@
  */
 'use strict';
 module.exports = function (controller,component,app) {
-    
+
     controller.setHeaderCORS = function (req,res,next) {
         res.header("Access-Control-Allow-Origin", "*");
         res.header("Access-Control-Allow-Headers", "X-Requested-With");
@@ -75,8 +75,6 @@ module.exports = function (controller,component,app) {
             offset: (page - 1) * itemOfPage
         }).then(function (result) {
             //console.log(JSON.stringify(result.rows,2,2));
-            res.header("Access-Control-Allow-Origin", "*");
-            res.header("Access-Control-Allow-Headers", "X-Requested-With");
             res.status(200);
             res.jsonp({
                 currentPage: page,
@@ -85,8 +83,6 @@ module.exports = function (controller,component,app) {
             })
         }).catch(function (err) {
             //console.log(err);
-            res.header("Access-Control-Allow-Origin", "*");
-            res.header("Access-Control-Allow-Headers", "X-Requested-With");
             res.status(300);
             res.jsonp({
                 message: err.message
@@ -111,8 +107,7 @@ module.exports = function (controller,component,app) {
                     questionIds.push(val);
                 })
 
-            })
-            console.log(questionIds);
+            });
             return actions.secFindAll({
                 where: {
                     id: {
@@ -135,15 +130,12 @@ module.exports = function (controller,component,app) {
             })
         }).then(function (sections) {
             //console.log(JSON.stringify(sections,2,2));
-            res.header("Access-Control-Allow-Origin", "*");
-            res.header("Access-Control-Allow-Headers", "X-Requested-With");
+            result.content = JSON.parse(JSON.stringify(sections))
             res.status(200);
-            res.jsonp({
-                item : JSON.parse(JSON.stringify(sections))
-            })
+            res.jsonp(result);
         }).catch(function (err) {
             res.jsonp({
-                test:'test'
+                error: err.message
             })
         })
 
