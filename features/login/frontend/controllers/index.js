@@ -5,8 +5,8 @@ let jwt = require('jsonwebtoken');
 module.exports = function (controller, component, app) {
     let jwt_conf = app.getConfig('jwt');
     //create token
-    let jwtSign = function (conf,user) {
-        let userOpt = optimizeUser(user);
+    let jwtSign = function (conf,user,req) {
+        let userOpt = optimizeUser(user,req);
         return jwt.sign({
             ignoreExpiration: true,
             data: userOpt
@@ -196,7 +196,7 @@ module.exports = function (controller, component, app) {
             res.status(200);
             res.jsonp({
                 message: 'login successful !',
-                token: jwtSign(jwt_conf,user)
+                token: jwtSign(jwt_conf,user,req)
             })
         }else{
             res.status(499);
@@ -225,10 +225,9 @@ module.exports = function (controller, component, app) {
         ])
         .then(function (results) {
             if(results){
-                let _user = optimizeUser(JSON.parse(JSON.stringify(results[0])));
-                let _userInfo = optimizeUser(JSON.parse(JSON.stringify(results[1])));
+                let _user = optimizeUser(JSON.parse(JSON.stringify(results[0])),req);
+                let _userInfo = optimizeUser(JSON.parse(JSON.stringify(results[1])),req);
                 _user.userInfo = _userInfo;
-                _user.user_image = req.protocol + '://'+req.get('host')+_user.user_image;
                 res.status(200);
                 res.jsonp({
                     user: _user
@@ -268,7 +267,7 @@ module.exports = function (controller, component, app) {
             if(user){
                 res.status(200);
                 res.jsonp({
-                    token: jwtSign(jwt_conf,optimizeUser(user)),
+                    token: jwtSign(jwt_conf,optimizeUser(user,req)),
                     dataUserInfo: dataUserInfo //city,district,...
                 })
             }else{
@@ -303,8 +302,8 @@ module.exports = function (controller, component, app) {
                             user = JSON.parse(JSON.stringify(user));
                             user.userInfo = userInfo;
                             res.status(200).jsonp({
-                                token: jwtSign(jwt_conf,user),
-                                user: optimizeUser(user)
+                                token: jwtSign(jwt_conf,user,req),
+                                user: optimizeUser(user,req)
                             })
                         }).catch(function (err) {
                             return err;
@@ -336,7 +335,7 @@ module.exports = function (controller, component, app) {
         let user = req.user;
         //console.log('userRegisterInfo',user);
         let userInfo = req.body;
-        user = optimizeUser(user);
+        user = optimizeUser(user,req);
         if(userInfo){
             user.userInfo = userInfo;
             userInfo.user_id = user.id;
@@ -364,7 +363,7 @@ module.exports = function (controller, component, app) {
                 }
             })
             .then(function (_user) {
-                   _user = optimizeUser(JSON.parse(JSON.stringify(_user)));
+                   _user = optimizeUser(JSON.parse(JSON.stringify(_user)),req);
                     _user.userInfo = userInfo;
                     _user.user_image = req.protocol + '://'+req.get('host')+_user.user_image;
                     res.status(200);
@@ -388,7 +387,7 @@ module.exports = function (controller, component, app) {
 
     }
 };
-function optimizeUser(user){
+function optimizeUser(user,req){
     if(!user){
         return null;
     }else if(user.hasOwnProperty('display_name')){
@@ -396,7 +395,7 @@ function optimizeUser(user){
             id : user.id,
             user_email : user.user_email,
             full_name : user.display_name,
-            user_image : user.user_image_url,
+            user_image : req.protocol + '://'+req.get('host')+user.user_image_url,
             mark : Math.floor((Math.random() * 100) + 1),
             level : Math.floor((Math.random() * 1000) + 1),
             userInfo: user.userInfo
