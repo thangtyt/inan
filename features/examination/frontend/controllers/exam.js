@@ -75,11 +75,15 @@ module.exports = function (controller,component,app) {
             offset: (page - 1) * itemOfPage
         }).then(function (result) {
             //console.log(JSON.stringify(result.rows,2,2));
+            let exams = JSON.parse(JSON.stringify(result.rows));
+            exams = exams.filter(function (exam) {
+                return exam.timeDoExam = Math.floor((Math.random() * 100) + 1);
+            })
             res.status(200);
             res.jsonp({
                 currentPage: page,
                 totalPage: Math.ceil(result.count / itemOfPage),
-                items: JSON.parse(JSON.stringify(result.rows))
+                items: exams
             })
         }).catch(function (err) {
             //console.log(err);
@@ -99,6 +103,7 @@ module.exports = function (controller,component,app) {
             }
         }).then(function (exam) {
             result = JSON.parse(JSON.stringify(exam));
+            result.timeDoExam = Math.floor((Math.random() * 100) + 1);
             let sectionIds = [];
             let questionIds = [];
             exam.content.map(function (section) {
