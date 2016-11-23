@@ -1,7 +1,7 @@
 "use strict";
 
-var favicon = require('serve-favicon');
-
+let favicon = require('serve-favicon');
+let cors = require('cors')();
 /**
  * Setting for express
  * @param app
@@ -77,10 +77,6 @@ module.exports = function (app, config, setting) {
 
         next();
     });
-    app.use(function(req, res, next) {
-        res.header("Access-Control-Allow-Origin", "*");
-        res.header("Access-Control-Allow-Headers", "*");
-        next();
-    });
+    app.use(cors);
     return app;
 };
