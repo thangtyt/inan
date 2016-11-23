@@ -52,7 +52,6 @@ module.exports = function (passport, app) {
                 let token = req.body.token || req.query.token || req.headers['x-access-token'];
                 if(token){
                     jwt.verify(token,jwt_conf.jwtSecretKey, function (err,decoded) {
-                        console.log('checkauthen',decoded.data.id);
                         if(err){
                             res.redirect('/api/440')
                         }else{

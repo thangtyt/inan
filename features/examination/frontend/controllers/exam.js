@@ -4,26 +4,26 @@
 'use strict';
 module.exports = function (controller,component,app) {
 
-    controller.setHeaderCORS = function (req,res,next) {
-        res.header("Access-Control-Allow-Origin", "*");
-        res.header("Access-Control-Allow-Headers", "X-Requested-With");
-        next();
-    };
-    controller.checkToken = function (req,res,next) {
-        let token = req.body.token || req.query.token || req.headers['x-access-token'];
-        if(token){
-            jwt.verify(token,jwt_conf.jwtSecretKey, function (err,decoded) {
-                if(err||!decoded){
-                    res.redirect('/api/440')
-                }else{
-                    req.user = decoded.data;
-                    next();
-                }
-            })
-        }else{
-            res.redirect('/api/499');
-        }
-    };
+    //controller.setHeaderCORS = function (req,res,next) {
+    //    res.header("Access-Control-Allow-Origin", "*");
+    //    res.header("Access-Control-Allow-Headers", "X-Requested-With");
+    //    next();
+    //};
+    //controller.checkToken = function (req,res,next) {
+    //    let token = req.body.token || req.query.token || req.headers['x-access-token'];
+    //    if(token){
+    //        jwt.verify(token,jwt_conf.jwtSecretKey, function (err,decoded) {
+    //            if(err||!decoded){
+    //                res.redirect('/api/440')
+    //            }else{
+    //                req.user = decoded.data;
+    //                next();
+    //            }
+    //        })
+    //    }else{
+    //        res.redirect('/api/499');
+    //    }
+    //};
 
     controller.examLists = function (req, res) {
         let actions = app.feature.examination.actions;

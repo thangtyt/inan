@@ -4,34 +4,36 @@
 
 'use strict';
 module.exports = function (component, app) {
-
+    let jwtAuth = ArrowHelper.jwt;
+    let setHeaderCors = ArrowHelper.setHeaderCors;
     let controller = component.controllers.frontend;
     return {
         "/exam": {
             get: {
-                handler: [controller.setHeaderCORS,controller.examLists]
+                handler: [setHeaderCors,controller.examLists]
             }
         },
         "/exam/page/:page": {
             get: {
-                handler: [controller.setHeaderCORS,controller.examLists]
+                handler: [setHeaderCors,controller.examLists]
             }
         },
         "/exam/page/:page/sort/:sort/(:order)?": {
             get: {
-                handler: [controller.setHeaderCORS,controller.examLists]
+                handler: [setHeaderCors,controller.examLists]
             }
         },
         "/exam/:examId":{
             get : {
-                handler: [controller.setHeaderCORS,controller.getExamDetail]
+                handler: [jwtAuth,setHeaderCors,controller.getExamDetail]
             }
         },
 
-        ///
+
+
         "/subjects" : {
             get: {
-                handler: [controller.setHeaderCORS,controller.getSubjects]
+                handler: [setHeaderCors,controller.getSubjects]
             }
         }
     }

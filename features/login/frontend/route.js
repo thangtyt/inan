@@ -2,7 +2,8 @@
 
 module.exports = function (component, app) {
     let controller = component.controllers.frontend;
-
+    let jwtAuth = ArrowHelper.jwt;
+    let setHeaderCors = ArrowHelper.setHeaderCors;
     return {
         "/auth/facebook" : {
             get: {
@@ -31,63 +32,63 @@ module.exports = function (component, app) {
         },
         "/forgot/:token": {
             get: {
-                handler : [controller.setHeaderCORS,controller.cPassView]
+                handler : [setHeaderCors,controller.cPassView]
             },
             post: {
-                handler: [controller.setHeaderCORS,controller.cPassSave]
+                handler: [setHeaderCors,controller.cPassSave]
             }
         },
         "/forgot": {
             get: {
-                handler: [controller.setHeaderCORS,controller.forgotview]
+                handler: [setHeaderCors,controller.forgotview]
             },
             post: {
-                handler: [controller.setHeaderCORS,controller.forgot]
+                handler: [setHeaderCors,controller.forgot]
             }
         },
         "/logout": {
             get: {
-                handler: [controller.setHeaderCORS,controller.logout]
+                handler: [setHeaderCors,controller.logout]
             }
         },
         "/jwt": {
             get: {
-                handler: [controller.setHeaderCORS,controller.jwtSuccess]
+                handler: [setHeaderCors,controller.jwtSuccess]
             }
         },
         "/jwt/failure": {
             get: {
-                handler: [controller.setHeaderCORS,controller.jwtFailure]
+                handler: [setHeaderCors,controller.jwtFailure]
             }
         },
         "/403": {
             get: {
-                handler: [controller.setHeaderCORS,controller.notHavePermission]
+                handler: [setHeaderCors,controller.notHavePermission]
             }
         },
         "/440": {
             get: {
-                handler: [controller.setHeaderCORS,controller.timeOut]
+                handler: [setHeaderCors,controller.timeOut]
             }
         },
         "/499": {
             get: {
-                handler: [controller.setHeaderCORS,controller.requireToken]
+                handler: [setHeaderCors,controller.requireToken]
             }
         },
         "/user-info": {
             get: {
-                handler: [controller.setHeaderCORS,controller.checkToken,controller.getUserInfo]
+                handler: [jwtAuth,setHeaderCors,controller.getUserInfo]
             }
         },
         "/register": {
             post: {
-                handler: [controller.setHeaderCORS,controller.userRegister]
+                handler: [setHeaderCors,controller.userRegister]
             }
         },
         "/register/user-info": {
             post: {
-                handler: [controller.setHeaderCORS,controller.checkToken,controller.userRegisterInfo]
+                handler: [jwtAuth,setHeaderCors,controller.userRegisterInfo]
             }
         }
 

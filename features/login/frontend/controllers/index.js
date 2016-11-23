@@ -3,31 +3,8 @@ const nodeMailer = require('nodemailer');
 let jwt = require('jsonwebtoken');
 
 module.exports = function (controller, component, app) {
-
-    controller.setHeaderCORS = function (req,res,next) {
-        res.header("Access-Control-Allow-Origin", "*");
-        res.header("Access-Control-Allow-Headers", "X-Requested-With");
-        next();
-    };
-    controller.checkToken = function (req,res,next) {
-        let token = req.body.token || req.query.token || req.headers['x-access-token'];
-        if(token){
-            jwt.verify(token,jwt_conf.jwtSecretKey, function (err,decoded) {
-                if(err||!decoded){
-                    res.redirect('/api/440')
-                }else{
-                    req.user = decoded.data;
-                    next();
-                }
-            })
-        }else{
-            res.redirect('/api/499');
-        }
-    };
-
-
     let jwt_conf = app.getConfig('jwt');
-    //jwt
+    //create token
     let jwtSign = function (conf,user) {
         let userOpt = optimizeUser(user);
         return jwt.sign({
@@ -35,11 +12,6 @@ module.exports = function (controller, component, app) {
             data: userOpt
         }, conf.jwtSecretKey);
     };
-    //let jwtVerify = function (token,conf) {
-    //    return jwt.verify(token,conf.jwtSecretKey);
-    //}
-
-
     let mailConfig = app.getConfig('mailer_config');
     controller.view = function (req, res) {
         res.frontend.render('login');
@@ -313,14 +285,12 @@ module.exports = function (controller, component, app) {
         let user = req.user;
         //console.log('userRegisterInfo',user);
         let userInfo = req.body;
-        console.log('fsdfsd',userInfo);
         user = optimizeUser(user);
         if(userInfo){
             user.userInfo = userInfo;
             userInfo.user_id = user.id;
             Promise.all([app.models.userInfo.create(userInfo)])
             .then(function (result) {
-                    console.log('Promise',result);
                 if(result){
                     return app.models.user.find({
                         where: {
@@ -343,9 +313,7 @@ module.exports = function (controller, component, app) {
                 }
             })
             .then(function (_user) {
-                    console.log('update auttribute',JSON.stringify(_user,2,2));
                    _user = optimizeUser(JSON.parse(JSON.stringify(_user)));
-                    console.log('after optimize',JSON.parse(JSON.stringify(_user)));
                     _user.userInfo = userInfo;
                     _user.user_image = req.protocol + '://'+req.get('host')+_user.user_image;
                     res.status(200);
@@ -354,7 +322,6 @@ module.exports = function (controller, component, app) {
                     })
             })
             .catch(function (err) {
-                    console.log(err);
                 res.status(503);
                 res.jsonp({
                     error: 'Cannot add user\'s informations'
@@ -370,14 +337,11 @@ module.exports = function (controller, component, app) {
 
     }
 };
-function optimizeUser(user,result){
-    console.log('optimize');
+function optimizeUser(user){
     if(!user){
-        console.log(user);
         return null;
     }else if(user.hasOwnProperty('display_name')){
-        console.log('display_name');
-        return result = {
+        return {
             id : user.id,
             user_email : user.user_email,
             full_name : user.display_name,
@@ -385,7 +349,6 @@ function optimizeUser(user,result){
             userInfo: user.userInfo
         };
     }else{
-        console.log(user);
         return user
     }
 
