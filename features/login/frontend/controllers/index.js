@@ -191,6 +191,8 @@ module.exports = function (controller, component, app) {
             user.role = [];
             user.role_id = [];
             user.role_ids = [];
+            res.header("Access-Control-Allow-Origin", "*");
+            res.header("Access-Control-Allow-Headers", "*");
             res.status(200);
             res.jsonp({
                 message: 'login successful !',
