@@ -3,7 +3,6 @@
 module.exports = function (component, app) {
     let controller = component.controllers.frontend;
     let jwtAuth = ArrowHelper.jwt;
-    let setHeaderCors = ArrowHelper.setHeaderCors;
     return {
         "/auth/facebook" : {
             get: {
@@ -32,63 +31,63 @@ module.exports = function (component, app) {
         },
         "/forgot/:token": {
             get: {
-                handler : [setHeaderCors,controller.cPassView]
+                handler : [controller.cPassView]
             },
             post: {
-                handler: [setHeaderCors,controller.cPassSave]
+                handler: [controller.cPassSave]
             }
         },
         "/forgot": {
             get: {
-                handler: [setHeaderCors,controller.forgotview]
+                handler: [controller.forgotview]
             },
             post: {
-                handler: [setHeaderCors,controller.forgot]
+                handler: [controller.forgot]
             }
         },
         "/logout": {
             get: {
-                handler: [setHeaderCors,controller.logout]
+                handler: [controller.logout]
             }
         },
         "/jwt": {
             get: {
-                handler: [setHeaderCors,controller.jwtSuccess]
+                handler: [controller.jwtSuccess]
             }
         },
         "/jwt/failure": {
             get: {
-                handler: [setHeaderCors,controller.jwtFailure]
+                handler: [controller.jwtFailure]
             }
         },
         "/403": {
             get: {
-                handler: [setHeaderCors,controller.notHavePermission]
+                handler: [controller.notHavePermission]
             }
         },
         "/440": {
             get: {
-                handler: [setHeaderCors,controller.timeOut]
+                handler: [controller.timeOut]
             }
         },
         "/499": {
             get: {
-                handler: [setHeaderCors,controller.requireToken]
+                handler: [controller.requireToken]
             }
         },
         "/user-info": {
             get: {
-                handler: [jwtAuth,setHeaderCors,controller.getUserInfo]
+                handler: [jwtAuth,controller.getUserInfo]
             }
         },
         "/register": {
             post: {
-                handler: [setHeaderCors,controller.userRegister]
+                handler: [controller.userRegister]
             }
         },
         "/register/user-info": {
             post: {
-                handler: [jwtAuth,setHeaderCors,controller.userRegisterInfo]
+                handler: [jwtAuth,controller.userRegisterInfo]
             }
         }
 

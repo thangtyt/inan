@@ -10,22 +10,22 @@ module.exports = function (component, app) {
     return {
         "/exam": {
             get: {
-                handler: [setHeaderCors,controller.examLists]
+                handler: [controller.examLists]
             }
         },
         "/exam/page/:page": {
             get: {
-                handler: [setHeaderCors,controller.examLists]
+                handler: [controller.examLists]
             }
         },
         "/exam/page/:page/sort/:sort/(:order)?": {
             get: {
-                handler: [setHeaderCors,controller.examLists]
+                handler: [controller.examLists]
             }
         },
         "/exam/:examId":{
             get : {
-                handler: [jwtAuth,setHeaderCors,controller.getExamDetail]
+                handler: [jwtAuth,controller.getExamDetail]
             }
         },
 
@@ -33,7 +33,7 @@ module.exports = function (component, app) {
 
         "/subjects" : {
             get: {
-                handler: [setHeaderCors,controller.getSubjects]
+                handler: [controller.getSubjects]
             }
         }
     }
