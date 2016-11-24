@@ -7,12 +7,14 @@ exports.jwt = function (req,res,next) {
     //let token = req.body.token || req.query.token || req.headers['x-access-token'];
     let token ;
     try{
-        token = req.headers['authorization'].split(/[ +~!@#$%^&*()-]/ig).pop();
+        token = req.headers['authorization'].split(/[ +]/ig).pop();
     }catch(err){
         token = null;
     }
+    //console.log(token);
     if(token){
         jwt.verify(token,jwt_conf.jwtSecretKey, function (err,decoded) {
+            //console.log(decoded);
             if(err||!decoded){
                 res.status(440).jsonp({
                     messgage: 'Wrong token'

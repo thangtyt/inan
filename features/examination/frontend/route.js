@@ -27,6 +27,11 @@ module.exports = function (component, app) {
                 handler: [jwtAuth,controller.getExamDetail]
             }
         },
+        "/exam/subject/:subjectId": {
+            get: {
+                handler: controller.getExamsBySubject
+            }
+        },
         //
         "/subjects" : {
             get: {

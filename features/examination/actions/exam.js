@@ -16,7 +16,6 @@ module.exports = function (action, component, app) {
     action.examFindById = function (id) {
         return app.models.exam.findById(id);
     };
-
     /**
      * Find exam with conditions
      * @param conditions {object} - Conditions used in query

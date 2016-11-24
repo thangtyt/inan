@@ -234,6 +234,8 @@ module.exports = function (controller, component, app) {
                 if(results[1]){
                     //let _userInfo = optimizeUser(JSON.parse(JSON.stringify(results[1])),host);
                     _user.userInfo = optimizeUser(JSON.parse(JSON.stringify(results[1])),host);;
+                }else{
+                    _user.userInfo = null;
                 }
                 res.status(200);
                 res.jsonp({

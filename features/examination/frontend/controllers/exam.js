@@ -144,9 +144,25 @@ module.exports = function (controller,component,app) {
             })
         })
 
+    };
+    controller.getExamsBySubject = function(req,res){
+        let subjectId = req.params.subjectId;
+        let actions = app.feature.examination.actions;
+        actions.examFindAll({
+            where: {
+                subject_id : subjectId
+            },
+            order: 'created_at DESC',
+            limit: 6
+        }).then(function (exams) {
+            exams = exams.filter(function (exam) {
+                exam.timeDoExam = Math.floor((Math.random() * 100) + 1);
+                return exam;
+            })
+            res.status(200);
+            res.jsonp(exams);
+        }).catch(function (err) {
+            res.sendStatus(404);
+        })
     }
-}
-//for getExamDetail
-function returnIdByKey(data,key,value){
-    
 }
