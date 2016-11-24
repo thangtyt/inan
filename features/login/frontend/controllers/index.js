@@ -213,7 +213,6 @@ module.exports = function (controller, component, app) {
         let host = req.protocol + '://'+req.get('host');
         let user = req.user;
 
-        console.log(user);
 
         Promise.all([
             app.models.user.find({
@@ -246,7 +245,6 @@ module.exports = function (controller, component, app) {
             }
 
         }).catch(function (err) {
-            console.log(err);
             res.status(503);
             res.jsonp({
                 user: null
@@ -397,6 +395,10 @@ module.exports = function (controller, component, app) {
             })
         }
 
+    }
+    controller.getCityData = function (req,res) {
+        let dataUserInfo = app.getConfig('userInfo');
+        res.status(200).jsonp(dataUserInfo);
     }
 };
 function optimizeUser(user,host){

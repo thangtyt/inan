@@ -135,7 +135,7 @@ module.exports = function (controller,component,app) {
             })
         }).then(function (sections) {
             //console.log(JSON.stringify(sections,2,2));
-            result.content = JSON.parse(JSON.stringify(sections))
+            result.content = JSON.parse(JSON.stringify(sections));
             res.status(200);
             res.jsonp(result);
         }).catch(function (err) {

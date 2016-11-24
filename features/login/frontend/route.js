@@ -90,6 +90,11 @@ module.exports = function (component, app) {
             post: {
                 handler: [jwtAuth,controller.userRegisterInfo]
             }
+        },
+        "/user-info/data": {
+            get: {
+                handler: [controller.getCityData]
+            }
         }
 
     }
