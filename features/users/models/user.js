@@ -48,7 +48,7 @@ module.exports = function (sequelize, DataTypes) {
         },
         user_image_url: {
             type: DataTypes.STRING(1000),
-            defaultValue: '/img/noImage.png'
+            defaultValue: '/avatar-gallery/C01.jpg'
         },
         user_name: {
             type: DataTypes.STRING,
