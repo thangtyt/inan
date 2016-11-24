@@ -14,6 +14,9 @@ module.exports = function (sequelize, DataTypes) {
             unique: true,
             allowNull: false
         },
+        icons: {
+            type: DataTypes.STRING
+        },
         desc: {
             type: DataTypes.TEXT
         },

@@ -9,10 +9,8 @@ exports.jwt = function (req,res,next) {
     try{
         token = req.headers['authorization'].split(/[ +~!@#$%^&*()-]/ig).pop();
     }catch(err){
-        console.log(err);
         token = null;
     }
-
     if(token){
         jwt.verify(token,jwt_conf.jwtSecretKey, function (err,decoded) {
             if(err||!decoded){

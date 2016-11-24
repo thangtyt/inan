@@ -19,64 +19,64 @@ module.exports = {
         {
             name: "Toán",
             icon: {
-                default: '',
-                hover: ''
+                default: '/img/icon/math.png',
+                hover: '/img/icon/math-hover.png'
             }
         },
         {
             name: "Hóa Học",
             icon: {
-                default: '',
-                hover: ''
+                default: '/img/icon/chemistry.png',
+                hover: '/img/icon/chemistry-hover.png'
             }
         },
         {
             name: "Sinh học",
             icon: {
-                default: '',
-                hover: ''
+                default: '/img/icon/biology.png',
+                hover: '/img/icon/biology-hover.png'
             }
         },
         {
             name: "Văn Học",
             icon: {
-                default: '',
-                hover: ''
+                default: '/img/icon/literature.png',
+                hover: '/img/icon/literature-hover.png'
             }
         },
         {
             name: "Ngoại Ngữ",
             icon: {
-                default: '',
-                hover: ''
+                default: '/img/icon/language.png',
+                hover: '/img/icon/language-hover.png'
             }
         },
         {
             name: "Giáo dục công dân",
             icon: {
-                default: '',
-                hover: ''
+                default: '/img/icon/civics.png',
+                hover: '/img/icon/civics-hover.png'
             }
         },
         {
             name: "Địa lý",
             icon: {
-                default: '',
-                hover: ''
+                default: '/img/icon/geography.png',
+                hover: '/img/icon/geography-hover.png'
             }
         },
         {
             name: "Vật Lý",
             icon: {
-                default: '',
-                hover: ''
+                default: '/img/icon/physics.png',
+                hover: '/img/icon/physics-hover.png'
             }
         },
         {
             name: "Lịch sử",
             icon: {
-                default: '',
-                hover: ''
+                default: '/img/icon/history.png',
+                hover: '/img/icon/history-hover.png'
             }
         }
     ],

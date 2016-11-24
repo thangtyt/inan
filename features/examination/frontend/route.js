@@ -5,7 +5,6 @@
 'use strict';
 module.exports = function (component, app) {
     let jwtAuth = ArrowHelper.jwt;
-    let setHeaderCors = ArrowHelper.setHeaderCors;
     let controller = component.controllers.frontend;
     return {
         "/exam": {
@@ -28,9 +27,7 @@ module.exports = function (component, app) {
                 handler: [jwtAuth,controller.getExamDetail]
             }
         },
-
-
-
+        //
         "/subjects" : {
             get: {
                 handler: [controller.getSubjects]

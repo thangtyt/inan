@@ -231,9 +231,11 @@ module.exports = function (controller, component, app) {
         let toolbar = new ArrowHelper.Toolbar();
         toolbar.addBackButton(req, 'sCreate_back_link');
         toolbar.addSaveButton();
+        let subjectList = app.getConfig('subjects');
 
         res.backend.render('subject/form', {
-            toolbar: toolbar.render()
+            toolbar: toolbar.render(),
+            icons: subjectList
         })
     };
     controller.sSave = function (req, res) {
@@ -242,6 +244,16 @@ module.exports = function (controller, component, app) {
         toolbar.addBackButton(req, 'sCreate_back_link');
         toolbar.addSaveButton();
         let form = req.body;
+        if (form.icons){
+            let icons = form.icons.split('::');
+            icons = {
+                default: icons[0],
+                hover: icons[1]
+            }
+            form.icons = JSON.stringify(icons);
+
+        }
+        //console.log(JSON.stringify(form.icons));
         actions.sCreate(form)
             .then(function (subject) {
                 if (subject) {

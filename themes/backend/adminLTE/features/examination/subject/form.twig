@@ -18,6 +18,15 @@
                                                value="{{ subject.title }}"/>
                                     </div>
                                     <div class="form-group">
+                                        <label for="desc">Icon</label>
+                                        <select class="form-control" name="icons" id="icons"
+                                               value="{{ subject.icons }}">
+                                            {% for item in icons %}
+                                                <option value="{{ item.icon.default }}::{{ item.icon.hover }}">{{ item.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
                                         <label for="desc">Class <span class="required">*</span></label>
                                         <select name="class" class="form-control" required="required">
                                             <option value="0"> -- Choose class --</option>
