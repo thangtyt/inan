@@ -31,7 +31,12 @@ module.exports = function (sequelize, DataTypes) {
         * */
         sex: {
             type: DataTypes.INTEGER
+        },
+        score: {
+            type: DataTypes.INTEGER,
+            defaultValue: 0
         }
+
 
     }, {
         tableName: 'tk_userInfo'

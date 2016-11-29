@@ -76,5 +76,11 @@ module.exports = function (action, component, app) {
             }
         })
     };
+    action.examSubmit = function (condition) {
+        return app.models.userResult.create(condition);
+    };
+    action.examSubmitAnswer = function (condition) {
+        return app.models.resultAnswer.create(condition);
+    }
 
 };

@@ -48,5 +48,18 @@ module.exports = {
         models.exam.belongsTo(models.section, {foreignKey: 'section_id'});
 
         models.userInfo.belongsTo(models.user, { foreignKey: 'user_id' });
+
+        models.user.hasMany(models.userResult, {foreignKey: 'user_id'});
+        models.userResult.belongsTo(models.user, {foreignKey: 'user_id'});
+
+        models.userResult.hasMany(models.resultAnswer, {foreignKey: 'user_result_id'});
+        models.resultAnswer.belongsTo(models.userResult, {foreignKey: 'user_result_id'});
+
+        models.exam.hasMany(models.userResult, {foreignKey: 'exam_id'});
+        models.userResult.belongsTo(models.exam, {foreignKey: 'exam_id'});
+
+        models.answer.hasMany(models.resultAnswer, {foreignKey: 'answer_id'});
+        models.resultAnswer.belongsTo(models.answer, {foreignKey: 'answer_id'});
+
     }
 };

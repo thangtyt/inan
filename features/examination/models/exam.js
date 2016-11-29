@@ -72,7 +72,6 @@ module.exports = function (sequelize,DataTypes) {
          0: easy,
          1: normal,
          2: difficult
-         3: super star
          */
         level: {
             type: DataTypes.INTEGER,
@@ -82,6 +81,21 @@ module.exports = function (sequelize,DataTypes) {
                     this.setDataValue('level', Number(val));
                 }else{
                     this.setDataValue('level', val);
+                }
+            },
+            validate: {
+                min: 1,
+                max: 3
+            }
+        },
+        rating: {
+            type: DataTypes.INTEGER,
+            default : 1,
+            set: function (val) {
+                if(typeof val !== 'number'){
+                    this.setDataValue('rating', Number(val));
+                }else{
+                    this.setDataValue('rating', val);
                 }
             },
             validate: {

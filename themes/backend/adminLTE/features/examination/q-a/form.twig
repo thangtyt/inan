@@ -284,7 +284,7 @@
             $('#answerList').append(answerItemTr.replace(/:answerID:/g,answerId).replace(/:id:/g,answerItemId).replace(/:text:/g,$('#answerChoose').val()));
             answerItems.push({
                 answer: $('#answerChoose').val(),
-                explanation: CKEDITOR.instances.answerExplanation.getData(),//$('#answerExplanation').val(),
+                //explanation: CKEDITOR.instances.answerExplanation.getData(),//$('#answerExplanation').val(),
                 index: answerItemId,
                 isTrue: false
             })

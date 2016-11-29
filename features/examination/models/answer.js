@@ -26,8 +26,11 @@ module.exports = function (sequelize, DataTypes) {
         question_id: {
             type: DataTypes.UUID,
             allowNull: false
+        },
+        explanation: {
+            type: DataTypes.TEXT
         }
     }, {
         tableName: "tk_answer"
     })
-}
+};

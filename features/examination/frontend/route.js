@@ -32,6 +32,21 @@ module.exports = function (component, app) {
                 handler: controller.getExamsBySubject
             }
         },
+        "/exam/answer/:answerId": {
+            get: {
+                handler: [jwtAuth,controller.getRightKeyAnswer]
+            }
+        },
+        "/exam/right-answer-keys": {
+            post: {
+                handler: [jwtAuth,controller.getAnswerKeys]
+            }
+        },
+        "/exam/submit-exam": {
+            post: {
+                handler: [jwtAuth,controller.submitExam]
+            }
+        },
         //
         "/subjects" : {
             get: {
