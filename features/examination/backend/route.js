@@ -25,8 +25,12 @@ module.exports = function (component, app) {
                 handler : controller.qList,
                 authenticate : true,
                 permissions: permission.qa
+            },
+            delete : {
+                handler : controller.qDelete,
+                authenticate : true,
+                permissions: permission.qa
             }
-
         },
         "q-a/page/:page": {
             get: {

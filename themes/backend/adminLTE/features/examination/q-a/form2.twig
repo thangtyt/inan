@@ -133,11 +133,11 @@
                                 <div class="col-md-3 col-sm-3">
                                     <div class="form-group">
                                         <label>Mark</label>
-                                        <input name="answerMark" type="text" id="answerMark" class="form-control">
+                                        <input name="answerMark" type="text" id="answerMark" class="form-control" value="1">
                                     </div>
                                     <div class="form-group">
                                         <label>Time ( minute )</label>
-                                        <input name="answerTime" type="number" id="answerTime" class="form-control">
+                                        <input name="answerTime" type="number" id="answerTime" class="form-control" value="1">
                                     </div>
                                     <div class="form-group">
                                         <label>Level of questions</label>
@@ -145,6 +145,12 @@
                                             <option value="0" {% if question.level == 0 %} selected{% endif %}>Easy</option>
                                             <option value="1" {% if question.level == 1 %} selected{% endif %}>Normal</option>
                                             <option value="3" {% if question.level == 2 %} selected{% endif %}>Difficult</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group hidden" id="divEditAnswer">
+                                        <label>Choose answer to edit</label>
+                                        <select class="form-control" name="editAnswerIndex" onchange="chooseQuestionToEdit()">
+
                                         </select>
                                     </div>
                                 </div>
@@ -240,8 +246,9 @@
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <button name="btnRequireAnswer" type="button" class="btn btn-primary pull-right" onclick="addAnswer()">ADD QUESTION</button>
-                                        <button name="btnRequireAnswer" type="button" class="btn btn-default pull-left" onclick="resetAnswer()">RESET</button>
+                                        <button name="btnRequireAnswer" id="addQuestionBtn" type="button" class="btn btn-primary pull-right" onclick="addAnswer()">ADD QUESTION</button>
+                                        <button name="btnRequireAnswer" id="editQuestionBtn" type="button" class="btn btn-info pull-right" onclick="editAnswerArray()">EDIT QUESTION</button>
+                                        <button name="btnRequireAnswer" id="resetBtn" type="button" class="btn btn-default pull-left" onclick="resetAnswer()">RESET</button>
                                     </div>
                                 </div>
                             </div>
@@ -273,6 +280,8 @@
 {% endblock %}
 {% block jsExtends %}
     <script src="/backend/adminLTE/assets/plugins/ckeditor/ckeditor.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/2.2-latest/MathJax.js?config=TeX-AMS_HTML">
+    </script>
     <script>
         $(function(){
             changeRightAnswer('panelAnswer0');
@@ -323,6 +332,8 @@
                     requirementQuestion(1);
                     CKEDITOR.instances['content'].setData({{ question.content | dump | safe }});
                     fillAnswer(0,1,'');
+                    renderEditAnswerChoose(0);
+
                 {% endif %}
             {% endif %}
         });
@@ -336,6 +347,8 @@
         function clickNav(id){
             $('#'+id).click();
         }
+
     </script>
     <script src="/backend/adminLTE/dist/js/q-a.js"></script>
+
 {% endblock %}

@@ -16,3 +16,24 @@
         {% endif %}
     </div>
 {% endblock %}
+{% block jsExtends %}
+    <script>
+        function deleteRecords() {
+            var ids = [];
+            $("input:checkbox[name='ids[]']:checked").each(function () {
+                ids.push($(this).val());
+            });
+            $.ajax({
+                url: '{{ baseRoute }}',
+                type: 'DELETE',
+                data: {
+                    ids: ids.join()
+                },
+                success: function (result) {
+                    // Do something with the result
+                    window.location.href = '{{ baseRoute }}';
+                }
+            });
+        }
+    </script>
+{% endblock %}

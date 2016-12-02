@@ -53,5 +53,6 @@ CKEDITOR.editorConfig = function( config ) {
 
 	config.filebrowserBrowseUrl = '/fileman/index.html';
 	config.filebrowserImageBrowseUrl = '/fileman/index.html?type=image';
-    //config.extraPlugins='FMathEditor';
+    config.extraPlugins='mathjax';
+    config.mathJaxLib = '//cdn.mathjax.org/mathjax/2.6-latest/MathJax.js?config=TeX-AMS_HTML';
 };

@@ -84,7 +84,7 @@ function initCkeditorBasic(list){
                 ['Styles','Format','Font','FontSize'],
                 ['Bold','Italic','Underline','StrikeThrough','-','Undo','Redo','-','Cut','Copy','Paste','Find','Replace'],
                 ['NumberedList','BulletedList','-','JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock'],
-                ['Image','Table','-','TextColor','BGColor','Source']
+                ['Image','Table','-','TextColor','BGColor','Mathjax','Source']
             ]
         } );
     })
@@ -123,13 +123,43 @@ function pushAnswer(require){
     })
     answerKeys = [];
 }
+function renderEditAnswerChoose(index){
+    if(answers.length > 0){
+        $('#divEditAnswer').removeClass('hidden');
+        var i =1;
+        $('select[name=editAnswerIndex]').empty();
+        $('select[name=editAnswerIndex]').append($('<option>', {
+            text: '-- Choose Question --'
+        }));
+        answers.map(function (answer) {
+            var option = {
+                value: i-1,
+                text: 'Question '+ i
+            };
 
+            if(index != null && index != undefined){
+                //console.log(index);
+                if(index == i-1){
+                    //console.log('found');
+                    option.selected = 'selected';
+                }
+            }
+            $('select[name=editAnswerIndex]').append($('<option>', option));
+            i++;
+        });
+        //$('select[name=editAnswerIndex]').attr('selected', true);
+
+    }
+}
+//add answer to array list
 function addAnswer(){
     answerKeys = [];
     pushAnswer(1);
     resetAnswer();
     renderView();
+    renderEditAnswerChoose(null);
 }
+// reset
 function resetAnswer(){
     $('#answerMark').val(0);
     $('#answerTime').val(0);
@@ -143,6 +173,9 @@ function resetAnswer(){
     CKEDITOR.instances['answerExplain2'].setData('');
     CKEDITOR.instances['answerExplain3'].setData('');
     changeRightAnswer('panelAnswer0');
+    $('#editQuestionBtn').addClass('hidden');
+    $('#addQuestionBtn').removeClass('hidden');
+    renderEditAnswerChoose();
 }
 
 function renderChapterLesson(chapter_id,lesson){
@@ -171,7 +204,8 @@ function renderView(){
                             `</p>
                         </div>`;
         if( $('#question_type').prop('value') == 0 ){
-            var keyCode= 65;
+            //var keyCode= 65;
+            //console.log(JSON.stringify(answers,3,3));
             answers.map(function (answer) {
                     html += '<div class="col-lg-12">' +
                     '<p><b>Question: '+answerIndex+' : </b>'+questionContent+'</p>' +
@@ -182,8 +216,8 @@ function renderView(){
                     if(val.isTrue){
                         tempStyle = ' style="color: #0063dc"';
                     }
-                    html+='<div class="col-md-3"'+tempStyle+'>'+String.fromCharCode(keyCode)+'.'+val.answer+'</div>';
-                    keyCode++;
+                    //html+='<div class="col-md-3"'+tempStyle+'>'+String.fromCharCode(keyCode)+'.'+val.answer+'</div>';
+                    html+='<div class="col-md-3"'+tempStyle+'>'+val.answer+'</div>';
                 })
                 html+=       '</div>' ;
                 answerIndex++;
@@ -191,6 +225,7 @@ function renderView(){
         }
         html+='</div>';
         $('#previewDiv').append(html);
+        MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
     }
 
 }
@@ -200,32 +235,44 @@ function fillAnswer(index,require,content){
     $('#answerMark').val(answers[index].mark);
     $('#answerTime').val(answers[index].time);
     CKEDITOR.instances['answerContent'].setData(answerContent);
-    CKEDITOR.instances['answer0'].setData(answers[index].answer_keys[0].answer);
-    CKEDITOR.instances['answer1'].setData(answers[index].answer_keys[1].answer);
-    CKEDITOR.instances['answer2'].setData(answers[index].answer_keys[2].answer);
-    CKEDITOR.instances['answer3'].setData(answers[index].answer_keys[3].answer);
-    CKEDITOR.instances['answerExplain0'].setData(answers[index].answer_keys[0].explanation);
-    CKEDITOR.instances['answerExplain1'].setData(answers[index].answer_keys[1].explanation);
-    CKEDITOR.instances['answerExplain2'].setData(answers[index].answer_keys[2].explanation);
-    CKEDITOR.instances['answerExplain3'].setData(answers[index].answer_keys[3].explanation);
+    [0,1,2,3].map(function (i) {
+        if(answers[index].answer_keys[i].isTrue){
+            $('input[name=rightAnswer][value='+i+']').prop('checked', true);
+            changeRightAnswer('panelAnswer'+i);
+        }
+        CKEDITOR.instances['answer'+i].setData(answers[index].answer_keys[i].answer);
+        CKEDITOR.instances['answerExplain'+i].setData(answers[index].answer_keys[i].explanation);
+    });
+    if ($('#require option:selected').val() == 1){
+        $('#addQuestionBtn').addClass('hidden');
+        $('#editQuestionBtn').removeClass('hidden');
+    }
 
 }
 
 function editAnswer(index,require){
     var answerContent = require == 0 ? '' : CKEDITOR.instances['answerContent'].getData();
-    answers[index].answer_keys = answers[index].answer_keys.filter(function (key) {
-        var isTrue = $('input[name=rightAnswer]').val() == key.index ? true : false;
+    answers[index].answer_keys = [0,1,2,3].map(function (key) {
+        //console.log(Number($('input[name=rightAnswer]:checked').val()));
+        var isTrue = Number($('input[name=rightAnswer]:checked').val()) == Number(key) ? true : false;
+        //console.log(JSON.stringify($('input[name=rightAnswer]:checked').val(),2,2));
         return {
-            index: key.index,
-            answer: CKEDITOR.instances['answer'+key.index].getData(),
-            explanation: CKEDITOR.instances['answerExplain'+key.index].getData(),
+            index: index,
+            answer: CKEDITOR.instances['answer'+key].getData(),
+            explanation: CKEDITOR.instances['answerExplain'+key].getData(),
             isTrue: isTrue
         }
-    })
-
+    });
     answers[index].mark = $('#answerMark').val();
     answers[index].content = answerContent;
     answers[index].time = $('#answerTime').val();
+}
+function chooseQuestionToEdit(){
+    fillAnswer($('select[name=editAnswerIndex]').val(),1,'');
+}
+function editAnswerArray(){
+    editAnswer($('select[name=editAnswerIndex]').val(),1);
+    resetAnswer();
 }
 $(function(){
     $('form').submit(function (e) {
@@ -249,9 +296,6 @@ $(function(){
             console.log(err);
             return false;
         }
-        //
-        //console.log(JSON.stringify($('form').serializeArray(),3,3));
-        //return false;
     })
 
 });

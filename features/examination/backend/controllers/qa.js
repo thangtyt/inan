@@ -303,6 +303,7 @@ module.exports = function (controller,component,app) {
         toolbar.addSaveButton();
         let questionId = req.params.questionId;
         let data = req.body;
+        console.log(JSON.stringify(data, 2, 2));
         actions.questionFindById(questionId)
         .then(function (question) {
             return actions.questionUpdate(question,data)
@@ -319,20 +320,52 @@ module.exports = function (controller,component,app) {
             let answers = JSON.parse(data.answers);
             let answerPromise = [];
             answers.map(function(answer){
+                answer.question_id = questionId;
                 answerPromise.push(actions.answerCreate(answer));
             });
             return Promise.all(answerPromise) ;
         })
         .then(function (answers) {
+            console.log('fsdfsd',JSON.stringify(answers,2,2));
             req.flash.success('Update Successfully !!');
             res.redirect(baseRoute+'/'+questionId);
         })
         .catch(function (err) {
+                console.log(err);
             req.flash.error('Update unSuccessfully !!');
             req.locals.questionData = data;
             res.redirect(baseRoute+'/'+questionId);
         })
     };
+    controller.qDelete = function (req,res) {
+        let ids = req.body.ids.split(',');
+        let actions = app.feature.examination.actions;
+        console.log('fsdfsdfsd');
+        actions.examFindAll({
+            where: {
+                content: {
+                    $in : {
+                        questions: {
+                            $in: ids
+                        }
+                    }
+                }
+            }
+        }).then(function (exams) {
+            console.log(JSON.stringify(exams,2,2));
+        }).then(function () {
+            req.flash.success(__('m_blog_backend_post_flash_delete_success'));
+            res.sendStatus(200);
+        }).catch(function (err) {
+            console.log('dasdasdaerror');
+            console.log(err);
+            logger.error(err);
+            req.flash.error('Name: ' + err.name + '<br />' + 'Message: ' + err.message);
+            res.sendStatus(200);
+        });
+    };
+
+    //ajax request
     controller.qGetChapterBySubjectId = function (req,res) {
         let subjectId = req.params.subjectId;
         let actions = app.feature.examination.actions;
