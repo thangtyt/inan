@@ -35,6 +35,10 @@ module.exports = function (sequelize, DataTypes) {
             type: DataTypes.STRING,
             allowNull: false
         },
+        require: {
+            type: DataTypes.INTEGER,
+            defaultValue: 0
+        },
         /*
             0: easy,
             1: normal,

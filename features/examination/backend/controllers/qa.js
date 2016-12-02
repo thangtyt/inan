@@ -134,7 +134,7 @@ module.exports = function (controller,component,app) {
                 let totalPage = Math.ceil(results.count / itemOfPage);
                 let items = results.rows;
                 res.backend.render('q-a/list',{
-                    title : 'Q&A List',
+                    title : 'List All Questions & Answers',
                     toolbar : toolbar,
                     totalPage: totalPage,
                     items: items,
@@ -145,7 +145,7 @@ module.exports = function (controller,component,app) {
         }).catch(function (err) {
             logger.error(err.message);
             res.backend.render('q-a/list',{
-                title : 'Q&A List',
+                title : 'List All Questions & Answers',
                 toolbar : toolbar
             })
         })
@@ -159,13 +159,16 @@ module.exports = function (controller,component,app) {
             attributes: ['id', 'title']
         })
         .then(function (subjects) {
-            res.backend.render('q-a/form',{
+            res.backend.render('q-a/form2',{
+                title: 'Create Questions & Answers',
                 toolbar : toolbar.render(),
                 subjects: subjects
             })
         }).catch(function (err){
             logger.error(err.message);
+            req.flash.error(err.message);
             res.backend.render('q-a/list',{
+                title: 'List All Questions & Answers',
                 toolbar : toolbar.render()
             })
         })
@@ -194,9 +197,9 @@ module.exports = function (controller,component,app) {
                 let answersPromise = [];
                 answers.map(function (answer) {
                     answer.question_id = question_id;
-                    if (answer.mark ){
-                        answer.mark = '';
-                    }
+                    //if (answer.mark){
+                    //    answer.mark = ''+answer.mark;
+                    //}
                     //console.log(parseInt(answer.time));
                     if( typeof parseInt(answer.time) !== 'Number'  ){
                         answer.time = 0;
@@ -233,10 +236,102 @@ module.exports = function (controller,component,app) {
         })
     };
     controller.qView = function (req,res) {
+        let questionId = req.params['questionId'];
+        let actions = app.feature.examination.actions;
+        let toolbar = new ArrowHelper.Toolbar();
+        let questionData = req.questionData;
+        console.log(questionData);
+        toolbar.addBackButton(req, 'qCreate_back_link');
+        toolbar.addSaveButton();
+        Promise.all([
+            actions.questionFind({
+                where: {
+                    id: questionId
+                }
+            }),
+            actions.answerFindAll({
+                where: {
+                    question_id: questionId
+                }
+            }),
+            actions.sFindAll({
+                attributes: ['id', 'title']
+            })
+        ])
+        .then(function (result){
+                Promise.all([
+                    actions.secFindAll({
+                        where: {
+                            subject_id: result[0].subject_id
+                        }
+                    }),
+                    actions.cFindAll({
+                        where: {
+                            subject_id: result[0].subject_id
+                        }
+                    })
+                ])
+                .then(function (result2) {
+
+                    res.backend.render('q-a/form2',{
+                        title: 'Update Questions & Answers',
+                        toolbar : toolbar.render(),
+                        question: questionData ? questionData : result[0],
+                        answers: questionData ? questionData.answers : result[1],
+                        subjects: result[2],
+                        chapters: result2[1],
+                        sections: result2[0],
+                        chaptersStr: JSON.stringify(result2[1])
+                    })
+                })
+                .catch(function (err) {
+                    return err;
+                })
+
+        }).catch(function (err) {
+                //console.log(err);
+            logger.error(err.message);
+            req.flash.error(err.message);
+            res.redirect(baseRoute);
+        })
 
     };
     controller.qUpdate = function (req,res) {
-
+        let toolbar = new ArrowHelper.Toolbar();
+        let actions = app.feature.examination.actions;
+        toolbar.addBackButton(req, 'qa_save_back_link');
+        toolbar.addSaveButton();
+        let questionId = req.params.questionId;
+        let data = req.body;
+        actions.questionFindById(questionId)
+        .then(function (question) {
+            return actions.questionUpdate(question,data)
+        })
+        .then(function (newQuestion) {
+            let answers = JSON.parse(data.answers);
+            let ids = [];
+            answers.map(function(answer){
+                ids.push(answer.id)
+            });
+            return actions.answerDelete(ids);
+        })
+        .then(function (count) {
+            let answers = JSON.parse(data.answers);
+            let answerPromise = [];
+            answers.map(function(answer){
+                answerPromise.push(actions.answerCreate(answer));
+            });
+            return Promise.all(answerPromise) ;
+        })
+        .then(function (answers) {
+            req.flash.success('Update Successfully !!');
+            res.redirect(baseRoute+'/'+questionId);
+        })
+        .catch(function (err) {
+            req.flash.error('Update unSuccessfully !!');
+            req.locals.questionData = data;
+            res.redirect(baseRoute+'/'+questionId);
+        })
     };
     controller.qGetChapterBySubjectId = function (req,res) {
         let subjectId = req.params.subjectId;

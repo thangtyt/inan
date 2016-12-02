@@ -81,6 +81,7 @@ module.exports = {
         }
     ],
     userInfo: {
+
         uni: [
                 {
                     code: '001',

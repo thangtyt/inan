@@ -54,7 +54,7 @@ module.exports = function (component, app) {
                 permissions : permission.qa
             }
         },
-        "q-a/:qId" : {
+        "q-a/:questionId" : {
             get : {
                 handler : controller.qView,
                 authenticate : true,
