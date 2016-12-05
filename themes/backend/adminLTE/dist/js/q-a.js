@@ -54,14 +54,48 @@ function loadLesson(chapter_id){
         }
     })
 }
+function renderEditAnswerChoose(index){
+    if(answers.length > 0){
+        $('#divEditAnswer').removeClass('hidden');
+        var i =1;
+        $('select[name=editAnswerIndex]').empty();
+        $('select[name=editAnswerIndex]').append($('<option>', {
+            text: '-- Choose Question --'
+        }));
+        answers.map(function (answer) {
+            var option = {
+                value: i-1,
+                text: 'Question '+ i
+            };
+
+            if(index != null && index != undefined){
+                //console.log(index);
+                if(index == i-1){
+                    //console.log('found');
+                    option.selected = 'selected';
+                }
+            }
+            $('select[name=editAnswerIndex]').append($('<option>', option));
+            i++;
+        });
+        //$('select[name=editAnswerIndex]').attr('selected', true);
+
+    }else{
+        $('#addQuestionBtn').removeClass('hidden');
+        $('#editQuestionBtn').addClass('hidden');
+        $('#divEditAnswer').addClass('hidden');
+    }
+}
 function requirementQuestion(require){
     var isRequire = require || $('#require option:selected').val();
     if(Number(isRequire) == 1){
         $('#requirementContent').removeClass('hidden');
         $('button[name=btnRequireAnswer]').removeClass('hidden');
+        renderEditAnswerChoose();
     }else{
         $('#requirementContent').addClass('hidden');
         $('button[name=btnRequireAnswer]').addClass('hidden');
+        renderEditAnswerChoose();
     }
 }
 
@@ -123,34 +157,7 @@ function pushAnswer(require){
     })
     answerKeys = [];
 }
-function renderEditAnswerChoose(index){
-    if(answers.length > 0){
-        $('#divEditAnswer').removeClass('hidden');
-        var i =1;
-        $('select[name=editAnswerIndex]').empty();
-        $('select[name=editAnswerIndex]').append($('<option>', {
-            text: '-- Choose Question --'
-        }));
-        answers.map(function (answer) {
-            var option = {
-                value: i-1,
-                text: 'Question '+ i
-            };
 
-            if(index != null && index != undefined){
-                //console.log(index);
-                if(index == i-1){
-                    //console.log('found');
-                    option.selected = 'selected';
-                }
-            }
-            $('select[name=editAnswerIndex]').append($('<option>', option));
-            i++;
-        });
-        //$('select[name=editAnswerIndex]').attr('selected', true);
-
-    }
-}
 //add answer to array list
 function addAnswer(){
     answerKeys = [];
@@ -187,10 +194,11 @@ function renderView(){
     if($('#require').val()==0){
         editAnswer(0,0);
     }
+    //console.log(JSON.stringify(answers,2,2));
     if(answers.length > 0 ){
-        var questionContent = CKEDITOR.instances.answerContent.getData();;
+        //var questionContent = CKEDITOR.instances.answerContent.getData();
         var requireContent ;
-        if($('#'))
+        //if($('#'))
         requireContent = CKEDITOR.instances.content.getData();
         $('#previewDiv').empty();
         var html = '';
@@ -205,26 +213,29 @@ function renderView(){
                         </div>`;
         if( $('#question_type').prop('value') == 0 ){
             //var keyCode= 65;
-            //console.log(JSON.stringify(answers,3,3));
+            console.log(JSON.stringify(answers,3,3));
             answers.map(function (answer) {
                     html += '<div class="col-lg-12">' +
-                    '<p><b>Question: '+answerIndex+' : </b>'+questionContent+'</p>' +
+                    '<p><b>Question: '+answerIndex+' : </b>'+answer.content+'</p>' +
                     '</div>' ;
                 html += '<div class="col-lg-12">';
-                answer.answer_keys.map(function (val) {
-                    var tempStyle = '';
-                    if(val.isTrue){
-                        tempStyle = ' style="color: #0063dc"';
-                    }
-                    //html+='<div class="col-md-3"'+tempStyle+'>'+String.fromCharCode(keyCode)+'.'+val.answer+'</div>';
-                    html+='<div class="col-md-3"'+tempStyle+'>'+val.answer+'</div>';
-                })
+                if(answer.hasOwnProperty('answer_keys')){
+                    answer.answer_keys.map(function (val) {
+                        var tempStyle = '';
+                        if(val.isTrue){
+                            tempStyle = ' style="color: #0063dc"';
+                        }
+                        //html+='<div class="col-md-3"'+tempStyle+'>'+String.fromCharCode(keyCode)+'.'+val.answer+'</div>';
+                        html+='<div class="col-md-3"'+tempStyle+'>'+val.answer+'</div>';
+                    })
+                }
                 html+=       '</div>' ;
                 answerIndex++;
             })
         }
         html+='</div>';
         $('#previewDiv').append(html);
+        //re-render latex
         MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
     }
 
@@ -251,21 +262,45 @@ function fillAnswer(index,require,content){
 }
 
 function editAnswer(index,require){
-    var answerContent = require == 0 ? '' : CKEDITOR.instances['answerContent'].getData();
-    answers[index].answer_keys = [0,1,2,3].map(function (key) {
-        //console.log(Number($('input[name=rightAnswer]:checked').val()));
-        var isTrue = Number($('input[name=rightAnswer]:checked').val()) == Number(key) ? true : false;
-        //console.log(JSON.stringify($('input[name=rightAnswer]:checked').val(),2,2));
-        return {
-            index: index,
-            answer: CKEDITOR.instances['answer'+key].getData(),
-            explanation: CKEDITOR.instances['answerExplain'+key].getData(),
-            isTrue: isTrue
+    if(require == 0){
+        let _answer = [];
+        let answer_keys = [];
+        [0,1,2,3].map(function (key) {
+            var isTrue = Number($('input[name=rightAnswer]:checked').val()) == Number(key) ? true : false;
+            answer_keys.push({
+                index: key,
+                answer: CKEDITOR.instances['answer'+key].getData(),
+                explanation: CKEDITOR.instances['answerExplain'+key].getData(),
+                isTrue: isTrue
+            })
+        });
+        _answer.push({
+            mark: $('#answerMark').val(),
+            content : CKEDITOR.instances['answerContent'].getData(),
+            time: $('#answerTime').val(),
+            answer_keys: answer_keys
+        })
+        answers = _answer;
+    }else{
+        var answerContent = CKEDITOR.instances['answerContent'].getData();
+        if (answers[index] != undefined){
+            answers[index].answer_keys = [0,1,2,3].map(function (key) {
+                //console.log(Number($('input[name=rightAnswer]:checked').val()));
+                var isTrue = Number($('input[name=rightAnswer]:checked').val()) == Number(key) ? true : false;
+                //console.log(JSON.stringify($('input[name=rightAnswer]:checked').val(),2,2));
+                return {
+                    index: index,
+                    answer: CKEDITOR.instances['answer'+key].getData(),
+                    explanation: CKEDITOR.instances['answerExplain'+key].getData(),
+                    isTrue: isTrue
+                }
+            });
+            answers[index].mark = $('#answerMark').val();
+            answers[index].content = answerContent;
+            answers[index].time = $('#answerTime').val();
         }
-    });
-    answers[index].mark = $('#answerMark').val();
-    answers[index].content = answerContent;
-    answers[index].time = $('#answerTime').val();
+    }
+
 }
 function chooseQuestionToEdit(){
     fillAnswer($('select[name=editAnswerIndex]').val(),1,'');

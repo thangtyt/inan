@@ -167,6 +167,7 @@ module.exports = function (controller, component, app) {
             res.backend.render('index', {
                 title: __('m_users_backend_controllers_index_list'),
                 totalPage: 1,
+                toolbar:toolbar,
                 items: null
             });
         });

@@ -246,9 +246,9 @@
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <button name="btnRequireAnswer" id="addQuestionBtn" type="button" class="btn btn-primary pull-right" onclick="addAnswer()">ADD QUESTION</button>
-                                        <button name="btnRequireAnswer" id="editQuestionBtn" type="button" class="btn btn-info pull-right" onclick="editAnswerArray()">EDIT QUESTION</button>
-                                        <button name="btnRequireAnswer" id="resetBtn" type="button" class="btn btn-default pull-left" onclick="resetAnswer()">RESET</button>
+                                        <button name="btnRequireAnswer" id="addQuestionBtn" type="button" class="btn btn-primary pull-right hidden" onclick="addAnswer()">ADD QUESTION</button>
+                                        <button name="btnRequireAnswer" id="editQuestionBtn" type="button" class="btn btn-info pull-right hidden" onclick="editAnswerArray()">EDIT QUESTION</button>
+                                        <button name="btnRequireAnswer" id="resetBtn" type="button" class="btn btn-default pull-left hidden" onclick="resetAnswer()">RESET</button>
                                     </div>
                                 </div>
                             </div>
@@ -315,8 +315,6 @@
                     })
                     renderChapterLesson('{{ question.chapter_id }}','{{ question.lesson }}');
                 });
-            {#{% else %}#}
-                {#requirementQuestion(0);#}
             {% endif %}
 
             {% if answers %}

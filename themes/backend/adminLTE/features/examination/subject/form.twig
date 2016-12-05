@@ -22,14 +22,13 @@
                                         <select class="form-control" name="icons" id="icons"
                                                value="{{ subject.icons }}">
                                             {% for item in icons %}
-                                                <option value="{{ item.icon.default }}::{{ item.icon.hover }}">{{ item.name }}</option>
+                                                <option value="{{ item.icon.name }}::{{ item.icon.default }}::{{ item.icon.hover }}"{% if item.name == subject.icons.name %} selected="selected" {% endif %}>{{ item.name }}</option>
                                             {% endfor %}
                                         </select>
                                     </div>
                                     <div class="form-group">
                                         <label for="desc">Class <span class="required">*</span></label>
                                         <select name="class" class="form-control" required="required">
-                                            <option value="0"> -- Choose class --</option>
                                             <option value="12" {% if subject.class == 12 %} selected{% endif %}> 12</option>
                                             <option value="11" {% if subject.class == 11 %} selected{% endif %}> 11</option>
                                             <option value="10" {% if subject.class == 10 %} selected{% endif %}> 10</option>
@@ -187,6 +186,12 @@
                 $('#chapterList').append(html);
             })
         }
+        $('form').bind("keypress", function(e) {
+            if (e.keyCode == 13) {
+                e.preventDefault();
+                return false;
+            }
+        });
     </script>
 
     {#</ol>#}

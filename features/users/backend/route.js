@@ -37,7 +37,7 @@ module.exports = function (component, app) {
                 permissions: 'index'
             }
         },
-        "/users/:uid([0-9A-Za-z-]+)": {
+        "/users/:uid([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})": {
             get: {
                 handler: controller.view,
                 name: "update-users-get",
@@ -75,7 +75,7 @@ module.exports = function (component, app) {
                 authenticate: true
             }
         },
-        "/users/:page([0-9A-Za-z-]+)": {
+        "/users/:page([0-9]+)": {
             get: {
                 handler: controller.list,
                 name: "users-page",

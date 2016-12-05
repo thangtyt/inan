@@ -352,12 +352,13 @@ module.exports = function (controller,component,app) {
                 }
             }
         }).then(function (exams) {
-            console.log(JSON.stringify(exams,2,2));
+            //console.log(JSON.stringify(exams,2,2));
+            return exams;
         }).then(function () {
             req.flash.success(__('m_blog_backend_post_flash_delete_success'));
             res.sendStatus(200);
         }).catch(function (err) {
-            console.log('dasdasdaerror');
+            //console.log('dasdasdaerror');
             console.log(err);
             logger.error(err);
             req.flash.error('Name: ' + err.name + '<br />' + 'Message: ' + err.message);
