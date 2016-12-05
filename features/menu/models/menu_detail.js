@@ -57,6 +57,7 @@ module.exports = function (sequelize, DataTypes) {
         timestamps: true,
         createdAt: "created_at",
         updatedAt: "modified_at",
-        deletedAt: false
+        deletedAt: false,
+        onDelete: 'restrict'
     });
 };

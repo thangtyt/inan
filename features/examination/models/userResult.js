@@ -27,6 +27,7 @@ module.exports = function (sequelize, DataTypes) {
             type: DataTypes.INTEGER
         }
     }, {
-        tableName: "tk_userResult"
+        tableName: "tk_userResult",
+        onDelete: 'restrict'
     })
 };

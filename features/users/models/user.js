@@ -76,6 +76,7 @@ module.exports = function (sequelize, DataTypes) {
     }, {
         timestamps: false,
         tableName: 'arr_user',
+        onDelete: 'restrict',
         instanceMethods: {
             authenticate: function (password) {
                 return this.user_pass === this.hashPassword(password);

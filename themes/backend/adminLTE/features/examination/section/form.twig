@@ -23,10 +23,10 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label>Subject<span class="required">*</span></label>
-                                <select class="form-control" name="subject_id" id="subject_id">
+                                <select class="form-control" name="subject_id" id="subject_id"{% if isUpdate %} disabled{% endif %}>
                                     <option value="0">-- Choose subject --</option>
                                     {% for subject in subjects %}
-                                    <option value="{{ subject.id }}">{{ subject.title }}</option>
+                                    <option value="{{ subject.id }}" {% if subject.id == section.subject_id %} selected="selected" {% endif %}>{{ subject.title }}</option>
                                     {% endfor %}
                                 </select>
                             </div>
@@ -37,6 +37,15 @@
                             <div class="form-group">
                                 <label>Total Answers/Question</label>
                                 <input class="form-control" name="total_answers" id="total_answers" value="{{ section.total_mark }}" type="number"/>
+                            </div>
+                            <div class="form-group">
+                                <label>Displat Content</label>
+                                <select class="form-control" name="isDisplayContent" id="isDisplayContent">
+
+                                    <option value="0" {% if section.isDisplayContent == false %} selected="selected" {% endif %}>No</option>
+                                    <option value="1" {% if section.isDisplayContent == true %} selected="selected" {% endif %}>Yes</option>
+
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -60,6 +69,24 @@
         } );
         if ( CKEDITOR.env.ie && CKEDITOR.env.version == 8 ) {
             document.getElementById( 'ie8-warning' ).className = 'tip alert';
+        }
+        function deleteRecords() {
+            var ids = [];
+            $("input:checkbox[name='ids[]']:checked").each(function () {
+                ids.push($(this).val());
+            });
+            $.ajax({
+                url: window.location.href,
+                type: 'DELETE',
+                success: function (error) {
+                    //console.log(JSON.stringify(result,2,2));
+                    // Do something with the result
+                    if(error)
+                        window.location.href = '{{ baseRoute }}/{{ section.id }}';
+                    else
+                        window.location.href = '{{ baseRoute }}';
+                }
+            });
         }
     </script>
 {% endblock %}

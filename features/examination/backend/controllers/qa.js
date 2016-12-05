@@ -309,12 +309,19 @@ module.exports = function (controller,component,app) {
             return actions.questionUpdate(question,data)
         })
         .then(function (newQuestion) {
-            let answers = JSON.parse(data.answers);
-            let ids = [];
-            answers.map(function(answer){
-                ids.push(answer.id)
-            });
-            return actions.answerDelete(ids);
+            return actions.answerFindAll({
+                where: {
+                    question_id: questionId
+                },
+                attributes: ['id']
+            })
+
+        }).then(function (ids) {
+                let idsToDelete = []
+                ids.map(function (element) {
+                    idsToDelete.push(element.id);
+                })
+                return actions.answerDelete(idsToDelete);
         })
         .then(function (count) {
             let answers = JSON.parse(data.answers);
@@ -326,14 +333,12 @@ module.exports = function (controller,component,app) {
             return Promise.all(answerPromise) ;
         })
         .then(function (answers) {
-            //console.log('fsdfsd',JSON.stringify(answers,2,2));
             req.flash.success('Update Successfully !!');
             res.redirect(baseRoute+'/'+questionId);
         })
         .catch(function (err) {
-                //console.log(err);
+                console.log(err);
             req.flash.error('Update unSuccessfully !!');
-            req.locals.questionData = data;
             res.redirect(baseRoute+'/'+questionId);
         })
     };

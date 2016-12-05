@@ -28,6 +28,7 @@ module.exports = function (sequelize, DataTypes) {
         },
         isDisplayContent: {
             type: DataTypes.BOOLEAN,
+            defaultValue: true,
             isIn: {
                 args: [['0', '1', 0, 1, true, false]],
                 msg: 'Invalid boolean value'
@@ -52,6 +53,7 @@ module.exports = function (sequelize, DataTypes) {
     },{
         tableName: "tk_section",
         createdAt: 'created_at',
-        updatedAt: 'updated_at'
+        updatedAt: 'updated_at',
+        onDelete: 'restrict'
     });
 }

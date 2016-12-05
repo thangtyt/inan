@@ -100,16 +100,13 @@ module.exports = function (controller, component, app) {
         });
     };
     controller.sView = function (req, res) {
-        //console.log(1);
         let actions = app.feature.examination.actions;
         let subjectId = req.params.subjectId;
         let toolbar = new ArrowHelper.Toolbar();
         let icons = app.getConfig('subjects');
-
         toolbar.addBackButton(req, 'sView_back_link');
         toolbar.addSaveButton();
         toolbar.addDeleteButton();
-        //console.log('dasdasdasdasdas das dada',subjectId);
         actions.sFind({
             where: {
                 id: subjectId
@@ -153,8 +150,49 @@ module.exports = function (controller, component, app) {
         //})
     };
     controller.sDelete = function (req, res) {
-        //let actions = app.feature.examination.actions;
-        res.redirect(baseRoute);
+        let actions = app.feature.examination.actions;
+        let ids = [];
+        //console.log('11111');
+        if (req.params.subjectId){
+            ids = [req.params.subjectId]
+        }else{
+            ids = req.body.ids.split(',');
+        }
+        actions.cDelete({
+            where : {
+                id: {
+                    $in: ids
+                }
+            }
+        }).then(function (result) {
+            req.flash.success('Delete successfully !');
+            res.jsonp({
+                error: null
+            });
+        }).catch(function (err) {
+            req.flash.error('You cannot delete one of subjects !');
+            res.jsonp({
+                error: 'You cannot delete one of subjects !'
+            });
+        });
+        //app.models.transaction(function (t) {
+        //    let sectionsToDelete = [];
+        //    ids.map(function (secId) {
+        //        sectionsToDelete.push(app.models.section.destroy({
+        //            where: {
+        //                id: secId
+        //            }
+        //        },{transaction: t}));
+        //    })
+        //    return Promise.all(sectionsToDelete);
+        //}).then(function (result) {
+        //    console.log(result);
+        //}).catch(function (err) {
+        //    console.log(err);
+        //})
+        //console.log(ids);
+        //res.redirect(baseRoute);
+        //res.sendStatus(200);
     };
     controller.sUpdate = function (req, res,next) {
         let actions = app.feature.examination.actions;

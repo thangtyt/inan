@@ -62,7 +62,8 @@ module.exports = function (sequelize, DataTypes) {
         tableName: 'arr_role',
         createdAt: 'created_at',
         updatedAt: 'modified_at',
-        deletedAt: false
+        deletedAt: false,
+        onDelete: 'restrict'
     });
     return Role;
 };

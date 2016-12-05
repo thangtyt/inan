@@ -50,11 +50,12 @@ module.exports = function (controller, component, app) {
                 }
             },
             {
-                column: 'class',
+                column: 'subject.title',
                 width: '10%',
-                header: 'class',
+                header: 'Subject',
                 filter: {
-                    data_type: 'string'
+                    data_type: 'string',
+                    filter_key: 'subject.title'
                 }
             }
         ];
@@ -65,6 +66,11 @@ module.exports = function (controller, component, app) {
         });
         actions.secFindAndCountAll({
             where: filter.conditions,
+            include: [{
+                model: app.models.subject,
+                attributes: ['title'],
+                as: 'subject'
+            }],
             order: filter.order || ' created_at DESC',
             limit: filter.limit,
             offset: (page - 1) * itemOfPage
@@ -110,14 +116,29 @@ module.exports = function (controller, component, app) {
         toolbar.addBackButton(req, 'sView_back_link');
         toolbar.addSaveButton();
         toolbar.addDeleteButton();
-
-        actions.sFindAll({
-            attributes: ['id', 'title']
-        })
-        .then(function (subjects) {
+        Promise.all([
+            actions.secFind({
+                where: {
+                    id: sectionId
+                }
+            }),
+            actions.sFindAll({
+                attributes: ['id','title']
+            }),
+            actions.questionFind({
+                where: {
+                    section_id: sectionId
+                }
+            })
+        ])
+        .then(function (result) {
+                //console.log(result[2]);
             res.backend.render('section/form',{
                 toolbar : toolbar.render(),
-                subjects: subjects
+                baseRoute: baseRoute,
+                section: result[0],
+                subjects: result[1],
+                isUpdate: result[2]
             })
         }).catch(function (err){
             logger.error(err.message);
@@ -128,17 +149,77 @@ module.exports = function (controller, component, app) {
 
 
     };
-    controller.secDelete = function (req, res) {
+    controller.sectionDelete = function (req, res) {
         //let actions = app.feature.examination.actions;
-        res.redirect(baseRoute);
+        let ids = [];
+        //console.log('11111');
+        if (req.params.sectionId){
+            ids = [req.params.sectionId]
+        }else{
+            ids = req.body.ids.split(',');
+        }
+        app.models.section.destroy({
+            where : {
+                id: {
+                    $in: ids
+                }
+            }
+        }).then(function (result) {
+            req.flash.success('Delete successfully !');
+            res.jsonp({
+                error: null
+            });
+        }).catch(function (err) {
+            req.flash.error('You cannot delete one of sections !');
+            res.jsonp({
+                error: 'You cannot delete one of sections !'
+            });
+        });
+        //app.models.transaction(function (t) {
+        //    let sectionsToDelete = [];
+        //    ids.map(function (secId) {
+        //        sectionsToDelete.push(app.models.section.destroy({
+        //            where: {
+        //                id: secId
+        //            }
+        //        },{transaction: t}));
+        //    })
+        //    return Promise.all(sectionsToDelete);
+        //}).then(function (result) {
+        //    console.log(result);
+        //}).catch(function (err) {
+        //    console.log(err);
+        //})
+        //console.log(ids);
+        //res.redirect(baseRoute);
+        //res.sendStatus(200);
     };
     controller.secUpdate = function (req, res,next) {
-
+        let actions = app.feature.examination.actions;
         let toolbar = new ArrowHelper.Toolbar();
         toolbar.addBackButton(req, 'sView_back_link');
         toolbar.addSaveButton();
         toolbar.addDeleteButton();
-        next();
+        let form = req.body;
+        let sectionid = req.params.sectionId;
+        actions.secFind({
+            where: {
+                id: sectionid
+            }
+        }).then(function (section) {
+            return actions.secUpdate(section,form);
+        }).then(function (result) {
+            if(result){
+                req.flash.success('Update successfully !');
+                next();
+            }else {
+                throw Error('Error');
+            }
+        }).catch(function (err) {
+            console.log(err);
+            req.flash.error('cannot update this section !');
+            next();
+        })
     };
     controller.secCreate = function (req, res) {
         let actions = app.feature.examination.actions;

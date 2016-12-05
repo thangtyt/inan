@@ -108,7 +108,8 @@ module.exports = function (sequelize, DataTypes) {
         ],
         tableName: 'arr_post',
         createdAt: 'created_at',
-        updatedAt: 'modified_at'
+        updatedAt: 'modified_at',
+        onDelete: 'restrict'
     });
 
 };

@@ -25,6 +25,7 @@ module.exports = function (sequelize, DataTypes) {
         }
     }, {
         tableName: 'arr_widget',
-        timestamps: false
+        timestamps: false,
+        onDelete: 'restrict'
     });
 };

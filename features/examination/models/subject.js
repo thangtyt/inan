@@ -26,6 +26,7 @@ module.exports = function (sequelize, DataTypes) {
     },{
         tableName: "tk_subject",
         createdAt: 'created_at',
-        updatedAt: 'updated_at'
+        updatedAt: 'updated_at',
+        onDelete: 'restrict'
     })
 }

@@ -150,6 +150,7 @@ module.exports = function (sequelize,DataTypes) {
         ],
         tableName: "tk_exam",
         createdAt: 'created_at',
-        updatedAt: 'updated_at'
+        updatedAt: 'updated_at',
+        onDelete: 'restrict'
     })
 }

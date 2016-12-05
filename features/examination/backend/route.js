@@ -58,7 +58,7 @@ module.exports = function (component, app) {
                 permissions : permission.qa
             }
         },
-        "q-a/:questionId" : {
+        "q-a/:questionId([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})" : {
             get : {
                 handler : controller.qView,
                 authenticate : true,
@@ -70,14 +70,14 @@ module.exports = function (component, app) {
                 permissions : permission.qa
             }
         },
-        "q-a/list-chapter/:subjectId" : {
+        "q-a/list-chapter/:subjectId([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})" : {
             get: {
                 handler: controller.qGetChapterBySubjectId,
                 authenticate : true,
                 permissions : permission.section
             }
         },
-        "q-a/list-section/:subjectId" : {
+        "q-a/list-section/:subjectId([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})" : {
             get: {
                 handler: controller.qGetSectionBySubjectId,
                 authenticate : true,
@@ -89,6 +89,11 @@ module.exports = function (component, app) {
         "subject" : {
             get : {
                 handler : controller.sList,
+                authenticate : true,
+                permissions: permission.subject
+            },
+            delete: {
+                handler: controller.sDelete,
                 authenticate : true,
                 permissions: permission.subject
             }
@@ -119,7 +124,7 @@ module.exports = function (component, app) {
                 permissions : permission.subject
             }
         },
-        "subject/:subjectId" : {
+        "subject/:subjectId([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})" : {
             get : {
                 handler : controller.sView,
                 authenticate : true,
@@ -171,14 +176,14 @@ module.exports = function (component, app) {
                 permissions: permission.exam
             }
         },
-        "exam/list-section/:subjectId": {
+        "exam/list-section/:subjectId([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})": {
             get: {
                 handler: controller.eGetSections,
                 authenticate: true,
                 permission: permission.exam
             }
         },
-        "exam/list-question/:sectionId": {
+        "exam/list-question/:sectionId([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})": {
             get: {
                 handler: controller.eGetQuestions,
                 authenticate: true,
@@ -192,17 +197,22 @@ module.exports = function (component, app) {
                 handler : controller.secList,
                 authenticate : true,
                 permissions: permission.section
+            },
+            delete : {
+                handler: controller.sectionDelete,
+                authenticate: true,
+                permissions: permission.section
             }
         },
         "section/page/:page": {
-            get: {
+            get : {
                 handler: controller.secList,
                 authenticate: true,
                 permissions: permission.section
             }
         },
         "section/page/:page/sort/:sort/(:order)?": {
-            get: {
+            get : {
                 handler: controller.secList,
                 authenticate: true,
                 permissions: permission.section
@@ -220,7 +230,7 @@ module.exports = function (component, app) {
                 permissions : permission.section
             }
         },
-        "section/:sectionId" : {
+        "section/:sectionId([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})" : {
             get : {
                 handler : controller.secView,
                 authenticate : true,
@@ -232,7 +242,7 @@ module.exports = function (component, app) {
                 permissions : permission.section
             },
             delete  : {
-                handler : controller.secDelete,
+                handler : controller.sectionDelete,
                 authenticate : true,
                 permissions : permission.section
             }

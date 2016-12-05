@@ -163,7 +163,21 @@
             return uuid;
         }
         function deleteRecords() {
-            window.location.href = '{{ baseRoute }}page/1';
+            var ids = [];
+            $("input:checkbox[name='ids[]']:checked").each(function () {
+                ids.push($(this).val());
+            });
+            $.ajax({
+                url: '{{ baseRoute }}',
+                type: 'DELETE',
+                data: {
+                    ids: ['{{ subject.id }}']
+                },
+                success: function (result) {
+                    // Do something with the result
+                    window.location.href = '{{ baseRoute }}';
+                }
+            });
         }
         function renderNestable(data){
             data.map(function (chapter) {

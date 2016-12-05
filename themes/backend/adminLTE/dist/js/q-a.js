@@ -60,7 +60,8 @@ function renderEditAnswerChoose(index){
         var i =1;
         $('select[name=editAnswerIndex]').empty();
         $('select[name=editAnswerIndex]').append($('<option>', {
-            text: '-- Choose Question --'
+            text: '-- Choose Question --',
+            value: -1
         }));
         answers.map(function (answer) {
             var option = {
@@ -135,28 +136,7 @@ function changeRightAnswer(id){
     $('#'+id).removeClass('box-danger');
     $('#'+id).addClass('box-success');
 }
-function pushAnswer(require){
-    //console.log("dasdasdas : ",CKEDITOR.instances);
-    var answerContent = require == 0 ? "" : CKEDITOR.instances['answerContent'].getData();
-    [0,1,2,3].map(function (i) {
-        var isTrue = $('input[name=rightAnswer]').val() == i ? true : false;
-        answerKeys.push({
-            index: i,
-            answer: CKEDITOR.instances['answer'+i].getData(),
-            explanation: CKEDITOR.instances['answerExplain'+i].getData(),
-            isTrue: isTrue
-        })
-    })
 
-    answers.push({
-        id: uuid(),
-        mark: $('#answerMark').val(),
-        content: answerContent,
-        time: $('#answerTime').val(),
-        answer_keys: answerKeys
-    })
-    answerKeys = [];
-}
 
 //add answer to array list
 function addAnswer(){
@@ -213,10 +193,10 @@ function renderView(){
                         </div>`;
         if( $('#question_type').prop('value') == 0 ){
             //var keyCode= 65;
-            console.log(JSON.stringify(answers,3,3));
             answers.map(function (answer) {
+                let answerContent = $('#require').val() == 0 ? CKEDITOR.instances.answerContent.getData() : answer.content;
                     html += '<div class="col-lg-12">' +
-                    '<p><b>Question: '+answerIndex+' : </b>'+answer.content+'</p>' +
+                    '<p><b>Question: '+answerIndex+' : </b>'+answerContent+'</p>' +
                     '</div>' ;
                 html += '<div class="col-lg-12">';
                 if(answer.hasOwnProperty('answer_keys')){
@@ -260,9 +240,31 @@ function fillAnswer(index,require,content){
     }
 
 }
+function pushAnswer(require){
+    //console.log("dasdasdas : ",CKEDITOR.instances);
+    var answerContent = require == 0 ? "" : CKEDITOR.instances['answerContent'].getData();
+    [0,1,2,3].map(function (i) {
+        var isTrue = $('input[name=rightAnswer]').val() == i ? true : false;
+        answerKeys.push({
+            index: i,
+            answer: CKEDITOR.instances['answer'+i].getData(),
+            explanation: CKEDITOR.instances['answerExplain'+i].getData(),
+            isTrue: isTrue
+        })
+    })
 
+    answers.push({
+        id: uuid(),
+        mark: $('#answerMark').val(),
+        content: answerContent,
+        time: $('#answerTime').val(),
+        answer_keys: answerKeys
+    })
+    answerKeys = [];
+}
 function editAnswer(index,require){
     if(require == 0){
+        var answerContent = require == 0 ? "" : CKEDITOR.instances['answerContent'].getData();
         let _answer = [];
         let answer_keys = [];
         [0,1,2,3].map(function (key) {
@@ -276,7 +278,7 @@ function editAnswer(index,require){
         });
         _answer.push({
             mark: $('#answerMark').val(),
-            content : CKEDITOR.instances['answerContent'].getData(),
+            content : answerContent,
             time: $('#answerTime').val(),
             answer_keys: answer_keys
         })
@@ -284,9 +286,8 @@ function editAnswer(index,require){
         _answer.id = answers[0].id;
         else
         _answer.id = uuid();
-        console.log(_answer);
+
         answers = _answer;
-        console.log(JSON.stringify(answers,2,2));
     }else{
         var answerContent = CKEDITOR.instances['answerContent'].getData();
         if (answers[index] != undefined){
@@ -314,31 +315,36 @@ function chooseQuestionToEdit(){
 
 //
 function editAnswerArray(){
-    editAnswer($('select[name=editAnswerIndex]').val(),1);
-    resetAnswer();
+    if($('select[name=editAnswerIndex]').val() != -1){
+        editAnswer($('select[name=editAnswerIndex]').val(),1);
+        resetAnswer();
+    }
 }
 
 
 $(function(){
     $('form').submit(function (e) {
         //console.log(typeof $('#require').val());
+        if(answers)
         try{
             if(Number($('#require').val()) == 0){
                 CKEDITOR.instances.content.setData(CKEDITOR.instances['answerContent'].getData());
+                CKEDITOR.instances['answerContent'].setData('');
                 if( answers.length < 0 ){
-                //    editAnswer(0,0);
-                //}else{
-                    CKEDITOR.instances['answerContent'].setData('');
                     pushAnswer(0);
+                }else{
+                    editAnswer(0,0);
+                    var temp = [];
+                    temp.push(answers[0]);
+                    answers = temp;
                 }
             }else{
-                if(currentAnswerIndex != 0){
-                    editAnswer(currentAnswerIndex,1);
+                if($('select[name=editAnswerIndex]').val() != -1){
+                    editAnswer($('select[name=editAnswerIndex]').val(),1);
                 }
             }
             $('input[name=answers]').val(JSON.stringify(answers));
         }catch(err){
-            console.log(err);
             return false;
         }
     })
