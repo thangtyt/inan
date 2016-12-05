@@ -220,7 +220,7 @@ module.exports = function (controller, component, app) {
                     }
                 })
                 .then(function (chapters) {
-                    console.log(JSON.stringify(chapters));
+                    //console.log(JSON.stringify(chapters));
                     req.flash.success('Update subject successfully !');
                     next();
                 })

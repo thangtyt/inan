@@ -119,12 +119,12 @@ module.exports = function (controller,component,app) {
 
             res.jsonp(JSON.parse(JSON.stringify(sections)));
         }).catch(function (err) {
-                console.log(err);
+                //console.log(err);
             res.jsonp(err);
         })
     }
     controller.eGetQuestions = function (req,res) {
-        console.log(req.params.sectionId);
+        //console.log(req.params.sectionId);
         let actions = app.feature.examination.actions;
         actions.questionFindAll({
             where: {
@@ -147,13 +147,13 @@ module.exports = function (controller,component,app) {
     controller.eSaveManual = function (req,res) {
         let actions = app.feature.examination.actions;
         let form = req.body;
-        console.log(JSON.stringify(form));
+        //console.log(JSON.stringify(form));
         form.created_by = req.user.id;
         if(typeof form.sections == 'string'){
             try{
                 form.sections = JSON.parse(form.sections);
             }catch(err){
-                console.log('error',form.sections);
+                //console.log('error',form.sections);
                 form.sections = [form.sections];
             }
         }
@@ -163,13 +163,13 @@ module.exports = function (controller,component,app) {
             form.content = [];
         }
 
-        console.log(JSON.stringify(form,2,2));
+        //console.log(JSON.stringify(form,2,2));
         actions.examCreate(form)
         .then(function (exam) {
-            console.log('create ok');
+            //console.log('create ok');
             res.redirect(baseRoute);
         }).catch(function (err) {
-                console.log(err);
+                //console.log(err);
             res.redirect(baseRoute);
         })
         

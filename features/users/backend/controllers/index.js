@@ -397,12 +397,12 @@ module.exports = function (controller, component, app) {
      * Get Avatar library
      */
     controller.getAvatarGallery = function (req, res) {
-        console.log('dasdas');
+        //console.log('dasdas');
         readdirAsync(__base + 'upload/avatar-gallery').then(function (files) {
-            console.log(files);
+            //console.log(files);
             res.json(files);
         }).catch(function (err) {
-            console.log(err);
+            //console.log(err);
             res.status(500).send(err.stack);
         });
     };

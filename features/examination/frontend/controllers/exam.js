@@ -233,7 +233,7 @@ module.exports = function (controller, component, app) {
             try {
                 form = JSON.parse(form.data);
             } catch (err) {
-                console.log(err);
+                //console.log(err);
                 form = [];
             }
         }
@@ -308,7 +308,7 @@ module.exports = function (controller, component, app) {
                 data.mark = afterCheckAnswer.mark;
                 data.total_mark = afterCheckAnswer.total_mark;
                 wrongAnswer = afterCheckAnswer.wrongAnswer;
-                    console.log(afterCheckAnswer);
+                    //console.log(afterCheckAnswer);
                 return actions.examSubmit(data);
             })
             .then(function (examSubmit) {

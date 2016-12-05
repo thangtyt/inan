@@ -240,7 +240,7 @@ module.exports = function (controller,component,app) {
         let actions = app.feature.examination.actions;
         let toolbar = new ArrowHelper.Toolbar();
         let questionData = req.questionData;
-        console.log(questionData);
+        //console.log(questionData);
         toolbar.addBackButton(req, 'qCreate_back_link');
         toolbar.addSaveButton();
         Promise.all([
@@ -303,7 +303,7 @@ module.exports = function (controller,component,app) {
         toolbar.addSaveButton();
         let questionId = req.params.questionId;
         let data = req.body;
-        console.log(JSON.stringify(data, 2, 2));
+        //console.log(JSON.stringify(data, 2, 2));
         actions.questionFindById(questionId)
         .then(function (question) {
             return actions.questionUpdate(question,data)
@@ -326,12 +326,12 @@ module.exports = function (controller,component,app) {
             return Promise.all(answerPromise) ;
         })
         .then(function (answers) {
-            console.log('fsdfsd',JSON.stringify(answers,2,2));
+            //console.log('fsdfsd',JSON.stringify(answers,2,2));
             req.flash.success('Update Successfully !!');
             res.redirect(baseRoute+'/'+questionId);
         })
         .catch(function (err) {
-                console.log(err);
+                //console.log(err);
             req.flash.error('Update unSuccessfully !!');
             req.locals.questionData = data;
             res.redirect(baseRoute+'/'+questionId);
@@ -340,7 +340,7 @@ module.exports = function (controller,component,app) {
     controller.qDelete = function (req,res) {
         let ids = req.body.ids.split(',');
         let actions = app.feature.examination.actions;
-        console.log('fsdfsdfsd');
+        //console.log('fsdfsdfsd');
         actions.examFindAll({
             where: {
                 content: {
@@ -359,7 +359,7 @@ module.exports = function (controller,component,app) {
             res.sendStatus(200);
         }).catch(function (err) {
             //console.log('dasdasdaerror');
-            console.log(err);
+            //console.log(err);
             logger.error(err);
             req.flash.error('Name: ' + err.name + '<br />' + 'Message: ' + err.message);
             res.sendStatus(200);
