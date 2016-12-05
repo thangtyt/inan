@@ -55,7 +55,7 @@ function loadLesson(chapter_id){
     })
 }
 function renderEditAnswerChoose(index){
-    if(answers.length > 0){
+    if(answers.length > 0 && $('#require option:selected').val() == 1){
         $('#divEditAnswer').removeClass('hidden');
         var i =1;
         $('select[name=editAnswerIndex]').empty();
@@ -280,7 +280,13 @@ function editAnswer(index,require){
             time: $('#answerTime').val(),
             answer_keys: answer_keys
         })
+        if(answers.length > 0)
+        _answer.id = answers[0].id;
+        else
+        _answer.id = uuid();
+        console.log(_answer);
         answers = _answer;
+        console.log(JSON.stringify(answers,2,2));
     }else{
         var answerContent = CKEDITOR.instances['answerContent'].getData();
         if (answers[index] != undefined){
@@ -305,19 +311,23 @@ function editAnswer(index,require){
 function chooseQuestionToEdit(){
     fillAnswer($('select[name=editAnswerIndex]').val(),1,'');
 }
+
+//
 function editAnswerArray(){
     editAnswer($('select[name=editAnswerIndex]').val(),1);
     resetAnswer();
 }
+
+
 $(function(){
     $('form').submit(function (e) {
         //console.log(typeof $('#require').val());
         try{
             if(Number($('#require').val()) == 0){
                 CKEDITOR.instances.content.setData(CKEDITOR.instances['answerContent'].getData());
-                if( answers.length > 0 ){
-                    editAnswer(0,0);
-                }else{
+                if( answers.length < 0 ){
+                //    editAnswer(0,0);
+                //}else{
                     CKEDITOR.instances['answerContent'].setData('');
                     pushAnswer(0);
                 }
