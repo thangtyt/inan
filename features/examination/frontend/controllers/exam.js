@@ -304,6 +304,7 @@ module.exports = function (controller, component, app) {
                 }
             })
             .then(function (listAnswers) {
+                    console.log(1);
                 let afterCheckAnswer = checkAnswer(JSON.parse(JSON.stringify(listAnswers)),answers);
                 data.mark = afterCheckAnswer.mark;
                 data.total_mark = afterCheckAnswer.total_mark;
@@ -312,6 +313,7 @@ module.exports = function (controller, component, app) {
                 return actions.examSubmit(data);
             })
             .then(function (examSubmit) {
+                    console.log(2);
                 let actionAnswers = [];
                 //answers = JSON.parse(answers);
                 if (answers.length > 0) {
@@ -327,29 +329,37 @@ module.exports = function (controller, component, app) {
                 return Promise.all(actionAnswers);
             })
             .then(function (answers) {
+                    console.log(3,user.id);
                 //cap nhat diem so tong cua user
-                return app.models.userInfo.find({
+                return app.models.userInfo.findOrCreate({
                     where: {
                         user_id: user.id
+                    }
+                });
+            })
+            .then(function (userInfo) {
+                let result = userInfo[0] ? userInfo[0] : userInfo[1];
+                console.log(JSON.stringify(result,2,2));
+                if (Number(data.total_mark) > 10) {
+                    score = Number(data.mark) / 10
+                }
+                score = score * Number(data.level);
+                //todo: check userInfo
+                if (Number(data.mark) < Number(data.total_mark) / 2) {
+                    score = 0;
+                }
+                    console.log(4.4);
+                //cap nhat diem so tong cua user
+                return app.models.userInfo.update({
+                    score: Number(result.score) + Number(score)
+                },{
+                    where: {
+                        user_id: result.user_id
                     }
                 })
             })
             .then(function (userInfo) {
-
-                if (data.total_mark > 10) {
-                    score = data.mark / 10
-                }
-                score = score * Number(data.level);
-                //todo: check userInfo
-                if (data.mark < data.total_mark / 2) {
-                    score = 0;
-                }
-                //cap nhat diem so tong cua user
-                return userInfo.updateAttributes({
-                    score: Number(userInfo.score) + Number(score)
-                })
-            })
-            .then(function (userInfo) {
+                    console.log(5);
                 //console.log('get userinfo after update score:',userInfo.score);
                 //lay xep hang cua user
                 score = userInfo.score;

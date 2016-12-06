@@ -296,7 +296,7 @@ function editAnswer(index,require){
                 var isTrue = Number($('input[name=rightAnswer]:checked').val()) == Number(key) ? true : false;
                 //console.log(JSON.stringify($('input[name=rightAnswer]:checked').val(),2,2));
                 return {
-                    index: index,
+                    index: key,
                     answer: CKEDITOR.instances['answer'+key].getData(),
                     explanation: CKEDITOR.instances['answerExplain'+key].getData(),
                     isTrue: isTrue
