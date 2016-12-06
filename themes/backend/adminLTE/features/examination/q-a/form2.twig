@@ -69,8 +69,7 @@
                                     <label class="col-sm-3 control-label" for="quesion">Section <span
                                                 class="required">*</span></label>
                                     <div class="col-sm-9">
-                                        <select class="form-control" id="section_id" name="section_id"
-                                                required="required">
+                                        <select class="form-control" id="section_id" name="section_id" required="required">
                                             <option value="0">-- Choose --</option>
                                             {% if sections %}
                                                 {% for section in sections %}
@@ -84,8 +83,8 @@
                                     <label class="col-sm-3 control-label">Chapter</label>
                                     <div class="col-sm-9">
                                         <select class="form-control" name="chapter_id" id="chapter_id"
-                                                onchange="loadLesson()" required="required">
-                                            <option>-- Choose --</option>
+                                                onchange="loadLesson()">
+                                            <option value="0">-- Choose --</option>
                                             {% if chapters %}
                                                 {% for chapter in chapters %}
                                                     <option value="{{ chapter.id }}"{% if chapter.id == question.chapter_id %} selected{% endif %}>{{ chapter.title }}</option>
@@ -98,8 +97,8 @@
                                     <label class="col-sm-3 control-label">Lesson</label>
 
                                     <div class="col-sm-9">
-                                        <select class="form-control" name="lesson" id="lesson" required="required">
-                                            <option>-- choose --</option>
+                                        <select class="form-control" name="lesson" id="lesson">
+                                            <option value="">-- Choose --</option>
                                         </select>
                                     </div>
                                 </div>

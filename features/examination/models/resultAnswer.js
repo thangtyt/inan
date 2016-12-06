@@ -27,6 +27,6 @@ module.exports = function (sequelize, DataTypes) {
         }
     }, {
         tableName: "tk_resultAnswer",
-        onDelete: 'restrict'
+        onDelete: 'NO ACTION'
     })
 };

@@ -9,6 +9,10 @@
 
 module.exports = function (action, component, app) {
 
+
+    action.examUserFindAll = function (conditions) {
+        return app.models.userResult.findAll(conditions);
+    }
     /**
      * Find exam by ID
      * @param id {integer} - Id of exam

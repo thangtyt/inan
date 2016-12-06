@@ -29,11 +29,14 @@ module.exports = function (sequelize, DataTypes) {
         },
         chapter_id: {
             type: DataTypes.UUID,
-            allowNull: false
+            set: function (val) {
+                if( val !== '' ){
+                    this.setDataValue('chapter_id', val);
+                }
+            }
         },
         lesson: {
-            type: DataTypes.STRING,
-            allowNull: false
+            type: DataTypes.STRING
         },
         require: {
             type: DataTypes.INTEGER,
@@ -99,6 +102,6 @@ module.exports = function (sequelize, DataTypes) {
         tableName: 'tk_question',
         createdAt: 'created_at',
         updatedAt: 'updated_at',
-        onDelete: 'restrict'
+        onDelete: 'no action'
     });
 }

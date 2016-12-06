@@ -3,6 +3,7 @@
  */
 let jwt = require('jsonwebtoken');
 exports.jwt = function (req,res,next) {
+
     let jwt_conf = this.getConfig('jwt');
     //let token = req.body.token || req.query.token || req.headers['x-access-token'];
     let token ;
@@ -11,7 +12,7 @@ exports.jwt = function (req,res,next) {
     }catch(err){
         token = null;
     }
-    //console.log(token);
+
     if(token){
         jwt.verify(token,jwt_conf.jwtSecretKey, function (err,decoded) {
             //console.log(decoded);

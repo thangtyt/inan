@@ -44,8 +44,8 @@ module.exports = function (action, component, app) {
     /**
      * Count categories
      */
-    action.secCount = function () {
-        return app.models.section.count();
+    action.secCount = function (conditions) {
+        return app.models.section.count(conditions);
     };
 
     /**

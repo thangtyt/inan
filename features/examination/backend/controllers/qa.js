@@ -55,22 +55,22 @@ module.exports = function (controller,component,app) {
                     data_type : 'string'
                 }
             },
-            {
-                column : 'chapter.title',
-                width : '15%',
-                header : 'Chapter',
-                filter : {
-                    data_type : 'string'
-                }
-            },
-            {
-                column : 'lesson',
-                width : '10%',
-                header : 'Lesson',
-                filter : {
-                    data_type : 'string'
-                }
-            },
+            //{
+            //    column : 'chapter.title',
+            //    width : '15%',
+            //    header : 'Chapter',
+            //    filter : {
+            //        data_type : 'string'
+            //    }
+            //},
+            //{
+            //    column : 'lesson',
+            //    width : '10%',
+            //    header : 'Lesson',
+            //    filter : {
+            //        data_type : 'string'
+            //    }
+            //},
             {
                 column : 'level',
                 width : '10%',
@@ -116,12 +116,12 @@ module.exports = function (controller,component,app) {
             limit: filter.limit,
             offset: (page-1)*itemOfPage,
             include: [
-                {
-                    model: app.models.chapter,
-                    attributes: ['title'],
-                    as: 'chapter',
-                    where: ['1 = 1']
-                },
+                //{
+                //    model: app.models.chapter,
+                //    attributes: ['title'],
+                //    as: 'chapter',
+                //    where: ['1 = 1']
+                //},
                 {
                     model: app.models.subject,
                     attributes: ['title','class'],
@@ -131,6 +131,8 @@ module.exports = function (controller,component,app) {
             ]
         })
         .then(function (results) {
+
+                console.log(JSON.stringify(results,2,2));
                 let totalPage = Math.ceil(results.count / itemOfPage);
                 let items = results.rows;
                 res.backend.render('q-a/list',{
@@ -143,6 +145,7 @@ module.exports = function (controller,component,app) {
                     baseRoute: baseRoute
                 })
         }).catch(function (err) {
+                console.log(err);
             logger.error(err.message);
             res.backend.render('q-a/list',{
                 title : 'List All Questions & Answers',
@@ -187,7 +190,7 @@ module.exports = function (controller,component,app) {
         }catch(err){
             answers = []
         }
-        //console.log(data);
+        console.log(answers);
         let question_id = '';
         //begin insert to database
         actions.questionCreate(data)
@@ -230,7 +233,7 @@ module.exports = function (controller,component,app) {
                 }
         })
         .catch(function (err) {
-                //console.log(err);
+                console.log(err);
             req.flash.error(err.message);
             res.redirect(baseRoute+'/create');
         })

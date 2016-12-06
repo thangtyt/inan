@@ -12,7 +12,7 @@ module.exports = function (controller,component,app) {
         })
         .then(function (subjects) {
                 subjects = subjects.filter(function (val) {
-                    console.log(JSON.stringify(val,3,3));
+                    //console.log(JSON.stringify(val,3,3));
                     if(typeof val.icons == 'string'){
                         try{
                             val.icons = JSON.parse(val.icons);

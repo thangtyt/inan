@@ -22,17 +22,17 @@ module.exports = function (component, app) {
                 handler: [controller.examLists]
             }
         },
-        "/exam/:examId":{
+        "/exam/:examId([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})":{
             get : {
                 handler: [jwtAuth,controller.getExamDetail]
             }
         },
-        "/exam/subject/:subjectId": {
+        "/exam/subject/:subjectId([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})": {
             get: {
                 handler: controller.getExamsBySubject
             }
         },
-        "/exam/answer/:answerId": {
+        "/exam/answer/:answerId([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})": {
             get: {
                 handler: [jwtAuth,controller.getRightKeyAnswer]
             }
@@ -51,6 +51,16 @@ module.exports = function (component, app) {
         "/subjects" : {
             get: {
                 handler: [controller.getSubjects]
+            }
+        },
+        "/user/exam-result/:examId([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})" : {
+            get: {
+                handler: [jwtAuth,controller.eGetUserExamResult]
+            }
+        },
+        "/user/user-exam" : {
+            get: {
+                handler: [jwtAuth,controller.eGetUserExam]
             }
         }
     }

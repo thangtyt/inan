@@ -172,10 +172,7 @@ module.exports = function (controller,component,app) {
                 //console.log(err);
             res.redirect(baseRoute);
         })
-        
-        //console.log(JSON.stringify(form,2,2));
-        
-        //res.backend.render('exam/list');
+
     }
 
 }

@@ -153,47 +153,63 @@ module.exports = function (controller, component, app) {
     controller.sDelete = function (req, res) {
         let actions = app.feature.examination.actions;
         let ids = [];
-        //console.log('11111');
         if (req.params.subjectId){
             ids = [req.params.subjectId]
         }else{
             ids = req.body.ids.split(',');
         }
-        actions.cDelete({
-            where : {
-                id: {
-                    $in: ids
+        Promise.all([
+            actions.secCount({
+                where: {
+                    subject_id: {
+                        $in : ids
+                    }
                 }
+            }),
+            actions.questionCount({
+                where: {
+                    subject_id: {
+                        $in : ids
+                    }
+                }
+            })
+        ]).then(function (resultCount) {
+            if(resultCount[0] > 0 || resultCount[1] > 0){
+                throw new Error();
+            }else{
+                return actions.cDelete({
+                    where: {
+                        subject_id: {
+                            $in: ids
+                        }
+                    }
+                }).then(function (deleteChapter) {
+                    return actions.sDelete({
+                        where: {
+                            id: {
+                                $in: ids
+                            }
+                        }
+                    })
+                })
             }
-        }).then(function (result) {
-            req.flash.success('Delete successfully !');
-            res.jsonp({
-                error: null
-            });
+        })
+        .then(function (result) {
+            if (result){
+                req.flash.success('Delete successfully !');
+                return res.jsonp({
+                    error: null
+                });
+            }else{
+                throw new Error();
+            }
+
         }).catch(function (err) {
             req.flash.error('You cannot delete one of subjects !');
-            res.jsonp({
+            return res.jsonp({
                 error: 'You cannot delete one of subjects !'
             });
         });
-        //app.models.transaction(function (t) {
-        //    let sectionsToDelete = [];
-        //    ids.map(function (secId) {
-        //        sectionsToDelete.push(app.models.section.destroy({
-        //            where: {
-        //                id: secId
-        //            }
-        //        },{transaction: t}));
-        //    })
-        //    return Promise.all(sectionsToDelete);
-        //}).then(function (result) {
-        //    console.log(result);
-        //}).catch(function (err) {
-        //    console.log(err);
-        //})
-        //console.log(ids);
-        //res.redirect(baseRoute);
-        //res.sendStatus(200);
     };
     controller.sUpdate = function (req, res,next) {
         let actions = app.feature.examination.actions;
@@ -201,7 +217,6 @@ module.exports = function (controller, component, app) {
         let data = req.body;
 
         let _icons = data.icons.split('::');
-        console.log(_icons);
         data.icons = {
             id: _icons[0],
             name: _icons[1],
@@ -210,9 +225,7 @@ module.exports = function (controller, component, app) {
                 hover: _icons[3]
             }
         };
-        console.log(JSON.stringify(data,3,3));
         data.icons = JSON.stringify(data.icons);
-
         let toolbar = new ArrowHelper.Toolbar();
         toolbar.addBackButton(req, 'sView_back_link');
         toolbar.addSaveButton();
@@ -250,12 +263,14 @@ module.exports = function (controller, component, app) {
                                 chapters = [];
                             }
                             chapters.map(function (chapter) {
+                                console.log(chapter.lessons);
                                 try {
                                     chapter.lessons = JSON.stringify(chapter.lessons);
                                 } catch (err) {
                                     //console.log(err);
                                     chapter.lessons = []
                                 }
+                                console.log(chapter.lessons);
                                 chapterPromise.push(
                                     actions.cCreate({
                                         id: chapter.id,

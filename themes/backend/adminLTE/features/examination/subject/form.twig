@@ -18,7 +18,7 @@
                                                value="{{ subject.title }}"/>
                                     </div>
                                     <div class="form-group">
-                                        <label for="desc">Icon {{ subject.icons }}</label>
+                                        <label for="desc">Icon</label>
                                         <select class="form-control" name="icons" id="icons">
                                             {% for item in icons %}
                                                 <option value="{{ item.id }}::{{ item.name }}::{{ item.icon.default }}::{{ item.icon.hover }}"{% if item.id == subject.icons.id %} selected="selected" {% endif %}>{{ item.name }}</option>
@@ -86,10 +86,10 @@
     {#<script src="/backend/adminLTE/assets/plugins/jQueryUI/jquery-ui.min.js" type="text/javascript"></script>#}
     <script src="/backend/adminLTE/dist/js/jquery.nestable.js"></script>
     <script>
+        var btnDelete = '<a style="cursor: pointer" onclick="removeChapter(\'::id::\')" class="pull-right"><i class="fa fa-times"></i></a>';
         var elementHtml = '<li class="dd-item dd3-item" data-id="::id::">' +
-                '<div class="dd3-content" id="::id::">::value::</div>' +
+                '<div class="dd3-content" id="::id::">::value::<a style="cursor: pointer" onclick="removeChapter(\'::id::\')" class="pull-right"><i class="fa fa-times"></i></a></div>' +
                 '<div class="dd-handle dd3-handle"><i class="icon-move"></i></div>' +
-
                 '</li>';
         var editForm = $('#edit-form');
         var chapters = [];
@@ -119,6 +119,9 @@
                 //console.log(JSON.stringify($('#chapterNestable').data()));
             });
         });
+        function removeChapter(id){
+            $('li[data-id='+id+']').remove();
+        }
         function addElement() {
             $('#chapterList').append(elementHtml.replace(/::id::/g, uuid()).replace('::value::', $('#titleElement').val()));
             $('#titleElement').val('');
@@ -182,14 +185,14 @@
             data.map(function (chapter) {
                 var html = '';
                 html+='<li class="dd-item dd3-item" data-id="'+chapter.id+'">' +
-                '<div class="dd3-content" id="'+chapter.id+'">'+chapter.title+'</div>' +
+                '<div class="dd3-content" id="'+chapter.id+'">'+chapter.title+btnDelete.replace('::id::',chapter.id)+'</div>' +
                 '<div class="dd-handle dd3-handle"><i class="icon-move"></i></div>';
                 if(chapter.lessons.length > 0){
 
                     chapter.lessons.map(function (lesson) {
                         html+='<ol class="dd-list">';
                         html+='<li class="dd-item dd3-item" data-id="'+lesson.id+'">' +
-                        '<div class="dd3-content" id="'+lesson.id+'">'+lesson.title+'</div>' +
+                        '<div class="dd3-content" id="'+lesson.id+'">'+lesson.title+btnDelete.replace('::id::',chapter.id)+'</div>' +
                         '<div class="dd-handle dd3-handle"><i class="icon-move"></i></div>';
                         html+='</ol>'
                     })

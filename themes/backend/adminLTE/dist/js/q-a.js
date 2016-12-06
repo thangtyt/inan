@@ -16,7 +16,7 @@ function loadChapter(subject_id){
             $('#chapter_id').empty();
             //$('#chapter_id').append();
             chapters = result;
-            $('#chapter_id').append(new Option('-- Choose --',0));
+            $('#chapter_id').append(new Option('-- Choose --',''));
             chapters.map(function (val) {
                 var opt = new Option(val.title,val.id);
                 $('#chapter_id').append(opt);
@@ -28,7 +28,7 @@ function loadChapter(subject_id){
         }).done(function(results){
             if(!results.hasOwnProperty('error')){
                 $('#section_id').empty();
-                $('#section_id').append(new Option('-- Choose --',0));
+                $('#section_id').append(new Option('-- Choose --',''));
                 results.map(function (val) {
                     var opt = new Option(val.title,val.id);
                     $('#section_id').append(opt);
@@ -37,7 +37,7 @@ function loadChapter(subject_id){
         });
     }else{
         $('#chapter_id').empty();
-        $('#chapter_id').append(new Option('-- Choose --',0));
+        $('#chapter_id').append(new Option('-- Choose --',''));
     }
 }
 function loadLesson(chapter_id){
@@ -82,7 +82,7 @@ function renderEditAnswerChoose(index){
         //$('select[name=editAnswerIndex]').attr('selected', true);
 
     }else{
-        $('#addQuestionBtn').removeClass('hidden');
+        $('#addQuestionBtn').addClass('hidden');
         $('#editQuestionBtn').addClass('hidden');
         $('#divEditAnswer').addClass('hidden');
     }
@@ -90,10 +90,12 @@ function renderEditAnswerChoose(index){
 function requirementQuestion(require){
     var isRequire = require || $('#require option:selected').val();
     if(Number(isRequire) == 1){
+        console.log('1');
         $('#requirementContent').removeClass('hidden');
         $('button[name=btnRequireAnswer]').removeClass('hidden');
         renderEditAnswerChoose();
     }else{
+        console.log(0);
         $('#requirementContent').addClass('hidden');
         $('button[name=btnRequireAnswer]').addClass('hidden');
         renderEditAnswerChoose();
@@ -291,17 +293,19 @@ function editAnswer(index,require){
     }else{
         var answerContent = CKEDITOR.instances['answerContent'].getData();
         if (answers[index] != undefined){
-            answers[index].answer_keys = [0,1,2,3].map(function (key) {
+            let _answersKeys = []
+            [0,1,2,3].map(function (key) {
                 //console.log(Number($('input[name=rightAnswer]:checked').val()));
                 var isTrue = Number($('input[name=rightAnswer]:checked').val()) == Number(key) ? true : false;
                 //console.log(JSON.stringify($('input[name=rightAnswer]:checked').val(),2,2));
-                return {
+                answersKeys.push( {
                     index: key,
                     answer: CKEDITOR.instances['answer'+key].getData(),
                     explanation: CKEDITOR.instances['answerExplain'+key].getData(),
                     isTrue: isTrue
-                }
+                })
             });
+            answers[index].answer_keys = _answersKeys;
             answers[index].mark = $('#answerMark').val();
             answers[index].content = answerContent;
             answers[index].time = $('#answerTime').val();

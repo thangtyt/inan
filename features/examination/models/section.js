@@ -54,6 +54,6 @@ module.exports = function (sequelize, DataTypes) {
         tableName: "tk_section",
         createdAt: 'created_at',
         updatedAt: 'updated_at',
-        onDelete: 'restrict'
+        onDelete: 'no action'
     });
 }

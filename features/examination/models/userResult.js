@@ -25,9 +25,26 @@ module.exports = function (sequelize, DataTypes) {
         },
         level: {
             type: DataTypes.INTEGER
+        },
+        updated_at: {
+            type: DataTypes.DATE,
+            validate: {
+                isDate: {
+                    msg: 'Invalid date value'
+                }
+            }
+        },
+        created_at: {
+            type: DataTypes.DATE,
+            validate: {
+                isDate: {
+                    msg: 'Invalid date value'
+                }
+            }
         }
     }, {
         tableName: "tk_userResult",
-        onDelete: 'restrict'
+        createdAt: 'created_at',
+        updatedAt: 'updated_at'
     })
 };

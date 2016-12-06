@@ -346,52 +346,53 @@ module.exports = function (controller, component, app) {
         //console.log('userRegisterInfo',user);
         let userInfo = req.body;
         user = optimizeUser(user,host);
-        if(userInfo){
-            user.userInfo = userInfo;
+        //console.log(JSON.stringify(userInfo,3,3));
+        if( userInfo ){
             userInfo.user_id = user.id;
-            Promise.all([app.models.userInfo.create(userInfo)])
-            .then(function (result) {
-                if(result){
-                    return app.models.user.find({
+            Promise.all([
+                        app.models.userInfo.findOrCreate({
+                        where: {
+                            user_id: user.id
+                        },
+                        defaults : userInfo
+                    }),
+                    app.models.user.find({
                         where: {
                             id: user.id
                         }
-                    });
-                }else{
-                    return new Error('Not create userInfo');
-                }
-
-            })
-            .then(function (_user) {
-                if(_user){
-                    return _user.updateAttributes({
-                        display_name : userInfo.full_name || '[no name]'
-
                     })
-                }else{
-                    return new Error('Not found user');
-                }
+            ])
+            .then(function (result) {
+                let _userInfo = result[0][0] ? result[0][0] : result[0][1];
+                return Promise.all([
+                        result[1].updateAttributes({
+                            display_name : userInfo.full_name || '[no name]'
+                        }),
+                        _userInfo.updateAttributes(userInfo)
+                    ])
+
             })
-            .then(function (_user) {
-                   _user = optimizeUser(JSON.parse(JSON.stringify(_user)),host);
-                    _user.userInfo = userInfo;
-                    _user.user_image = _user.user_image;//todo:dasdas
+            .then(function (result) {
+                   let _user = optimizeUser(JSON.parse(JSON.stringify(result[0])),host);
+                    _user.userInfo = result[1];
+                    _user.user_image = host+_user.user_image;
                     res.status(200);
                     res.jsonp({
                         user: _user
                     })
             })
             .catch(function (err) {
+                    console.log(err);
                 res.status(503);
                 res.jsonp({
-                    error: 'Cannot add user\'s informations'
+                    error: 'Cannot add user\'s information'
                 })
             })
 
         }else{
             res.status(503);
             res.jsonp({
-                error: 'Cannot add user\'s informations'
+                error: 'Not found data user\'s information send to server'
             })
         }
 
@@ -411,8 +412,7 @@ function optimizeUser(user,host){
             full_name : user.display_name,
             user_image : host+user.user_image_url,
             mark : Math.floor((Math.random() * 100) + 1),
-            level : Math.floor((Math.random() * 1000) + 1),
-            userInfo: user.userInfo
+            level : Math.floor((Math.random() * 1000) + 1)
         };
     }else{
         return user
