@@ -83,13 +83,14 @@ module.exports = function (controller, component, app) {
                 if (_.has(exam, 'subject')) {
                     try {
                         exam.subject.icons = JSON.parse(exam.subject.icons);
+                        exam.subject.icons.default = host+exam.subject.icons.default;
+                        exam.subject.icons.hover = host+exam.subject.icons.hover;
+                        return exam;
                     } catch (err) {
 
                     }
-                    exam.subject.icons.default = host+exam.subject.icons.default;
-                    exam.subject.icons.hover = host+exam.subject.icons.hover;
                 }
-                return exam;
+
             })
             res.status(200);
             res.jsonp({
@@ -98,7 +99,6 @@ module.exports = function (controller, component, app) {
                 items: exams
             })
         }).catch(function (err) {
-            //console.log(err);
             res.status(300);
             res.jsonp({
                 error: err.message
