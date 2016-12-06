@@ -4,6 +4,7 @@ module.exports = {
     subjects: [
         {
             name: "Toán",
+            id: "1",
             icon: {
                 default: '/img/icon/math.png',
                 hover: '/img/icon/math-hover.png'
@@ -11,6 +12,7 @@ module.exports = {
         },
         {
             name: "Hóa Học",
+            id: "2",
             icon: {
                 default: '/img/icon/chemistry.png',
                 hover: '/img/icon/chemistry-hover.png'
@@ -18,6 +20,7 @@ module.exports = {
         },
         {
             name: "Sinh học",
+            id: "3",
             icon: {
                 default: '/img/icon/biology.png',
                 hover: '/img/icon/biology-hover.png'
@@ -25,6 +28,7 @@ module.exports = {
         },
         {
             name: "Văn Học",
+            id: "4",
             icon: {
                 default: '/img/icon/literature.png',
                 hover: '/img/icon/literature-hover.png'
@@ -32,6 +36,7 @@ module.exports = {
         },
         {
             name: "Ngoại Ngữ",
+            id: "5",
             icon: {
                 default: '/img/icon/language.png',
                 hover: '/img/icon/language-hover.png'
@@ -39,6 +44,7 @@ module.exports = {
         },
         {
             name: "Giáo dục công dân",
+            id: "6",
             icon: {
                 default: '/img/icon/civics.png',
                 hover: '/img/icon/civics-hover.png'
@@ -46,6 +52,7 @@ module.exports = {
         },
         {
             name: "Địa lý",
+            id: "7",
             icon: {
                 default: '/img/icon/geography.png',
                 hover: '/img/icon/geography-hover.png'
@@ -53,6 +60,7 @@ module.exports = {
         },
         {
             name: "Vật Lý",
+            id: "8",
             icon: {
                 default: '/img/icon/physics.png',
                 hover: '/img/icon/physics-hover.png'
@@ -60,6 +68,7 @@ module.exports = {
         },
         {
             name: "Lịch sử",
+            id: "9",
             icon: {
                 default: '/img/icon/history.png',
                 hover: '/img/icon/history-hover.png'

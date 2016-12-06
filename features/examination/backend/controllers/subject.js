@@ -120,20 +120,21 @@ module.exports = function (controller, component, app) {
         })
         .then(function (subject) {
                 //console.log('VIEW ',subject);
+                subject.icons = JSON.parse(subject.icons);
             if(subject){
                 subject.chapters = subject['chapters'].sort(function (a, b) {
                     return a.index - b.index;
                 });
                 res.backend.render('subject/form', {
                     toolbar: toolbar.render(),
-                    subject: JSON.parse(JSON.stringify(subject)),
-                    icons: icons
+                    subject: subject,
+                    icons: JSON.parse(JSON.stringify(icons))
                 })
             }else{
                 res.backend.render('subject/form', {
                     toolbar: toolbar.render(),
-                    subject: JSON.parse(JSON.stringify(subject)),
-                    icons: icons
+                    subject: null,
+                    icons: JSON.parse(JSON.stringify(icons))
                 })
             }
 
@@ -198,6 +199,20 @@ module.exports = function (controller, component, app) {
         let actions = app.feature.examination.actions;
         let subjectId = req.params.subjectId;
         let data = req.body;
+
+        let _icons = data.icons.split('::');
+        console.log(_icons);
+        data.icons = {
+            id: _icons[0],
+            name: _icons[1],
+            icon: {
+                default: _icons[2],
+                hover: _icons[3]
+            }
+        };
+        console.log(JSON.stringify(data,3,3));
+        data.icons = JSON.stringify(data.icons);
+
         let toolbar = new ArrowHelper.Toolbar();
         toolbar.addBackButton(req, 'sView_back_link');
         toolbar.addSaveButton();
