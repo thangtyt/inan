@@ -83,8 +83,8 @@ module.exports = function (controller, component, app) {
                 if (_.has(exam, 'subject')) {
                     try {
                         exam.subject.icons = JSON.parse(exam.subject.icons);
-                        exam.subject.icons.default = host+exam.subject.icons.default;
-                        exam.subject.icons.hover = host+exam.subject.icons.hover;
+                        exam.subject.icons.icon.default = host+exam.subject.icons.icon.default;
+                        exam.subject.icons.icon.hover = host+exam.subject.icons.icon.hover;
                         return exam;
                     } catch (err) {
 
