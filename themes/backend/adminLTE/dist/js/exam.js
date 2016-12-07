@@ -31,6 +31,7 @@ let sectionDiv = `
                 </div>`;
 
 function loadSections(){
+    var selectValue = [];
     var subjectId = $('select[name="subject_id"]').val();
     $.ajax({
         url: '/admin/examination/exam/list-section/'+subjectId,
@@ -40,15 +41,35 @@ function loadSections(){
         select2Sections.append(new Option('--Choose Subject--'));
         select2Sections.empty();
         results.map(function (section) {
+            if(_sections.length > 0 && $.inArray(section.id,_sections) != -1){
+                selectValue.push({
+                    id: section.id,
+                    text: section.title
+                })
+            }
             var opt = new Option(section.title,section.id);
-
             select2Sections.append(opt);
-            //select2Sections.trigger('change');
         });
-
+        if(_sections.length > 0){
+            select2Sections.select2('destroy');
+            select2Sections.select2({
+                templateSelection: function (option) {
+                    var text = $(option.element).text().trim();
+                    text = text.replace(/^[—]+/, '');
+                    return text;
+                }
+            });
+            //console.log(JSON.parse(_sections));
+            select2Sections.select2('val',_sections);
+            //select2Sections.val(_sections).trigger('change');
+            selectValue.map(function (ele) {
+                addSection(ele);
+            })
+        }
     });
 }
 function addSection(element) {
+    //console.log(JSON.stringify(element,2,2));
     var content = sectionDiv.replace(/\$id\$/g,element.id);
     content = content.replace(/\$section-title\$/g,element.text);
     $('#examDetail').append(content);
@@ -66,6 +87,7 @@ function addSection(element) {
         });
         //console.log(JSON.stringify(questions,3,3));
         questions.map(function (question) {
+            //console.log(question);
             var opt = new Option(question.title,question.id);
             $('#question-'+element.id).append(opt);
         });
@@ -76,12 +98,35 @@ function addSection(element) {
         $('#question-'+element.id).on('select2:unselect', function (e) {
             removeElement(element.id,e.params.data.id);
         });
+
+        //for update exam
+        var _question = [];
+        //console.log(JSON.stringify(_content,2,2));
+        if( _content ){
+            _content.map(function (con) {
+                if (con.section_id == element.id){
+                    con.questions.map(function (ques) {
+                        _question.push(ques);
+                    })
+
+                }
+            });
+            //console.log('update',JSON.stringify(_question,2,2));
+            //$('#question-'+element.id).val(_question).trigger();
+            $('#question-'+element.id).select2('val',_question);
+
+            _question.map(function (ques) {
+                //console.log(ques);
+                addElement(element.id,ques);
+            })
+        }
     });
 }
 function removeSection(element){
     $('#'+element.id).remove();
 }
 function addElement(section_id,question_id){
+    //console.log('test');
     if(question_id == null){
         content.push({
             section_id: section_id,
@@ -118,23 +163,3 @@ function removeElement(section_id,question_id){
     }
     //console.log(JSON.stringify(content,2,2));
 }
-//<div class="form-group">
-//<div class="col-xs-12 table-responsive">
-//<table class="table table-bordered table-hover dataTable">
-//<thead style="background-color: #d2d6de">
-//<th width="5%">
-//    ?
-//</th>
-//<th>
-//Answer Key
-//</th>
-//<th width="10%">
-//#
-//</th>
-//</thead>
-//<tbody id="answerList">
-//
-//</tbody>
-//</table>
-//</div>
-//</div>

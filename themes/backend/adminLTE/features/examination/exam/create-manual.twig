@@ -38,9 +38,9 @@
                                 <div class="form-group">
                                     <label>Subject</label>
                                     <select class="form-control" name="subject_id" required="required" onchange="loadSections()">
-                                        <option> --Choose Subject-- </option>
+                                        <option value=""> --Choose Subject-- </option>
                                         {% for subject in subjects %}
-                                            <option value="{{ subject.id }}">{{ subject.title }}</option>
+                                            <option value="{{ subject.id }}" {% if exam.subject_id == subject.id %} selected{% endif %}>{{ subject.title }}</option>
                                         {% endfor %}
                                     </select>
                                 </div>
@@ -75,9 +75,9 @@
                                     <label for="sections">Choose section</label>
                                     <br>
                                     <select multiple="multiple" style="width: 100%" name="select2sections" id="select2sections"
-                                            class="form-control" required="required">
+                                            class="form-control">
                                     </select>
-                                    <input type="hidden" name="sections" id="sections"/>
+                                    {#<input type="hidden" name="sections" id="sections"/>#}
                                 </div>
 
                             </div>
@@ -94,7 +94,14 @@
 
     <script>
         var select2Sections = $('#select2sections');
-
+        var _sections = [];
+        var _content ;
+        {% if exam.content %}
+            var _content = {{ exam.content | dump | safe }};
+        {% endif %}
+        {% if exam.sections %}
+        _sections = {{ exam.sections | dump | safe }};
+        {% endif %}
 //        CKEDITOR.replace( 'question', {
 //            height: 200
 //        } );
@@ -122,7 +129,6 @@
             select2Sections.on('select2:select', function (e) {
                 addSection(e.params.data);
                 addElement(e.params.data.id,null);
-
             });
             select2Sections.on('select2:unselect', function (e) {
                 removeSection(e.params.data);
@@ -131,9 +137,34 @@
             $('#edit-form').submit(function () {
                 $('#content').val(JSON.stringify(content));
                 $('#sections').val(select2Sections.val());
-            })
-        });
+            });
+            {% if exam.sections %}
 
+            _sections = {{ exam.sections | dump | safe }};
+                loadSections();
+            //console.log(_sections);
+            //select2Sections.val(["f56d3168-7681-4f53-bbda-f3eb8275212e"]).trigger('change');
+
+            {% endif %}
+        });
+        function deleteRecords() {
+            var ids = [];
+            $("input:checkbox[name='ids[]']:checked").each(function () {
+                ids.push($(this).val());
+            });
+            $.ajax({
+                url: window.location.href,
+                type: 'DELETE',
+                success: function (error) {
+                    //console.log(JSON.stringify(result,2,2));
+                    // Do something with the result
+                    if(error)
+                        window.location.href = '{{ baseRoute }}/{{ exam.id }}';
+                    else
+                        window.location.href = '{{ baseRoute }}';
+                }
+            });
+        }
     </script>
     <script src="/backend/adminLTE/dist/js/exam.js"></script>
 {% endblock %}

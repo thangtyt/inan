@@ -79,8 +79,7 @@ module.exports = function (controller,component,app) {
                 alias : {
                     "0" : 'Basic' ,
                     "1" : 'Medium',
-                    "2" : 'Difficult',
-                    "3" : 'Very Difficult'
+                    "2" : 'Difficult'
                 },
                 filter : {
                     type : 'select',
@@ -95,9 +94,6 @@ module.exports = function (controller,component,app) {
                         },{
                             name : 'Difficult',
                             value : 2
-                        },{
-                            name : 'Very Difficult',
-                            value : 3
                         }
                     ],
                     display_key : 'name',

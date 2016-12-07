@@ -148,6 +148,11 @@ module.exports = function (component, app) {
                 handler : controller.eList,
                 authenticate : true,
                 permissions: permission.exam
+            },
+            delete : {
+                handler : controller.eDelete,
+                authenticate : true,
+                permissions: permission.exam
             }
         },
         "exam/page/:page": {
@@ -190,6 +195,19 @@ module.exports = function (component, app) {
                 permission: permission.exam
             }
         },
+        "exam/:examId" : {
+            get : {
+                handler: controller.eViewManual,
+                authenticate: true,
+                permission: permission.exam
+            },
+            post: {
+                handler: [controller.eUpdateManual,controller.eViewManual],
+                authenticate: true,
+                permission: permission.exam
+            }
+        },
+
         //END EXAM
         //SECTION
         "section" : {
