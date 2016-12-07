@@ -460,9 +460,10 @@ module.exports = function (controller, component, app) {
                             question.answers = question.answers.filter(function (answer) {
                                 answer.mark = Number(answer.mark);//todo: change mark to integer
                                 // compare with userAnswers
+                                let doFlash = false;
                                 userAnswers.map(function (_userAnswer) {
                                     if (_userAnswer.answer_id == answer.id){
-                                        console.log('11111');
+                                        doFlash = true;
                                         answer.user_answers = {
                                             isSure : _userAnswer.isSure,
                                             chose : _userAnswer.chose,
@@ -470,6 +471,8 @@ module.exports = function (controller, component, app) {
                                         }
                                     }
                                 });
+                                if(!doFlash)
+                                answer.user_answers = null;
                                 delete answer.question_id;
                                 //answer.result
                                 return answer;
