@@ -381,6 +381,112 @@ module.exports = function (controller, component, app) {
     controller.eGetUserExamResult = function (req,res) {
         let examId = req.params.examId;
         let user = req.user;
+        let actions = app.feature.examination.actions;
+        actions.examUserCount({
+            where: {
+                exam_id : examId,
+                user_id: user.id
+            }
+        }).then(function (examCount) {
+            if(examCount > 0){
+                return Promise.all([
+                    actions.examFind({
+                        where: {
+                            id: examId
+                        }
+                    }),
+                    actions.examUserResultFind({
+                        where: {
+                            user_id: user.id,
+                            exam_id: examId
+                        },
+                        attributes: ['id','time','mark'],
+                        order: 'created_at DESC'
+                    })
+                ])
+            }else{
+                throw new Error('You did not do this exam');
+            }
+        }).then(function (lists) {
+            let exam = lists[0];
+
+            let result = JSON.parse(JSON.stringify(exam));
+            result.user_result = JSON.parse(JSON.stringify(lists[1]));
+            result.timeDoExam = result.user_result.mark;
+            //console.log(JSON.stringify(result.user_result,2,2));
+            let sectionIds = [];
+            let questionIds = [];
+            exam.content.map(function (section) {
+                sectionIds.push(section.section_id);
+                section.questions.map(function (val) {
+                    questionIds.push(val);
+                })
+
+            });
+            Promise.all([
+                actions.secFindAll({
+                    where: {
+                        id: {
+                            $in: sectionIds
+                        }
+                    },
+                    include: [{
+                        model: app.models.question,
+                        where: {
+                            id: {
+                                $in: questionIds
+                            }
+                        },
+                        as: 'questions',
+                        include: [{
+                            model: app.models.answer,
+                            attributes: ['id', 'mark', 'content', 'time', 'answer_keys', 'question_id'],
+                            as: 'answers'
+                        }]
+                    }]
+                }),
+                app.models.resultAnswer.findAll({
+                    where: {
+                        user_result_id : result.user_result.id
+                    }
+                })
+            ])
+            .then(function (_result) {
+                    let sections = JSON.parse(JSON.stringify(_result[0]));
+                    let userAnswers = JSON.parse(JSON.stringify(_result[1]));
+                try{
+                    sections = sections.filter(function (section) {
+                        section.questions = section.questions.filter(function (question) {
+                            question.answers = question.answers.filter(function (answer) {
+                                answer.mark = Number(answer.mark);//todo: change mark to integer
+                                // compare with userAnswers
+                                userAnswers.map(function (_userAnswer) {
+                                    if (_userAnswer.answer_id == answer.id){
+                                        console.log('11111');
+                                        answer.user_answers = {
+                                            isSure : _userAnswer.isSure,
+                                            chose : _userAnswer.chose,
+                                            content: _userAnswer.content
+                                        }
+                                    }
+                                });
+                                delete answer.question_id;
+                                //answer.result
+                                return answer;
+                            })
+                            return question;
+                        })
+                        return section;
+                    });
+                }catch(err){
+                    sections = null;
+                }
+                result.content = JSON.parse(JSON.stringify(sections));
+                res.status(200).jsonp(result);
+            })
+        }).catch(function (err) {
+            res.status('204').jsonp(err.message);
+        })
 
     },
     controller.eGetUserExam = function (req,res) {

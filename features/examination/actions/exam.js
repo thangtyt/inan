@@ -12,6 +12,12 @@ module.exports = function (action, component, app) {
 
     action.examUserFindAll = function (conditions) {
         return app.models.userResult.findAll(conditions);
+    };
+    action.examUserCount = function (conditions) {
+        return app.models.userResult.count(conditions);
+    }
+    action.examUserResultFind = function (conditions) {
+        return app.models.userResult.findOne(conditions);
     }
     /**
      * Find exam by ID
