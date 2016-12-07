@@ -158,11 +158,23 @@ module.exports = function (controller, component, app) {
         }else{
             ids = req.body.ids.split(',');
         }
-        app.models.section.destroy({
-            where : {
-                id: {
-                    $in: ids
+        app.models.question.count({
+            where: {
+                section_id : {
+                    $in : ids
                 }
+            }
+        }).then(function (_questionCount) {
+            if(_questionCount > 0 ){
+                throw new Error();
+            }else{
+                return app.models.section.destroy({
+                    where : {
+                        id: {
+                            $in: ids
+                        }
+                    }
+                })
             }
         }).then(function (result) {
             req.flash.success('Delete successfully !');
@@ -170,7 +182,7 @@ module.exports = function (controller, component, app) {
                 error: null
             });
         }).catch(function (err) {
-            req.flash.error('You cannot delete one of sections !');
+            req.flash.error('Exits sections is used by user !');
             res.jsonp({
                 error: 'You cannot delete one of sections !'
             });
