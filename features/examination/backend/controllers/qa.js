@@ -44,6 +44,7 @@ module.exports = function (controller,component,app) {
                 type : 'title',
                 filter : {
                     data_type : 'string',
+                    filter_key: 'question.title',
                     length: 100
                 }
             },
@@ -55,22 +56,6 @@ module.exports = function (controller,component,app) {
                     data_type : 'string'
                 }
             },
-            //{
-            //    column : 'chapter.title',
-            //    width : '15%',
-            //    header : 'Chapter',
-            //    filter : {
-            //        data_type : 'string'
-            //    }
-            //},
-            //{
-            //    column : 'lesson',
-            //    width : '10%',
-            //    header : 'Lesson',
-            //    filter : {
-            //        data_type : 'string'
-            //    }
-            //},
             {
                 column : 'level',
                 width : '10%',
@@ -106,18 +91,13 @@ module.exports = function (controller,component,app) {
             limit: itemOfPage,
             backLink: 'qa_back_link'
         });
+        filter.order = req.params.sort ? req.params.sort : 'created_at DESC';
         actions.questionFindAndCountAll({
             where: filter.conditions,
             order: filter.order || 'created_at DESC',
             limit: filter.limit,
             offset: (page-1)*itemOfPage,
             include: [
-                //{
-                //    model: app.models.chapter,
-                //    attributes: ['title'],
-                //    as: 'chapter',
-                //    where: ['1 = 1']
-                //},
                 {
                     model: app.models.subject,
                     attributes: ['title','class'],
@@ -128,7 +108,7 @@ module.exports = function (controller,component,app) {
         })
         .then(function (results) {
 
-                console.log(JSON.stringify(results,2,2));
+                //console.log(JSON.stringify(results,2,2));
                 let totalPage = Math.ceil(results.count / itemOfPage);
                 let items = results.rows;
                 res.backend.render('q-a/list',{
@@ -141,7 +121,7 @@ module.exports = function (controller,component,app) {
                     baseRoute: baseRoute
                 })
         }).catch(function (err) {
-                console.log(err);
+                //console.log(err);
             logger.error(err.message);
             res.backend.render('q-a/list',{
                 title : 'List All Questions & Answers',
@@ -186,7 +166,7 @@ module.exports = function (controller,component,app) {
         }catch(err){
             answers = []
         }
-        console.log(answers);
+        //console.log(answers);
         let question_id = '';
         //begin insert to database
         actions.questionCreate(data)
@@ -229,7 +209,7 @@ module.exports = function (controller,component,app) {
                 }
         })
         .catch(function (err) {
-                console.log(err);
+                //console.log(err);
             req.flash.error(err.message);
             res.redirect(baseRoute+'/create');
         })
@@ -316,7 +296,7 @@ module.exports = function (controller,component,app) {
             })
 
         }).then(function (ids) {
-                let idsToDelete = []
+                let idsToDelete = [];
                 ids.map(function (element) {
                     idsToDelete.push(element.id);
                 })
@@ -346,16 +326,18 @@ module.exports = function (controller,component,app) {
         let actions = app.feature.examination.actions;
         //console.log('fsdfsdfsd');
         actions.examFindAll({
-            where: {
-                content: {
-                    $in : {
-                        questions: {
-                            $in: ids
+            attributes : ['content']
+        }).then(function (exams) {//todo: think another ways to compare
+            exams.map(function (exam) {
+                exam.content.map(function (cont) {
+                    cont.questions.map(function (ques) {
+                        if (ids.indexOf(ques) != -1){
+                            throw new Error('Cannot delete one of questions. It is used !');
                         }
-                    }
-                }
-            }
-        }).then(function (exams) {
+                    })
+                })
+            })
+            return actions.questionDelete(ids);
             //console.log(JSON.stringify(exams,2,2));
             return exams;
         }).then(function () {
@@ -363,9 +345,9 @@ module.exports = function (controller,component,app) {
             res.sendStatus(200);
         }).catch(function (err) {
             //console.log('dasdasdaerror');
-            //console.log(err);
-            logger.error(err);
-            req.flash.error('Name: ' + err.name + '<br />' + 'Message: ' + err.message);
+            console.log(err.message);
+            //logger.error(err);
+            req.flash.error(err.message);
             res.sendStatus(200);
         });
     };

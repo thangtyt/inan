@@ -49,14 +49,14 @@ module.exports = function (controller,component,app) {
                 header : 'Title',
                 link : baseRoute + '/' + '{id}',
                 filter : {
-                    data_type : 'string'
+                    data_type : 'string',
+                    filter_key: 'exam.title'
                 }
             },
             {
                 column : 'subject.title',
                 width : '20%',
                 header : 'Subject',
-                link : baseRoute + '/' + '{id}',
                 filter : {
                     data_type : 'string'
                 }
@@ -98,6 +98,7 @@ module.exports = function (controller,component,app) {
             backLink: 'qa_back_link'
         });
         filter.order = req.params.sort ? req.params.sort : 'created_at DESC';
+        console.log(filter.conditions);
         actions.examFindAll({
             where: filter.conditions,
             order: filter.order ,

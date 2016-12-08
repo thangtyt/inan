@@ -42,18 +42,12 @@ module.exports = function (sequelize, DataTypes) {
             type: DataTypes.INTEGER,
             defaultValue: 0
         },
-        /*
-            0: easy,
-            1: normal,
-            2: difficult
-            3: super star
-        */
         level: {
             type: DataTypes.INTEGER,
             defaultValue: 0,
             validate: {
                 min: 0,
-                max: 3
+                max: 2
             }
         },
         created_by: {

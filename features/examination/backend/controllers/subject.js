@@ -51,10 +51,11 @@ module.exports = function (controller, component, app) {
                 width: '10%',
                 header: 'class',
                 filter: {
-                    data_type: 'string'
+                    data_type: 'number'
                 }
             }
         ];
+        filter.order = req.params.sort ? req.params.sort : 'created_at DESC';
         let filter = ArrowHelper.createFilter(req, res, table, {
             rootLink: baseRoute + '/page/$page/sort',
             limit: itemOfPage,

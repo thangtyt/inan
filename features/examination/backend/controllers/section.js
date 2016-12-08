@@ -46,7 +46,8 @@ module.exports = function (controller, component, app) {
                 header: 'Title',
                 link: baseRoute + '/' + '{id}',
                 filter: {
-                    data_type: 'string'
+                    data_type: 'string',
+                    filter_key: 'section.title'
                 }
             },
             {
@@ -64,6 +65,7 @@ module.exports = function (controller, component, app) {
             limit: itemOfPage,
             backLink: 'section_back_link'
         });
+        filter.order = req.params.sort ? req.params.sort : 'created_at DESC';
         actions.secFindAndCountAll({
             where: filter.conditions,
             include: [{

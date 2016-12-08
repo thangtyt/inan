@@ -12,7 +12,7 @@ module.exports = {
         username: 'postgres',
         password: 'admin',
         dialect: 'postgres',
-        logging: false
+        logging: true
     },
     //db: {
     //    host: 'thithu-dev.caqfpadax79e.ap-southeast-1.rds.amazonaws.com',

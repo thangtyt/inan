@@ -12,7 +12,8 @@ module.exports = function (sequelize, DataTypes) {
         title: {
             type: DataTypes.STRING,
             unique: true,
-            allowNull: false
+            allowNull: false,
+            notEmpty: true
         },
         icons: {
             type: DataTypes.STRING
