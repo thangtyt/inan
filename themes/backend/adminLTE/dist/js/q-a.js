@@ -81,10 +81,12 @@ function renderEditAnswerChoose(index){
         });
         //$('select[name=editAnswerIndex]').attr('selected', true);
 
-    }else{
-        $('#addQuestionBtn').addClass('hidden');
-        $('#editQuestionBtn').addClass('hidden');
-        $('#divEditAnswer').addClass('hidden');
+    }else {
+        {
+            $('#addQuestionBtn').removeClass('hidden');
+            $('#editQuestionBtn').addClass('hidden');
+            $('#divEditAnswer').addClass('hidden');
+        }
     }
 }
 function requirementQuestion(require){
@@ -93,6 +95,11 @@ function requirementQuestion(require){
         console.log('1');
         $('#requirementContent').removeClass('hidden');
         $('button[name=btnRequireAnswer]').removeClass('hidden');
+        if(answers.length < 0){
+            $('#addQuestionBtn').removeClass('hidden');
+        }else{
+            $('#editQuestionBtn').removeClass('hidden');
+        }
         renderEditAnswerChoose();
     }else{
         console.log(0);
