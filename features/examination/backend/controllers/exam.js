@@ -98,24 +98,28 @@ module.exports = function (controller,component,app) {
             backLink: 'qa_back_link'
         });
         filter.order = req.params.sort ? req.params.sort : 'created_at DESC';
-        console.log(filter.conditions);
-        actions.examFindAll({
+        actions.examFindAndCountAll({
             where: filter.conditions,
             order: filter.order ,
             include: [
                 {
                     model: app.models.subject,
-                    auttributes: ['id','title'],
+                    attributes: ['id','title'],
                     as: 'subject'
                 }
             ],
             limit: filter.limit,
             offset: (page-1)*itemOfPage
-        }).then(function (items) {
+        }).then(function (result) {
+            let totalPage = Math.ceil(result.count / itemOfPage);
             res.backend.render('exam/list',{
                 title: 'List Of Exam',
                 toolbar : toolbar,
-                items: items
+                items: result.rows,
+                totalPage: totalPage,
+                currentPage: page,
+                queryString: (req.url.indexOf('?') == -1) ? '' : ('?' + req.url.split('?').pop()),
+                baseRoute: baseRoute
             })
         }).catch(function (err) {
             req.flash.error(err.message);

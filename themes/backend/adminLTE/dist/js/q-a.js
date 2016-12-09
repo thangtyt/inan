@@ -92,7 +92,6 @@ function renderEditAnswerChoose(index){
 function requirementQuestion(require){
     var isRequire = require || $('#require option:selected').val();
     if(Number(isRequire) == 1){
-        console.log('1');
         $('#requirementContent').removeClass('hidden');
         $('button[name=btnRequireAnswer]').removeClass('hidden');
         if(answers.length < 0){
@@ -102,7 +101,6 @@ function requirementQuestion(require){
         }
         renderEditAnswerChoose();
     }else{
-        console.log(0);
         $('#requirementContent').addClass('hidden');
         $('button[name=btnRequireAnswer]').addClass('hidden');
         renderEditAnswerChoose();
@@ -135,15 +133,21 @@ function initCkeditorBasic(list){
 
 }
 function changeRightAnswer(id){
-    //console.log('changeRightAnswer');
-    for(var i in [0,1,2,3]){
-       if($('#panelAnswer'+i).hasClass('box-success')){
-           $('#panelAnswer'+i).removeClass('box-success');
-           $('#panelAnswer'+i).addClass('box-danger');
-       }
-    }
+    //console.log(id);
+    var keys = [0,1,2,3];
+    keys.map(function (i) {
+        if($('#panelAnswer'+i).hasClass('box-success')){
+            $('#panelAnswer'+i).removeClass('box-success');
+            $('#panelAnswer'+i).addClass('box-danger');
+        }
+        if($('#answerRadio'+i).is(':checked')){
+            $('input[name=rightAnswer]').val(i);
+            $('#answerRadio'+i).prop('checked',true)
+        }
+    });
     $('#'+id).removeClass('box-danger');
     $('#'+id).addClass('box-success');
+    //console.log($('input[name=rightAnswer]').val());
 }
 
 
@@ -151,9 +155,9 @@ function changeRightAnswer(id){
 function addAnswer(){
     answerKeys = [];
     pushAnswer(1);
-    resetAnswer();
     renderView();
     renderEditAnswerChoose(null);
+    resetAnswer();
 }
 // reset
 function resetAnswer(){
@@ -169,6 +173,7 @@ function resetAnswer(){
     CKEDITOR.instances['answerExplain2'].setData('');
     CKEDITOR.instances['answerExplain3'].setData('');
     changeRightAnswer('panelAnswer0');
+    $('#answerRadio0').prop('checked',true);
     $('#editQuestionBtn').addClass('hidden');
     $('#addQuestionBtn').removeClass('hidden');
     renderEditAnswerChoose();
@@ -203,7 +208,7 @@ function renderView(){
         if( $('#question_type').prop('value') == 0 ){
             //var keyCode= 65;
             answers.map(function (answer) {
-                let answerContent = $('#require').val() == 0 ? CKEDITOR.instances.answerContent.getData() : answer.content;
+                var answerContent = $('#require').val() == 0 ? CKEDITOR.instances.answerContent.getData() : answer.content;
                     html += '<div class="col-lg-12">' +
                     '<p><b>Question: '+answerIndex+' : </b>'+answerContent+'</p>' +
                     '</div>' ;
@@ -237,7 +242,8 @@ function fillAnswer(index,require,content){
     CKEDITOR.instances['answerContent'].setData(answerContent);
     [0,1,2,3].map(function (i) {
         if(answers[index].answer_keys[i].isTrue){
-            $('input[name=rightAnswer][value='+i+']').prop('checked', true);
+            $('#answerRadio'+i).prop('checked', true);
+            $('input[name=rightAnswer]').val(i);
             changeRightAnswer('panelAnswer'+i);
         }
         CKEDITOR.instances['answer'+i].setData(answers[index].answer_keys[i].answer);
@@ -250,10 +256,12 @@ function fillAnswer(index,require,content){
 
 }
 function pushAnswer(require){
+    console.log('pushAnswer');
     //console.log("dasdasdas : ",CKEDITOR.instances);
     var answerContent = require == 0 ? "" : CKEDITOR.instances['answerContent'].getData();
     [0,1,2,3].map(function (i) {
         var isTrue = $('input[name=rightAnswer]').val() == i ? true : false;
+        console.log(isTrue, i);
         answerKeys.push({
             index: i,
             answer: CKEDITOR.instances['answer'+i].getData(),
@@ -272,12 +280,15 @@ function pushAnswer(require){
     answerKeys = [];
 }
 function editAnswer(index,require){
+    console.log('editAnswer');
     if(require == 0){
         var answerContent = require == 0 ? "" : CKEDITOR.instances['answerContent'].getData();
-        let _answer = [];
-        let answer_keys = [];
-        [0,1,2,3].map(function (key) {
-            var isTrue = Number($('input[name=rightAnswer]:checked').val()) == Number(key) ? true : false;
+        var _answer = [];
+        var answer_keys = [];
+        var keys = [0,1,2,3];
+        keys.map(function (key) {
+            var isTrue = Number($('input[name=rightAnswer]:checked').val()) == key ? true : false;
+            console.log(isTrue, key);
             answer_keys.push({
                 index: key,
                 answer: CKEDITOR.instances['answer'+key].getData(),
@@ -300,12 +311,13 @@ function editAnswer(index,require){
     }else{
         var answerContent = CKEDITOR.instances['answerContent'].getData();
         if (answers[index] != undefined){
-            let _answersKeys = []
-            [0,1,2,3].map(function (key) {
+            var _answersKeys = [];
+            var keys = [0,1,2,3];
+            keys.map(function (key) {
                 //console.log(Number($('input[name=rightAnswer]:checked').val()));
                 var isTrue = Number($('input[name=rightAnswer]:checked').val()) == Number(key) ? true : false;
                 //console.log(JSON.stringify($('input[name=rightAnswer]:checked').val(),2,2));
-                answersKeys.push( {
+                _answersKeys.push( {
                     index: key,
                     answer: CKEDITOR.instances['answer'+key].getData(),
                     explanation: CKEDITOR.instances['answerExplain'+key].getData(),

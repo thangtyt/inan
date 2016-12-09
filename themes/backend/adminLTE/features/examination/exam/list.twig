@@ -7,13 +7,10 @@
             <div class="box box-solid box-primary">
                 <div class="box-body table-responsive">
                     {% include 'basic_table/_table.' + getConfig('viewExtension') %}
-                    {{ paginateLinks(totalPage, currentPage,'/admin/blog/posts/page/{page}/sort/'+currentColumn+'/'+currentOrder+queryString)|safe }}
+                    {{ paginateLinks(totalPage, currentPage,'/admin/examination/exam/page/{page}/sort/'+currentColumn+'/'+currentOrder+queryString)|safe }}
                 </div>
             </div>
         </div>
-        {% if page.id %}
-            {{ getPluginExtension("page_" + page.id) | async | safe }}
-        {% endif %}
     </div>
 {% endblock %}
 {% block jsExtends %}
