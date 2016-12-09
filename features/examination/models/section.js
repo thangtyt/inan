@@ -20,8 +20,7 @@ module.exports = function (sequelize, DataTypes) {
             allowNull: false
         },
         total_mark: {
-            type: DataTypes.INTEGER,
-            allowNull: false
+            type: DataTypes.INTEGER
         },
         total_answers: {
             type: DataTypes.INTEGER
