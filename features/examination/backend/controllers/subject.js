@@ -176,6 +176,7 @@ module.exports = function (controller, component, app) {
                 }
             })
         ]).then(function (resultCount) {
+            console.log(resultCount);
             if(resultCount[0] > 0 || resultCount[1] > 0){
                 throw new Error();
             }else{
@@ -207,6 +208,7 @@ module.exports = function (controller, component, app) {
             }
 
         }).catch(function (err) {
+               // console.log(err);
             req.flash.error('You cannot delete one of subjects !');
             return res.jsonp({
                 error: 'You cannot delete one of subjects !'

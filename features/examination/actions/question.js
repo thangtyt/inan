@@ -44,8 +44,8 @@ module.exports = function (action, component, app) {
     /**
      * Count categories
      */
-    action.questionCount = function () {
-        return app.models.question.count();
+    action.questionCount = function (conditions) {
+        return app.models.question.count(conditions);
     };
 
     /**
