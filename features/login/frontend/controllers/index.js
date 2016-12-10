@@ -245,6 +245,7 @@ module.exports = function (controller, component, app) {
             }
 
         }).catch(function (err) {
+                console.log(err);
             res.status(503);
             res.jsonp({
                 user: null
@@ -403,21 +404,23 @@ module.exports = function (controller, component, app) {
     }
 };
 function optimizeUser(user,host){
+
     if(!user){
         return null;
     }else if(user.hasOwnProperty('display_name')){
+        console.log(user.user_image_url.indexOf('http://'));
         return {
             id : user.id,
             user_email : user.user_email,
             full_name : user.display_name,
-            user_image : host+user.user_image_url,
+            user_image : user.user_image_url.indexOf('http://') == -1 ? host+user.user_image_url : user.user_image_url,
             mark : Math.floor((Math.random() * 100) + 1),
             level : Math.floor((Math.random() * 1000) + 1)
         };
     }else{
         return user
     }
-
+    //console.log(user);
 }
 let tokenGenerate = function (length) {
     let text = "";
