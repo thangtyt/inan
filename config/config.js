@@ -14,5 +14,8 @@ module.exports = {
     long_stack: false,
     port: process.env.PORT || 8000,
     admin_prefix: 'admin',
-    ArrowHelper: '/library/js_utilities/'
+    ArrowHelper: '/library/js_utilities/',
+    token : {
+        timeExpires: 3600000
+    }
 };
