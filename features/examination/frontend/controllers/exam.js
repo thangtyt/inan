@@ -464,10 +464,19 @@ module.exports = function (controller, component, app) {
                                 userAnswers.map(function (_userAnswer) {
                                     if (_userAnswer.answer_id == answer.id){
                                         doFlash = true;
+                                        let right = false;
+                                        answer.answer_keys.map(function (key) {
+                                            if(key.isTrue){
+                                                if(key.index == _userAnswer.chose){
+                                                    right = true;
+                                                }
+                                            }
+                                        })
                                         answer.user_answers = {
                                             isSure : _userAnswer.isSure,
                                             chose : _userAnswer.chose,
-                                            content: _userAnswer.content
+                                            content: _userAnswer.content,
+                                            right: right
                                         }
                                     }
                                 });
