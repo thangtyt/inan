@@ -64,15 +64,16 @@ function loadSections(){
             //select2Sections.val(_sections).trigger('change');
             selectValue.map(function (ele) {
                 addSection(ele);
+                addElement(ele.id);
             })
         }
     });
 }
 function addSection(element) {
-    //console.log(JSON.stringify(element,2,2));
-    var content = sectionDiv.replace(/\$id\$/g,element.id);
-    content = content.replace(/\$section-title\$/g,element.text);
-    $('#examDetail').append(content);
+    //console.log('addSection',JSON.stringify(element,2,2));
+    var contentDiv = sectionDiv.replace(/\$id\$/g,element.id);
+    contentDiv = contentDiv.replace(/\$section-title\$/g,element.text);
+    $('#examDetail').append(contentDiv);
     $.ajax({
         url: '/admin/examination/exam/list-question/'+element.id,
         type: 'GET'
@@ -126,7 +127,7 @@ function removeSection(element){
     $('#'+element.id).remove();
 }
 function addElement(section_id,question_id){
-    //console.log('test');
+    //console.log(section_id,question_id,content);
     if(question_id == null){
         content.push({
             section_id: section_id,
@@ -151,15 +152,18 @@ function removeElement(section_id,question_id){
             }
         }
     }else{
+        //console.log('question_id != null');
         if( content.length > 0 ){
             for(var i = 0 ; i < content.length ; i++){
                 if(content[i].section_id == section_id){
-                    for(var j = 0 ; j < content[i].questions.length ; j++){
-                        content[i].questions[j].slice(j,1);
-                    }
+                    content[i].questions = content[i].questions.filter(function (_question) {
+                        if(_question !== question_id){
+                            return _question;
+                        }
+                    })
                 }
             }
         }
     }
-    //console.log(JSON.stringify(content,2,2));
+    //console.log('removeElement',JSON.stringify(content,2,2));
 }

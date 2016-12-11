@@ -329,7 +329,7 @@ module.exports = function (controller,component,app) {
             })
         ])
         .then(function (result) {
-            console.log(JSON.stringify(result, 2, 2));
+            //console.log(JSON.stringify(result, 2, 2));
             res.backend.render('exam/create-manual',{
                 exam : result[0],
                 subjects: result[1],

@@ -176,7 +176,7 @@ module.exports = function (controller, component, app) {
                 }
             })
         ]).then(function (resultCount) {
-            console.log(resultCount);
+            //console.log(resultCount);
             if(resultCount[0] > 0 || resultCount[1] > 0){
                 throw new Error();
             }else{

@@ -139,12 +139,8 @@
                 $('#sections').val(select2Sections.val());
             });
             {% if exam.sections %}
-
             _sections = {{ exam.sections | dump | safe }};
                 loadSections();
-            //console.log(_sections);
-            //select2Sections.val(["f56d3168-7681-4f53-bbda-f3eb8275212e"]).trigger('change');
-
             {% endif %}
         });
         function deleteRecords() {
