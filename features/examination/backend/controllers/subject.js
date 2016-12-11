@@ -130,13 +130,14 @@ module.exports = function (controller, component, app) {
                 res.backend.render('subject/form', {
                     toolbar: toolbar.render(),
                     subject: subject,
-                    icons: JSON.parse(JSON.stringify(icons))
+                    icons: JSON.parse(JSON.stringify(icons)),
+                    baseRoute: baseRoute
                 })
             }else{
                 res.backend.render('subject/form', {
                     toolbar: toolbar.render(),
                     subject: null,
-                    icons: JSON.parse(JSON.stringify(icons))
+                    icons: ''
                 })
             }
 
@@ -153,6 +154,7 @@ module.exports = function (controller, component, app) {
         //})
     };
     controller.sDelete = function (req, res) {
+
         let actions = app.feature.examination.actions;
         let ids = [];
         if (req.params.subjectId){
@@ -176,7 +178,6 @@ module.exports = function (controller, component, app) {
                 }
             })
         ]).then(function (resultCount) {
-            //console.log(resultCount);
             if(resultCount[0] > 0 || resultCount[1] > 0){
                 throw new Error();
             }else{
@@ -200,15 +201,12 @@ module.exports = function (controller, component, app) {
         .then(function (result) {
             if (result){
                 req.flash.success('Delete successfully !');
-                return res.jsonp({
-                    error: null
-                });
+                return res.jsonp({});
             }else{
                 throw new Error();
             }
 
         }).catch(function (err) {
-               // console.log(err);
             req.flash.error('You cannot delete one of subjects !');
             return res.jsonp({
                 error: 'You cannot delete one of subjects !'

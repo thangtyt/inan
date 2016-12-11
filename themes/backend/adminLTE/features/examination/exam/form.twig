@@ -253,14 +253,9 @@
     </div>
 {% endblock %}
 {% block jsExtends %}
-    {#<script src="/backend/adminLTE/assets/plugins/jQuery/jQuery-2.1.4.min.js"></script>#}
+
     <script src="/backend/adminLTE/assets/plugins/ckeditor/ckeditor.js"></script>
-    {#<script src="/backend/adminLTE/assets/plugins/mathquill/mathquill.min.js"></script>#}
-    {#<script type="text/javascript" async#}
-            {#src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=AM_CHTML"></script>#}
-    {#<script type="text/javascript"#}
-            {#src="http://www.maths.nottingham.ac.uk/personal/drw/LaTeXMathML.js">#}
-    {#</script>#}
+
     <script>
 
         CKEDITOR.replace( 'question', {
@@ -279,22 +274,6 @@
             document.getElementById( 'ie8-warning' ).className = 'tip alert';
         }
 
-//        function latex(input){
-//            console.log(input.value);
-//            $('#answerDisplay').text(input.value) ;
-//        }
-//        var mathFieldSpan = document.getElementById('answer');
-//        var latexSpan = document.getElementById('answerDisplay');
-//
-//        var MQ = MathQuill.getInterface(2); // for backcompat
-//        var mathField = MQ.MathField(mathFieldSpan, {
-//            spaceBehavesLikeTab: true, // configurable
-//            handlers: {
-//                edit: function() { // useful event handlers
-//                    latexSpan.textContent = mathField.latex(); // simple API
-//                }
-//            }
-//        });
 
     </script>
 {% endblock %}

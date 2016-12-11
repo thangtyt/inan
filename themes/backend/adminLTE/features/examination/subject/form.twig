@@ -170,14 +170,14 @@
                 ids.push($(this).val());
             });
             $.ajax({
-                url: '{{ baseRoute }}',
+                url: window.location.href,
                 type: 'DELETE',
-                data: {
-                    ids: ['{{ subject.id }}']
-                },
                 success: function (result) {
                     // Do something with the result
-                    window.location.href = '{{ baseRoute }}';
+                    if(result.error)
+                        window.location.href = '{{ baseRoute }}/{{ subject.id }}';
+                    else
+                        window.location.href = '{{ baseRoute }}';
                 }
             });
         }

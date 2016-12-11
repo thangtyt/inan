@@ -80,10 +80,10 @@
             $.ajax({
                 url: window.location.href,
                 type: 'DELETE',
-                success: function (error) {
+                success: function (result) {
                     //console.log(JSON.stringify(result,2,2));
                     // Do something with the result
-                    if(error)
+                    if(result.error)
                         window.location.href = '{{ baseRoute }}/{{ section.id }}';
                     else
                         window.location.href = '{{ baseRoute }}';
