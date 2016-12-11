@@ -101,7 +101,7 @@ module.exports = function (controller, component, app) {
         }).catch(function (err) {
             res.backend.render('changePass',{
                 error : {
-                    message : 'This function is expires or not avaiable !'
+                    message : 'This function is expires or not available !'
                 }
             });
         })

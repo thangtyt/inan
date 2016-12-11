@@ -30,18 +30,18 @@ module.exports = function (component, app) {
                 //authenticate: 'front_local'
             }
         },
-        "/forgot/:token": {
-            get: {
-                handler : [controller.cPassView]
-            },
+        "/forgot-password/:token": {
+            //get: {
+            //    handler : [controller.cPassView]
+            //},
             post: {
                 handler: [controller.cPassSave]
             }
         },
-        "/forgot": {
-            get: {
-                handler: [controller.forgotview]
-            },
+        "/forgot-password": {
+            //get: {
+            //    handler: [controller.forgotview]
+            //},
             post: {
                 handler: [controller.forgot]
             }

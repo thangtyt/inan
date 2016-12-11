@@ -75,28 +75,38 @@ module.exports = function (controller, component, app) {
             }
         }).then(function (user) {
             if (data.password == null || data.password.length < 6){
-                req.flash.error('Password is null or too short !');
-                res.frontend.render('changePass');
+                res.status(500).jsonp({
+                    message: 'Password is null or too short !'
+                });
+                //req.flash.error('Password is null or too short !');
+                //res.frontend.render('changePass');
             }else{
                 if(!user){
-                    res.frontend.render('changePass',{
-                        error : {
-                            message : 'This function is expires or not avaiable !'
-                        }
+                    res.status(500).jsonp({
+                        message: 'Expires or not available !'
                     });
+                    //res.frontend.render('changePass',{
+                    //    error : {
+                    //        message : 'This function is expires or not avaiable !'
+                    //    }
+                    //});
                 }else{
-                    user.updateAttributes({
+                    return user.updateAttributes({
                         reset_password_expires : 0,
                         reset_password_token : '',
                         user_pass : user.hashPassword(data.password)
                     }).then(function (user) {
                         if(user){
-                            req.flash.success('Change password successfully !');
-                            req.flash.success('Please re-login with a new password !');
-                            res.redirect('/admin/login');
+                            res.status(200).jsonp({
+                                message: 'Password update successfully !'
+                            });
+                            //req.flash.success('Change password successfully !');
+                            //req.flash.success('Please re-login with a new password !');
+                            //res.redirect('/admin/login');
                         }else{
-                            req.flash.error('Change password un-successfully ! \n Please re-enter new password !');
-                            res.frontend.render('changePass');
+                            throw new Error('Error when user try to change password !');
+                            //req.flash.error('Change password un-successfully ! \n Please re-enter new password !');
+                            //res.frontend.render('changePass');
                         }
 
                     })
@@ -105,29 +115,33 @@ module.exports = function (controller, component, app) {
             }
 
         }).catch(function (err) {
-            res.frontend.render('changePass',{
-                error : {
-                    message : 'This function is expires or not avaiable !'
-                }
+            res.status(500).jsonp({
+                message: err.message
             });
+            //res.frontend.render('changePass',{
+            //    error : {
+            //        message : 'This function is expires or not avaiable !'
+            //    }
+            //});
         })
     };
     controller.forgot = function (req,res) {
-        app.feature.users.actions.findByEmail( req.body.email)
+        app.feature.users.actions.findByEmail(req.body.email)
             .then(function (user) {
+                //console.log(user);
                 if(!user){
-                    res.frontend.render('forgot',{
-                        messages : {
-                            error : ['E-mail is not registered !','Please enter another e-mail']
-                        }
+                    res.status(500).jsonp({
+                            message : 'E-mail is not registered ! Please enter another e-mail'
                     });
                 }else{
-                    let href = req.protocol + '://'+req.get('host')+req.originalUrl;
-                    user.updateAttributes({
-                        reset_password_expires : Date.now() + Number(app.getConfig('timeExpires')),
+                    let href = 'dadasda';//req.protocol + '://'+req.get('host')+req.originalUrl;
+                    console.log(app.getConfig('token.timeExpires'));
+                    return user.updateAttributes({
+                        reset_password_expires : Number(Date.now()) + Number(app.getConfig('token.timeExpires')),
                         reset_password_token : tokenGenerate(50)
                     })
                     .then(function (userUpdated) {
+                            console.log(2222);
                             if(userUpdated){
                                 href += '/'+userUpdated.reset_password_token;
                                 let transporter = nodeMailer.createTransport(mailConfig);
@@ -138,31 +152,30 @@ module.exports = function (controller, component, app) {
                                 <p>Please click link below to continue reset your password</>
                                 <p><a href='`+href+`'>`+href+`</a></p>`
                                 };
-                                transporter.sendMail(message, function (err,info) {
-                                    if(err){
-                                        req.flash.error(err.message);
-                                        res.frontend.render('forgot');
-                                    }else{
-                                        res.frontend.render('forgot',{
-                                            sendEmail : user.user_email
+                                return transporter.sendMail(message, function (err,info) {
+                                    if(!err){
+                                        res.status(200).jsonp({
+                                            message: 'Please check '+req.body.email+' to reset password !'
                                         });
+                                        //res.frontend.render('forgot');
+                                    }else{
+                                        throw new Error('E-mail is not exist !');
+                                        //res.frontend.render('forgot',{
+                                        //    sendEmail : user.user_email
+                                        //});
                                     }
                                 })
                             }else{
-                                return new Error('Error when send mail please try again');
+                                throw new Error('Expires or not available');
                             }
-                    })
-                    .catch(function (err) {
-                        return err;
                     })
 
                 }
         })
         .catch(function (err) {
-            res.frontend.render('forgot',{
-                messages : {
-                    error : [err.message]
-                }
+                console.log(err.message);
+            res.status(500).jsonp({
+                message : err.message
             });
         })
 
