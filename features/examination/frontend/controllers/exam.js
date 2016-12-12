@@ -454,6 +454,7 @@ module.exports = function (controller, component, app) {
             .then(function (_result) {
                     let sections = JSON.parse(JSON.stringify(_result[0]));
                     let userAnswers = JSON.parse(JSON.stringify(_result[1]));
+                    let detail_answers = [];
                 try{
                     sections = sections.filter(function (section) {
                         section.questions = section.questions.filter(function (question) {
@@ -471,13 +472,25 @@ module.exports = function (controller, component, app) {
                                                     right = true;
                                                 }
                                             }
-                                        })
+                                        });
                                         answer.user_answers = {
                                             isSure : _userAnswer.isSure,
                                             chose : _userAnswer.chose,
                                             content: _userAnswer.content,
                                             right: right
-                                        }
+                                        };
+                                        detail_answers.push({
+                                            answer_id : answer.id,
+                                            haveAnswer : true,
+                                            right: right,
+                                            isSure: _userAnswer.isSure,
+                                            chose: _userAnswer.chose
+                                        })
+                                    }else{
+                                        detail_answers.push({
+                                            answer_id : answer.id,
+                                            haveAnswer : false
+                                        })
                                     }
                                 });
                                 if(!doFlash)
@@ -494,6 +507,7 @@ module.exports = function (controller, component, app) {
                     sections = null;
                 }
                 result.content = JSON.parse(JSON.stringify(sections));
+                result.user_result.detail_answers = detail_answers;
                 res.status(200).jsonp(result);
             })
         }).catch(function (err) {
