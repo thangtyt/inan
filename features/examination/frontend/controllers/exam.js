@@ -4,7 +4,6 @@
 'use strict';
 let _ = require('arrowjs')._;
 module.exports = function (controller, component, app) {
-
     controller.examLists = function (req, res) {
         let actions = app.feature.examination.actions;
         let host = req.protocol + '://'+req.get('host');
@@ -84,7 +83,7 @@ module.exports = function (controller, component, app) {
             })
         })
 
-    }
+    };
     controller.getExamDetail = function (req, res) {
         let actions = app.feature.examination.actions;
         let host = req.protocol + '://'+req.get('host');
@@ -252,7 +251,7 @@ module.exports = function (controller, component, app) {
                 error: 'Not found answers'
             })
         }
-    }
+    };
     controller.submitExam = function (req, res) {
         let actions = app.feature.examination.actions;
         let user = req.user;
@@ -377,7 +376,7 @@ module.exports = function (controller, component, app) {
                 error: 'Not found data to update !'
             })
         }
-    }
+    };
     controller.eGetUserExamResult = function (req,res) {
         let examId = req.params.examId;
         let user = req.user;
@@ -514,7 +513,7 @@ module.exports = function (controller, component, app) {
             res.status('204').jsonp(err.message);
         })
 
-    },
+    };
     controller.eGetUserExam = function (req,res) {
         let user = req.user;
         let actions = app.feature.examination.actions;
@@ -577,7 +576,69 @@ module.exports = function (controller, component, app) {
             console.log(err.message);
             res.sendStatus(499);
         })
-    }
+    };
+    controller.rating = function (req,res) {
+        let examId = req.params.examId;
+        let rating = req.params.rating;
+        let user = req.user;
+        let msg = '';
+        app.models.exam.find({
+            where : {
+                id: examId
+            }
+        }).then(function (exam) {
+            if(!exam){
+              throw new Error('Not found exam !');
+            }
+            app.models.examRate.findOrCreate({
+                where: {
+                    user_id : user.id,
+                    exam_id : examId
+                },
+                defaults: {
+                    user_id : user.id,
+                    exam_id : examId,
+                    rating : rating
+                }
+            }).then(function (examRate) {
+                return Promise.all([
+                    app.models.examRate.count({
+                        where: {
+                            exam_id: examId
+                        },
+                        raw: true
+                    }),
+                    app.models.examRate.find({
+                        attributes : [
+                            [app.models.fn('SUM',app.models.col('rating')),'rating_total']
+                        ],
+                        where: {
+                            exam_id: examId
+                        },
+                        group: 'exam_id',
+                        raw: true
+                    })
+                ]);
+
+            }).then(function (result) {
+                return exam.updateAttributes({
+                    rating : result[1].rating_total / result[0]
+                })
+            }).then(function (examUpdate) {
+                res.status(200).jsonp(examUpdate.rating);
+            }).catch(function (err) {
+                res.status(500).jsonp({
+                    message: err.message
+                })
+            })
+        }).catch(function (err) {
+            res.status(500).jsonp({
+                message: err.message
+            })
+        })
+
+    };
+
 };
 function checkAnswer(data,user_answers){
     let mark = 0;

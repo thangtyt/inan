@@ -62,6 +62,11 @@ module.exports = function (component, app) {
             get: {
                 handler: [jwtAuth,controller.eGetUserExam]
             }
+        },
+        "/rating/:rating([1-5]{1})/:examId([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})": {
+            get: {
+                handler: [jwtAuth,controller.rating]
+            }
         }
     }
 }
