@@ -1,7 +1,7 @@
 'use strict';
 const nodeMailer = require('nodemailer');
 let jwt = require('jsonwebtoken');
-
+let moment = require('moment');
 module.exports = function (controller, component, app) {
     let jwt_conf = app.getConfig('jwt');
     //create token
@@ -225,27 +225,25 @@ module.exports = function (controller, component, app) {
     controller.getUserInfo = function (req,res) {
         let host = req.protocol + '://'+req.get('host');
         let user = req.user;
-
-
         Promise.all([
             app.models.user.find({
                 where: {
                     id: user.id
                 }
-
             }),
             app.models.userInfo.find({
                 where: {
                     user_id : user.id
-                }
+                },
+                attributes : ["birthday","school","class","city","district","uni","sex","score"]
             })
         ])
         .then(function (results) {
             if(results){
                 let _user = optimizeUser(JSON.parse(JSON.stringify(results[0])),host);
                 if(results[1]){
-                    //let _userInfo = optimizeUser(JSON.parse(JSON.stringify(results[1])),host);
-                    _user.userInfo = optimizeUser(JSON.parse(JSON.stringify(results[1])),host);;
+                    _user.userInfo = JSON.parse(JSON.stringify(results[1]));
+                    _user.userInfo.birthday = moment(_user.userInfo.birthday).format('D/M/YYYY').toString();
                 }else{
                     _user.userInfo = null;
                 }
@@ -256,7 +254,6 @@ module.exports = function (controller, component, app) {
             }else{
                 return new Error('Not Found user');
             }
-
         }).catch(function (err) {
                 console.log(err);
             res.status(503);
@@ -389,7 +386,6 @@ module.exports = function (controller, component, app) {
             .then(function (result) {
                    let _user = optimizeUser(JSON.parse(JSON.stringify(result[0])),host);
                     _user.userInfo = result[1];
-                    _user.user_image = host+_user.user_image;
                     res.status(200);
                     res.jsonp({
                         user: _user
@@ -421,12 +417,11 @@ function optimizeUser(user,host){
     if(!user){
         return null;
     }else if(user.hasOwnProperty('display_name')){
-        console.log(user.user_image_url.indexOf('http://'));
         return {
             id : user.id,
             user_email : user.user_email,
             full_name : user.display_name,
-            user_image : user.user_image_url.indexOf('http://') == -1 ? host+user.user_image_url : user.user_image_url,
+            user_image : user.user_image_url.indexOf('http') == -1 ? host+user.user_image_url : user.user_image_url,
             mark : Math.floor((Math.random() * 100) + 1),
             level : Math.floor((Math.random() * 1000) + 1)
         };
@@ -434,6 +429,21 @@ function optimizeUser(user,host){
         return user
     }
     //console.log(user);
+}
+function dateformat(pattern,date){
+    let result,
+        dd,mm,yyyy;
+    try{
+        dd = date.getDate() > 9 ? date.getDate() : '0'+date.getDate();
+        mm = date.getMonth() > 9 ? date.getMonth() : '0'+date.getMonth();
+        yyyy = date.getFullYear();
+        result = pattern.replace('dd',dd).replace('mm',mm).replace('yyyy',yyyy)
+    }catch(err){
+        console.log(err);
+        result = '';
+    }
+    console.log(result);
+    return result;
 }
 let tokenGenerate = function (length) {
     let text = "";

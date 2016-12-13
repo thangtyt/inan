@@ -35,8 +35,10 @@ module.exports = function (sequelize, DataTypes) {
         score: {
             type: DataTypes.INTEGER,
             defaultValue: 0
+        },
+        birthday: {
+            type: DataTypes.DATE
         }
-
 
     }, {
         tableName: 'tk_userInfo'
