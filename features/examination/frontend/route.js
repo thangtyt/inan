@@ -17,6 +17,11 @@ module.exports = function (component, app) {
                 handler: [controller.examLists]
             }
         },
+        "/exam/sort/:sort/(:order)/page/:page?": {
+            get: {
+                handler: [controller.examLists]
+            }
+        },
         "/exam/page/:page/sort/:sort/(:order)?": {
             get: {
                 handler: [controller.examLists]

@@ -93,9 +93,9 @@ module.exports = function (sequelize,DataTypes) {
             default : 1,
             set: function (val) {
                 if(typeof val !== 'number'){
-                    this.setDataValue('rating', Number(val));
+                    this.setDataValue('rating','1');
                 }else{
-                    this.setDataValue('rating', val);
+                    this.setDataValue('rating',val);
                 }
             },
             validate: {

@@ -59,11 +59,9 @@
                                 <div class="form-group">
                                     <label>Level</label>
                                     <select class="form-control" name="level">
-                                        <option value="1" {% if exam.level == 1%}selected="selected" {% endif %}>1</option>
-                                        <option value="2" {% if exam.level == 2%}selected="selected" {% endif %}>2</option>
-                                        <option value="3" {% if exam.level == 3%}selected="selected" {% endif %}>3</option>
-                                        <option value="4" {% if exam.level == 4%}selected="selected" {% endif %}>4</option>
-                                        <option value="5" {% if exam.level == 5%}selected="selected" {% endif %}>5</option>
+                                        <option value="1" {% if exam.level == 1%}selected="selected" {% endif %}>Easy</option>
+                                        <option value="2" {% if exam.level == 2%}selected="selected" {% endif %}>Normal</option>
+                                        <option value="3" {% if exam.level == 3%}selected="selected" {% endif %}>Difficult</option>
                                     </select>
                                 </div>
                             </div>

@@ -31,6 +31,13 @@ module.exports = function (controller, component, app) {
                 }
             },
             {
+                column: 'rating',
+                header: 'rating',
+                filter: {
+                    data_type: 'integer'
+                }
+            },
+            {
                 column: 'subject.id',
                 header: 'subject-id',
                 filter: {
@@ -43,7 +50,6 @@ module.exports = function (controller, component, app) {
             limit: itemOfPage
         });
 
-        //console.log('test',filter.conditions);
         actions.examFindAndCountAll({
             where: filter.conditions,
             include: [{
@@ -269,11 +275,13 @@ module.exports = function (controller, component, app) {
         }
         let answersIds = [];
         let score = 0;
+        //lấy list answer_id
         answers.map(function (answer) {
             answersIds.push(answer.id)
         });
-        //console.log(answers);
+        //kiểm tra dữ liệu
         if (data) {
+            //lấy dữ liệu của câu trả lời để kiểm tra đúng sai
             actions.answerFindAll({
                 where: {
                     id: {
@@ -282,16 +290,16 @@ module.exports = function (controller, component, app) {
                 }
             })
             .then(function (listAnswers) {
-                    console.log(1);
+                //    console.log(1);
                 let afterCheckAnswer = checkAnswer(JSON.parse(JSON.stringify(listAnswers)),answers);
                 data.mark = afterCheckAnswer.mark;
                 data.total_mark = afterCheckAnswer.total_mark;
                 wrongAnswer = afterCheckAnswer.wrongAnswer;
                     //console.log(afterCheckAnswer);
-                return actions.examSubmit(data);
+                return actions.examSubmit(data); //nhập vào bảng dữ liệu mỗi lần thi
             })
             .then(function (examSubmit) {
-                    console.log(2);
+                    //console.log(2);
                 let actionAnswers = [];
                 //answers = JSON.parse(answers);
                 if (answers.length > 0) {
@@ -304,10 +312,10 @@ module.exports = function (controller, component, app) {
                         }))
                     })
                 }
-                return Promise.all(actionAnswers);
+                return Promise.all(actionAnswers);// cập nhật bảng chi tiết của lần thi
             })
             .then(function (answers) {
-                    console.log(3,user.id);
+                //    console.log(3,user.id);
                 //cap nhat diem so tong cua user
                 return app.models.userInfo.findOrCreate({
                     where: {
@@ -341,19 +349,27 @@ module.exports = function (controller, component, app) {
                 //console.log('get userinfo after update score:',userInfo.score);
                 //lay xep hang cua user
                 score = userInfo.score;
-                return app.models.userInfo.findAndCountAll({
+                return Promise.all([
+                    app.models.userInfo.findAndCountAll({
                         where: {
                             user_id: {
                                 $notIn: [user.id]
                             }
                         },
                         auttributes: ['score']
+                    }),
+                    app.models.examSave.destroy({ //xóa đề thi đã lưu để thi nếu đề này đã từng lưu lại
+                        where: {
+                            user_id : user.id,
+                            exam_id : data.exam_id
+                        }
                     })
+                ])
             })
             .then(function (result) {
                 //console.log('test',JSON.stringify(result,2,2));
-                let rate = result.count;
-                result.rows.map(function (score_val) {
+                let rate = result[0].count;
+                result[0].rows.map(function (score_val) {
                     if (score > score_val) {
                         rate--;
                     }
@@ -639,12 +655,10 @@ module.exports = function (controller, component, app) {
 
     };
     controller.examSave = function (req,res) {
-        console.log(111);
         let examId = req.params.examId;
         let user = req.user;
         app.feature.examination.actions.examFindById(examId)
             .then(function (_exam) {
-                console.log(2222);
                 if(_exam){
                     return app.models.examSave.findOrCreate({
                         where: {
