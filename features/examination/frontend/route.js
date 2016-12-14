@@ -77,6 +77,11 @@ module.exports = function (component, app) {
             get: {
                 handler: [jwtAuth,controller.examListSave]
             }
+        },
+        "/exam-save/list/page/:page": {
+            get: {
+                handler: [jwtAuth,controller.examListSave]
+            }
         }
     }
 }
