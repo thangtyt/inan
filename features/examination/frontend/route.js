@@ -67,6 +67,16 @@ module.exports = function (component, app) {
             get: {
                 handler: [jwtAuth,controller.rating]
             }
+        },
+        "/exam-save/:examId([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})": {
+            get: {
+                handler: [jwtAuth,controller.examSave]
+            }
+        },
+        "/exam-save/list": {
+            get: {
+                handler: [jwtAuth,controller.examListSave]
+            }
         }
     }
 }

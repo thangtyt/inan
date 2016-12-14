@@ -638,7 +638,103 @@ module.exports = function (controller, component, app) {
         })
 
     };
+    controller.examSave = function (req,res) {
+        console.log(111);
+        let examId = req.params.examId;
+        let user = req.user;
+        app.feature.examination.actions.examFindById(examId)
+            .then(function (_exam) {
+                console.log(2222);
+                if(_exam){
+                    return app.models.examSave.findOrCreate({
+                        where: {
+                            exam_id : examId,
+                            user_id : user.id
+                        },
+                        defaults: {
+                            exam_id : examId,
+                            user_id : user.id
+                        }
+                    })
+                }else{
+                    throw new Error('Not found exam to save');
+                }
+            })
+            .then(function (_examSave) {
+                res.status(200).jsonp({
+                    message: 'done'
+                })
+            })
+            .catch(function (err) {
+                res.status(500).jsonp({
+                    message: err.message
+                })
+            })
+    };
+    controller.examListSave = function (req,res) {
+        let actions = app.feature.examination.actions;
+        let host = req.protocol + '://'+req.get('host');
+        // Get current page and default sorting
+        let page = req.params.page || 1;
+        let itemOfPage = 6;
+        let user = req.user;
+        app.models.examSave.findAll({
+            where : {
+                user_id : user.id
+            },
+            attributes: ['exam_id'],
+            raw : true
+        }).then(function (listSave) {
+            let _exams = []
+            listSave.map(function (_element) {
+                _exams.push(_element.exam_id);
+            });
+            return actions.examFindAndCountAll({
+                where: {
+                    id: {
+                        $in : _exams
+                    }
+                },
+                include: [{
+                    model: app.models.subject,
+                    as: 'subject'
+                }],
+                order: 'created_at DESC',
+                limit: itemOfPage,
+                offset: (page - 1) * itemOfPage
+            }).then(function (result) {
+                if(result.rows.length < 1){
+                    throw new Error('Not fount !');
+                }
+                //console.log('FIND ALL EXAM :',JSON.stringify(result.rows,2,2));
+                let exams = JSON.parse(JSON.stringify(result.rows));
+                exams = exams.filter(function (exam) {
+                    exam.timeDoExam = Math.floor((Math.random() * 100) + 1);
+                    if (_.has(exam, 'subject')) {
+                        try {
+                            exam.subject.icons = JSON.parse(exam.subject.icons);
+                            exam.subject.icons.icon.default = host+exam.subject.icons.icon.default;
+                            exam.subject.icons.icon.hover = host+exam.subject.icons.icon.hover;
+                            return exam;
+                        } catch (err) {
 
+                        }
+                    }
+                })
+                res.status(200);
+                res.jsonp({
+                    currentPage: page,
+                    totalPage: Math.ceil(result.count / itemOfPage),
+                    items: exams
+                })
+            });
+        }).catch(function (err) {
+            res.status(300);
+            res.jsonp({
+                error: err.message
+            })
+        });
+    }
 };
 function checkAnswer(data,user_answers){
     let mark = 0;
