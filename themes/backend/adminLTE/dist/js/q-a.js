@@ -123,12 +123,21 @@ function initCkeditorBasic(list){
         CKEDITOR.replace( val, {
             height: 100,
             toolbar : [
-                ['Styles','Format','Font','FontSize'],
-                ['Bold','Italic','Underline','StrikeThrough','-','Undo','Redo','-','Cut','Copy','Paste','Find','Replace'],
-                ['NumberedList','BulletedList','-','JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock'],
-                ['Image','Table','-','TextColor','BGColor','Mathjax','Source']
+                //['Styles','Format','Font','FontSize'],
+                ['Bold','Italic','Underline','StrikeThrough','-','Undo','Redo','-','Cut','Copy','Paste','Find'],
+                //['NumberedList','BulletedList','-','JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock'],
+                ['Image','Table','-','Mathjax','Source']
             ]
         } );
+        //CKEDITOR.inline( val, {
+        //    height: 100,
+        //    toolbar : [
+        //        ['Styles','Format','Font','FontSize'],
+        //        ['Bold','Italic','Underline','StrikeThrough','-','Undo','Redo','-','Cut','Copy','Paste','Find','Replace'],
+        //        ['NumberedList','BulletedList','-','JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock'],
+        //        ['Image','Table','-','TextColor','BGColor','Mathjax','Source']
+        //    ]
+        //} );
     })
 
 }
