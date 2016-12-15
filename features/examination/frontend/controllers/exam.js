@@ -789,7 +789,8 @@ module.exports = function (controller, component, app) {
                 }
             });
 
-            let top10 = result[0].filter(function (_user) {
+            let top10 = [];
+                result[0].map(function (_user) {
                 dataUser['city'].map(function (_city) {
                     if(_city.code == _user.city){
                         _user['city'] = _city.name;
@@ -800,19 +801,19 @@ module.exports = function (controller, component, app) {
                         })
                     }
 
-                })
-                return {
+                });
+                top10.push({
                     id: _user['user.id'],
                     score: _user['score'],
                     school: _user['school'],
                     full_name: _user['user.display_name'],
                     city: _user['city'],
-                    user_email: _user['user_email']
-                };
+                    user_email: _user['user.user_email']
+                })
             });
             res.status(200).jsonp({
                 current_rates: stt,
-                list_user: top10
+                list_users: top10
             })
         }).catch(function (err) {
             res.status(300).jsonp({
