@@ -293,7 +293,7 @@ module.exports = function (controller, component, app) {
                 //    console.log(1);
                 let afterCheckAnswer = checkAnswer(JSON.parse(JSON.stringify(listAnswers)),answers);
                 data.mark = afterCheckAnswer.mark;
-                data.total_mark = afterCheckAnswer.total_mark;
+                data.total_mark = afterCheckAnswer.total_mark;//điểm đạt được sau lần thi
                 wrongAnswer = afterCheckAnswer.wrongAnswer;
                     //console.log(afterCheckAnswer);
                 return actions.examSubmit(data); //nhập vào bảng dữ liệu mỗi lần thi
@@ -748,6 +748,77 @@ module.exports = function (controller, component, app) {
                 error: err.message
             })
         });
+    }
+    controller.examRateTop10 = function (req,res) {
+        let dataUser = app.getConfig('userInfo');
+        let user = req.user;
+        Promise.all([
+            app.models.userInfo.findAll({
+                include: [{
+                    model: app.models.user,
+                    attributes : ['id','user_email','display_name'],
+                    where: {
+                        role_id: {
+                            $or: {
+                                $lt: 0,
+                                $eq: null
+                            }
+                        }
+
+                    },
+                    as : 'user'
+                }],
+                attributes: ['score','school','city'],
+                as: 'userInfo',
+                raw : true,
+                limit: 10,
+                order: 'score DESC'
+            }),
+            app.models.userInfo.findAll({
+                attributes: ['user_id'],
+                raw : true,
+                order: 'score DESC'
+            })
+        ])
+        .then(function (result) {
+            let allUserInfo = result[1];
+            let stt = 1;
+            allUserInfo.map(function (_userInfo) {
+                if (_userInfo.user_id !== user.id){
+                    stt++;
+                }
+            });
+
+            let top10 = result[0].filter(function (_user) {
+                dataUser['city'].map(function (_city) {
+                    if(_city.code == _user.city){
+                        _user['city'] = _city.name;
+                        _city.school.map(function (_school) {
+                            if( _user.school == _school.code){
+                                _user.school = _school.name;
+                            }
+                        })
+                    }
+
+                })
+                return {
+                    id: _user['user.id'],
+                    score: _user['score'],
+                    school: _user['school'],
+                    full_name: _user['user.display_name'],
+                    city: _user['city'],
+                    user_email: _user['user_email']
+                };
+            });
+            res.status(200).jsonp({
+                current_rates: stt,
+                list_user: top10
+            })
+        }).catch(function (err) {
+            res.status(300).jsonp({
+                message: err.message
+            })
+        })
     }
 };
 function checkAnswer(data,user_answers){

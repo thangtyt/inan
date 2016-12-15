@@ -2,6 +2,7 @@
 const nodeMailer = require('nodemailer');
 let jwt = require('jsonwebtoken');
 let moment = require('moment');
+let _ = require('arrowjs')._;
 module.exports = function (controller, component, app) {
     let jwt_conf = app.getConfig('jwt');
     //create token
@@ -243,7 +244,7 @@ module.exports = function (controller, component, app) {
                 let _user = optimizeUser(JSON.parse(JSON.stringify(results[0])),host);
                 if(results[1]){
                     _user.userInfo = JSON.parse(JSON.stringify(results[1]));
-                    _user.userInfo.birthday = moment(_user.userInfo.birthday).format('D/M/YYYY').toString();
+                    _user.userInfo.birthday = _user.userInfo.birthday ? moment(_user.userInfo.birthday).format('D/M/YYYY').toString() : null;
                 }else{
                     _user.userInfo = null;
                 }
@@ -392,7 +393,6 @@ module.exports = function (controller, component, app) {
                     })
             })
             .catch(function (err) {
-                    console.log(err);
                 res.status(503);
                 res.jsonp({
                     error: 'Cannot add user\'s information'
@@ -430,6 +430,7 @@ function optimizeUser(user,host){
     }
     //console.log(user);
 }
+
 function dateformat(pattern,date){
     let result,
         dd,mm,yyyy;

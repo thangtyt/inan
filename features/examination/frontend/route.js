@@ -87,6 +87,11 @@ module.exports = function (component, app) {
             get: {
                 handler: [jwtAuth,controller.examListSave]
             }
+        },
+        "/rate/user/list" : {
+            get: {
+                handler: [jwtAuth,controller.examRateTop10]
+            }
         }
     }
 }
