@@ -115,7 +115,7 @@ module.exports = function (controller, component, app) {
         let actions = app.feature.examination.actions;
         let sectionId = req.params.sectionId;
         let toolbar = new ArrowHelper.Toolbar();
-        toolbar.addBackButton(req, 'sView_back_link');
+        toolbar.addBackButton(req, 'section_back_link');
         toolbar.addSaveButton();
         toolbar.addDeleteButton();
         Promise.all([
@@ -211,7 +211,7 @@ module.exports = function (controller, component, app) {
     controller.secUpdate = function (req, res,next) {
         let actions = app.feature.examination.actions;
         let toolbar = new ArrowHelper.Toolbar();
-        toolbar.addBackButton(req, 'sView_back_link');
+        toolbar.addBackButton(req, 'section_back_link');
         toolbar.addSaveButton();
         toolbar.addDeleteButton();
         let form = req.body;
@@ -238,7 +238,7 @@ module.exports = function (controller, component, app) {
     controller.secCreate = function (req, res) {
         let actions = app.feature.examination.actions;
         let toolbar = new ArrowHelper.Toolbar();
-        toolbar.addBackButton(req, 'sCreate_back_link');
+        toolbar.addBackButton(req, 'section_back_link');
         toolbar.addSaveButton();
         actions.sFindAll({
             attributes: ['id', 'title']
@@ -259,7 +259,7 @@ module.exports = function (controller, component, app) {
     controller.secSave = function (req, res) {
         let toolbar = new ArrowHelper.Toolbar();
         let actions = app.feature.examination.actions;
-        toolbar.addBackButton(req, 'sCreate_back_link');
+        toolbar.addBackButton(req, 'section_back_link');
         toolbar.addSaveButton();
         let data = req.body;
         actions.secCreate(data)

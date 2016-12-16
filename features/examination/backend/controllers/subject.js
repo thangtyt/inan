@@ -106,7 +106,7 @@ module.exports = function (controller, component, app) {
         let subjectId = req.params.subjectId;
         let toolbar = new ArrowHelper.Toolbar();
         let icons = app.getConfig('subjects');
-        toolbar.addBackButton(req, 'sView_back_link');
+        toolbar.addBackButton(req, 'subject_back_link');
         toolbar.addSaveButton();
         toolbar.addDeleteButton();
         actions.sFind({
@@ -229,7 +229,7 @@ module.exports = function (controller, component, app) {
         };
         data.icons = JSON.stringify(data.icons);
         let toolbar = new ArrowHelper.Toolbar();
-        toolbar.addBackButton(req, 'sView_back_link');
+        toolbar.addBackButton(req, 'subject_back_link');
         toolbar.addSaveButton();
         toolbar.addDeleteButton();
             Promise.all([
@@ -303,7 +303,7 @@ module.exports = function (controller, component, app) {
     controller.sCreate = function (req, res) {
         //let actions = app.feature.examination.actions;
         let toolbar = new ArrowHelper.Toolbar();
-        toolbar.addBackButton(req, 'sCreate_back_link');
+        toolbar.addBackButton(req, 'subject_back_link');
         toolbar.addSaveButton();
         let subjectList = app.getConfig('subjects');
 
@@ -315,7 +315,7 @@ module.exports = function (controller, component, app) {
     controller.sSave = function (req, res) {
         let actions = app.feature.examination.actions;
         let toolbar = new ArrowHelper.Toolbar();
-        toolbar.addBackButton(req, 'sCreate_back_link');
+        toolbar.addBackButton(req, 'subject_back_link');
         toolbar.addSaveButton();
         let form = req.body;
         if (form.icons){

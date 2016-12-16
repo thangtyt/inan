@@ -133,7 +133,7 @@ module.exports = function (controller,component,app) {
     controller.eCreateManual = function (req,res) {
         let actions = app.feature.examination.actions;
         let toolbar = new ArrowHelper.Toolbar();
-        toolbar.addBackButton(req, 'qCreate_back_link');
+        toolbar.addBackButton(req, 'qa_back_link');
         toolbar.addSaveButton();
         actions.sFindAll()
         .then(function (subjects) {
@@ -205,7 +205,7 @@ module.exports = function (controller,component,app) {
         let form = req.body;
         //console.log(JSON.stringify(form));
         let toolbar = new ArrowHelper.Toolbar();
-        toolbar.addBackButton(req, 'qCreate_back_link');
+        toolbar.addBackButton(req, 'qa_back_link');
         toolbar.addSaveButton();
 
         form.created_by = req.user.id;
@@ -253,7 +253,7 @@ module.exports = function (controller,component,app) {
         let examId = req.params.examId;
         //console.log(JSON.stringify(form));
         let toolbar = new ArrowHelper.Toolbar();
-        toolbar.addBackButton(req, 'qCreate_back_link');
+        toolbar.addBackButton(req, 'qa_back_link');
         toolbar.addSaveButton();
         //console.log(JSON.stringify(form));
         form.created_by = req.user.id;
@@ -316,7 +316,7 @@ module.exports = function (controller,component,app) {
         let actions = app.feature.examination.actions;
         let examId = req.params.examId;
         let toolbar = new ArrowHelper.Toolbar();
-        toolbar.addBackButton(req, 'qCreate_back_link');
+        toolbar.addBackButton(req, 'qa_back_link');
         toolbar.addSaveButton();
         Promise.all([
             actions.examFind({

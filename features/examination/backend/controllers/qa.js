@@ -132,7 +132,7 @@ module.exports = function (controller,component,app) {
     controller.qCreate = function (req, res) {
         let actions = app.feature.examination.actions;
         let toolbar = new ArrowHelper.Toolbar();
-        toolbar.addBackButton(req, 'qCreate_back_link');
+        toolbar.addBackButton(req,'qa_back_link');
         toolbar.addSaveButton();
         actions.sFindAll({
             attributes: ['id', 'title']
@@ -156,7 +156,7 @@ module.exports = function (controller,component,app) {
     controller.qSave = function (req,res) {
         let toolbar = new ArrowHelper.Toolbar();
         let actions = app.feature.examination.actions;
-        toolbar.addBackButton(req, 'qa_save_back_link');
+        toolbar.addBackButton(req,'qa_back_link');
         toolbar.addSaveButton();
         let data = req.body;
         data.created_by = req.user.id;
@@ -220,7 +220,7 @@ module.exports = function (controller,component,app) {
         let toolbar = new ArrowHelper.Toolbar();
         let questionData = req.questionData;
         //console.log(questionData);
-        toolbar.addBackButton(req, 'qCreate_back_link');
+        toolbar.addBackButton(req,'qa_back_link');
         toolbar.addSaveButton();
         Promise.all([
             actions.questionFind({
@@ -278,7 +278,7 @@ module.exports = function (controller,component,app) {
     controller.qUpdate = function (req,res) {
         let toolbar = new ArrowHelper.Toolbar();
         let actions = app.feature.examination.actions;
-        toolbar.addBackButton(req, 'qa_save_back_link');
+        toolbar.addBackButton(req,'qa_back_link');
         toolbar.addSaveButton();
         let questionId = req.params.questionId;
         let data = req.body;
