@@ -1,0 +1,208 @@
+{% extends '_layout.' + getConfig('viewExtension') %}
+{% block cssExtends %}
+    <link href="/backend/adminLTE/assets/plugins/ckeditor/plugins/codemirror/theme/monokai.css" rel="stylesheet">
+    <link href="/backend/adminLTE/assets/plugins/select2/select2.css" rel="stylesheet">
+    <style>
+        ul.sortable-list {
+            list-style: none;
+            padding: 0px;
+            margin: 0px;
+        }
+        li.sortable-item {
+            list-style: none;
+            padding: 0px;
+            margin: 0px;
+        }
+        div.well {
+            min-height: 100%;
+        }
+        div.item {
+            margin-bottom: 2px;
+        }
+    </style>
+{% endblock %}
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            <form id="edit-form" method="post">
+                {{ toolbar | safe }}
+                <div class="nav-tabs-custom">
+                    <ul class="nav nav-tabs">
+                        <li class="active">
+                            <a href="#exam" data-toggle="tab" aria-expanded="true">
+                                <i class="fa fa-question-circle padd-right-5"></i> &nbsp;&nbsp;&nbsp;Infomations</a>
+                        </li>
+                        <li class="">
+                            <a href="#question" data-toggle="tab" aria-expanded="false">
+                                <span class="glyphicon glyphicon-ok-sign"> </span> &nbsp;&nbsp;&nbsp;Choose Question
+                            </a>
+                        </li>
+                    </ul>
+                    <div class="tab-content">
+                        {#Tab question#}
+                        <div class="row tab-pane active" id="exam">
+                            <div class="col-md-9 col-sm-9">
+                                <div class="form-group">
+                                    <label for="title">Title</label>
+                                    <input class="form-control" value="{{ exam.title }}" name="title" id="title" required="require"/>
+                                    <input type="hidden" name="content" id="content"/>
+                                </div>
+                                <div class="form-group">
+                                    <label for="desc">Desc</label>
+                                    <textarea class="form-control" name="desc" id="desc">{{ exam.desc }}</textarea>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-3">
+                                <div class="form-group">
+                                    <label>Subject</label>
+                                    <select class="form-control" name="subject_id" required="required" onchange="loadSections()">
+                                        <option value=""> --Choose Subject-- </option>
+                                        {% for subject in subjects %}
+                                            <option value="{{ subject.id }}" {% if exam.subject_id == subject.id %} selected{% endif %}>{{ subject.title }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Total Mark</label>
+                                    <input type="number" name="total_mark" id="total_mark" class="form-control" value="{{ exam.total_mark }}"/>
+                                </div>
+                                <div class="form-group">
+                                    <label>Total Question</label>
+                                    <input type="number" name="total_question" id="total_question" class="form-control" value="{{ exam.total_question }}" required="require"/>
+                                </div>
+                                <div class="form-group">
+                                    <label>Total Time <span> ( minute ) </span> </label>
+                                    <input type="number" name="total_time" id="total_time" class="form-control" value="{{ exam.total_time }}" required="require"/>
+                                </div>
+                                <div class="form-group">
+                                    <label>Level</label>
+                                    <select class="form-control" name="level">
+                                        <option value="1" {% if exam.level == 1%}selected="selected" {% endif %}>Easy</option>
+                                        <option value="2" {% if exam.level == 2%}selected="selected" {% endif %}>Normal</option>
+                                        <option value="3" {% if exam.level == 3%}selected="selected" {% endif %}>Difficult</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        {#tab content answer#}
+                        <div class="row tab-pane" id="question">
+                            <div class="col-md-12" id="examDetail">
+                                <div class="form-group col-sm-12 col-xs-12 col-md-12">
+                                    {#<select multiple="multiple" style="width: 100%" name="select2sections" id="select2sections"#}
+                                            {#class="form-control">#}
+                                    {#</select>#}
+                                    {#<input type="hidden" name="sections" id="sections"/>#}
+                                    <div id="sortable-div" class="col-sm-12 col-xs-12 col-md-12">
+                                        {#<div class="padLR10">#}
+                                        {#</div>#}
+                                        <div id="dragdrop" class="col-sm-6 col-xs-6 col-md-6">
+                                            <div class="well clearfix col-sm-12 col-xs-12 col-md-12">
+                                                <div class="header">List Sections</div>
+                                                <div class="dragbleList">
+                                                    <ul class="sortable-list">
+                                                        <li class="sortable-item">
+                                                            <div class="box box-default collapsed-box box-solid item">
+                                                                <div class="box-header with-border">
+                                                                    <h3 class="box-title h5">Expandable 1</h3>
+                                                                </div>
+                                                            </div>
+                                                        </li>
+                                                        <li class="sortable-item">
+                                                            <div class="box box-default collapsed-box box-solid item">
+                                                                <div class="box-header with-border">
+                                                                    <h3 class="box-title h5">Expandable 2</h3>
+                                                                </div>
+                                                            </div>
+                                                        </li>
+                                                        <li class="sortable-item">
+                                                            <div class="box box-default collapsed-box box-solid item">
+                                                                <div class="box-header with-border">
+                                                                    <h3 class="box-title h5">Expandable 3</h3>
+                                                                </div>
+                                                            </div>
+                                                        </li>
+                                                        <li class="sortable-item">
+                                                            <div class="box box-default collapsed-box box-solid item">
+                                                                <div class="box-header with-border">
+                                                                    <h3 class="box-title h5">Expandable 4</h3>
+                                                                </div>
+                                                            </div>
+                                                        </li>
+                                                        <li class="sortable-item">
+                                                            <div class="box box-default collapsed-box box-solid item">
+                                                                <div class="box-header with-border">
+                                                                    <h3 class="box-title h5">Expandable 5</h3>
+                                                                </div>
+                                                            </div>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div id="dragdrop" class="col-sm-6 col-xs-6 col-md-6">
+                                            <div class="well clearfix col-sm-12 col-xs-12 col-md-12">
+
+                                                <div class="header">Sections Chose</div>
+                                                <ul class="sortable-list">dasdas
+
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+{% block jsExtends %}
+    <script src="/backend/adminLTE/assets/plugins/ckeditor/ckeditor.js"></script>
+    <script src="/backend/adminLTE/assets/plugins/select2/select2.min.js" type="text/javascript"></script>
+    <script src="/backend/adminLTE/dist/js/jquery.nestable.js"></script>
+    <script src="/backend/adminLTE/assets/plugins/jQueryUI/jquery-ui.min.js"></script>
+    <script>
+        var select2Sections = $('#select2sections');
+
+        CKEDITOR.replace( 'desc', {
+            height: 200,
+            toolbar : [
+                ['Styles','Format','Font','FontSize'],
+                ['Bold','Italic','Underline','StrikeThrough','-','Undo','Redo','-','Cut','Copy','Paste','Find','Replace'],
+                ['NumberedList','BulletedList','-','JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock'],
+                ['Image','Table','-','TextColor','BGColor','Source']
+            ]
+        } );
+        if ( CKEDITOR.env.ie && CKEDITOR.env.version == 8 ) {
+            document.getElementById( 'ie8-warning' ).className = 'tip alert';
+        }
+        $(function () {
+            $('#sortable-div .sortable-list').sortable({
+                connectWith: '#sortable-div .sortable-list',
+                placeholder: 'placeholder',
+            });
+        });
+        function deleteRecords() {
+            var ids = [];
+            $("input:checkbox[name='ids[]']:checked").each(function () {
+                ids.push($(this).val());
+            });
+            $.ajax({
+                url: window.location.href,
+                type: 'DELETE',
+                success: function (result) {
+                    //console.log(JSON.stringify(result,2,2));
+                    // Do something with the result
+                    if(result.error)
+                        window.location.href = '{{ baseRoute }}/{{ exam.id }}';
+                    else
+                        window.location.href = '{{ baseRoute }}';
+                }
+            });
+        }
+    </script>
+    <script src="/backend/adminLTE/dist/js/exam2.js"></script>
+{% endblock %}

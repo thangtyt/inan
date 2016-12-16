@@ -52,13 +52,7 @@ function loadSections(){
         });
         if(_sections.length > 0){
             select2Sections.select2('destroy');
-            select2Sections.select2({
-                templateSelection: function (option) {
-                    var text = $(option.element).text().trim();
-                    text = text.replace(/^[—]+/, '');
-                    return text;
-                }
-            });
+            select2Sections.select2();
             //console.log(JSON.parse(_sections));
             select2Sections.select2('val',_sections);
             //select2Sections.val(_sections).trigger('change');
@@ -79,13 +73,7 @@ function addSection(element) {
         type: 'GET'
     }).done(function(questions){
         if(!questions) questions =[];
-        $('#question-'+element.id).select2({
-            templateSelection: function (option) {
-                var text = $(option.element).text().trim();
-                text = text.replace(/^[—]+/, '');
-                return text;
-            }
-        });
+        $('#question-'+element.id).select2();
         //console.log(JSON.stringify(questions,3,3));
         questions.map(function (question) {
             //console.log(question);
@@ -114,10 +102,13 @@ function addSection(element) {
             });
             //console.log('update',JSON.stringify(_question,2,2));
             //$('#question-'+element.id).val(_question).trigger();
+            //console.log(_question);
+
             $('#question-'+element.id).select2('val',_question);
 
             _question.map(function (ques) {
                 //console.log(ques);
+                //$('#question-'+element.id).select2('val',ques).trigger('change');
                 addElement(element.id,ques);
             })
         }
@@ -134,11 +125,16 @@ function addElement(section_id,question_id){
             questions: []
         })
     }else{
-        for(var i = 0 ; i < content.length ; i++){
-            if(content[i].section_id == section_id){
-                content[i].questions.push(question_id);
+        content.map(function (con) {
+            if(con.section_id == section_id){
+                con.questions.push(question_id);
             }
-        }
+        })
+        //for(var i = 0 ; i < content.length ; i++){
+        //    if(content[i].section_id == section_id){
+        //        content[i].questions.push(question_id);
+        //    }
+        //}
     }
     //console.log(JSON.stringify(content,2,2));
 }
