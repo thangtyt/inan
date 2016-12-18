@@ -38,6 +38,9 @@ module.exports = function (sequelize, DataTypes) {
         },
         birthday: {
             type: DataTypes.DATE
+        },
+        gift_codes: {
+            type: DataTypes.ARRAY(DataTypes.STRING)
         }
 
     }, {

@@ -125,6 +125,14 @@ module.exports = function (sequelize,DataTypes) {
                 }
             }
         },
+        gift_code: {
+            type: DataTypes.STRING,
+            isValid: function (val) {
+                if(!val.match(/[A-Z0-9]{5}/)){
+                    throw new ERROR('Invalid input Gift Code !')
+                }
+            }
+        },
         updated_at: {
             type: DataTypes.DATE,
             validate: {

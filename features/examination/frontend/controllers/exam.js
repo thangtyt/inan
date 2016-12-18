@@ -60,6 +60,8 @@ module.exports = function (controller, component, app) {
             limit: itemOfPage,
             offset: (page - 1) * itemOfPage
         }).then(function (result) {
+            if(!result)
+                throw new Error('not found');
             //console.log('FIND ALL EXAM :',JSON.stringify(result.rows,2,2));
             let exams = JSON.parse(JSON.stringify(result.rows));
             exams = exams.filter(function (exam) {
@@ -818,6 +820,114 @@ module.exports = function (controller, component, app) {
         }).catch(function (err) {
             res.status(300).jsonp({
                 message: err.message
+            })
+        })
+    };
+    controller.giftCode = function (req,res) {
+        let user = req.user;
+        let data = req.body;
+        app.models.userInfo.findOrCreate({
+            where: {
+                user_id: user.id
+            },
+            defaults: {
+                user_id: user.id,
+                gift_codes: [data.gift_code]
+            }
+        }).then(function (result) {
+            //chua co userInfo => tao moi
+            //console.log(result);
+            if(result[1]){
+                return result[1];
+            }else{//co roi cap nhat
+                if(result[0].gift_codes == null || result[0].gift_codes.length == 0 || result[0].gift_codes.indexOf(data.gift_code) == -1){
+                    let gift_codes = [];
+                    if(result[0].gift_codes == null || result[0].gift_codes.length == 0){
+                        gift_codes = [data.gift_code];
+                    }else{
+                        gift_codes = result[0].gift_codes;
+                        gift_codes.push(data.gift_code);
+                    }
+                    return result[0].updateAttributes({
+                        gift_codes : gift_codes
+                    })
+                }else{
+                    throw new Error('This giftcode is used ! Please enter another giftcode !');
+                }
+            }
+
+        }).then(function () {
+            res.status(200).jsonp({
+                message: 'GiftCode add successfully !'
+            })
+        }).catch(function (err) {
+            res.status(500).jsonp({
+                message: err.message
+            })
+        })
+        //res.sendStatus(200);
+    };
+    controller.getExamGiftCode = function (req,res) {
+        let user = req.user;
+        let actions = app.feature.examination.actions;
+        let host = req.protocol + '://'+req.get('host');
+        // Get current page and default sorting
+        let page = req.params.page || 1;
+        let itemOfPage = 6;
+
+        app.models.userInfo.find({
+            where: {
+                user_id : user.id
+            }
+        }).then(function (_userInfo) {
+            console.log(_userInfo);
+            if(!_userInfo){
+                throw new Error('Not found !');
+            }
+            return actions.examFindAndCountAll({
+                where: {
+                    gift_code : {
+                        $in: _userInfo.gift_codes
+                    }
+                },
+                include: [{
+                    model: app.models.subject,
+                    as: 'subject'
+                }],
+                order: 'created_at DESC',
+                limit: itemOfPage,
+                offset: (page - 1) * itemOfPage
+            })
+        })
+        .then(function (result) {
+                if(!result)
+                    throw new Error('not found');
+            //console.log('FIND ALL EXAM :',JSON.stringify(result.rows,2,2));
+            let exams = JSON.parse(JSON.stringify(result.rows));
+            exams = exams.filter(function (exam) {
+                exam.timeDoExam = Math.floor((Math.random() * 100) + 1);
+                if (_.has(exam, 'subject')) {
+                    try {
+                        exam.subject.icons = JSON.parse(exam.subject.icons);
+                        exam.subject.icons.icon.default = host+exam.subject.icons.icon.default;
+                        exam.subject.icons.icon.hover = host+exam.subject.icons.icon.hover;
+                        return exam;
+                    } catch (err) {
+
+                    }
+                }
+
+            })
+            res.status(200);
+            res.jsonp({
+                currentPage: page,
+                totalPage: Math.ceil(result.count / itemOfPage),
+                items: exams
+            })
+        }).catch(function (err) {
+            res.status(300);
+            res.jsonp({
+                error: err.message
             })
         })
     }

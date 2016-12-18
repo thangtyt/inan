@@ -236,7 +236,7 @@ module.exports = function (controller, component, app) {
                 where: {
                     user_id : user.id
                 },
-                attributes : ["birthday","school","class","city","district","uni","sex","score"]
+                attributes : ["birthday","school","class","city","district","uni","sex","score","gift_codes"]
             })
         ])
         .then(function (results) {

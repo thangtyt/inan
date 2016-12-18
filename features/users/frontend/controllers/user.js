@@ -94,7 +94,6 @@ module.exports = function (controller, component, app) {
         let host = req.protocol + '://'+req.get('host');
         let user = req.user;
         let data = req.body;
-        console.log(data);
         app.models.userInfo.find({
             where : {
                 user_id : user.id

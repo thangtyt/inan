@@ -45,7 +45,7 @@ module.exports = function (controller,component,app) {
             },
             {
                 column : 'title',
-                width : '20%',
+                width : '69%',
                 header : 'Title',
                 link : baseRoute + '/' + '{id}',
                 filter : {
@@ -55,10 +55,20 @@ module.exports = function (controller,component,app) {
             },
             {
                 column : 'subject.title',
-                width : '20%',
+                width : '10%',
                 header : 'Subject',
                 filter : {
-                    data_type : 'string'
+                    data_type : 'string',
+                    filter_key: 'subject.title'
+                }
+            },
+            {
+                column : 'gift_code',
+                width : '10%',
+                header : 'Gift Code',
+                filter : {
+                    data_type : 'string',
+                    filter_key: 'gift_code'
                 }
             },
             {

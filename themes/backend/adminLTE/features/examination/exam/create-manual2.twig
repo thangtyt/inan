@@ -82,6 +82,10 @@
                                         <option value="3" {% if exam.level == 3%}selected="selected" {% endif %}>Difficult</option>
                                     </select>
                                 </div>
+                                <div class="form-group">
+                                    <label>Gift Code</label>
+                                    <input type="number" name="gift_code" id="gift_code" class="form-control" value="{{ exam.gift_code }}" required="require"/>
+                                </div>
                             </div>
                         </div>
                         {#tab content answer#}

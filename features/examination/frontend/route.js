@@ -92,6 +92,17 @@ module.exports = function (component, app) {
             get: {
                 handler: [jwtAuth,controller.examRateTop10]
             }
+        },
+        "/user/gift-code": {
+            post: {
+                handler: [jwtAuth,controller.giftCode]
+            }
+        },
+        "/user/exam/gift": {
+            get: {
+                handler: [jwtAuth,controller.getExamGiftCode]
+            }
         }
+
     }
 }
