@@ -911,7 +911,7 @@ module.exports = function (controller, component, app) {
         })
         .then(function (result) {
                 if(!result)
-                    throw new Error('not found');
+                    res.status(200).jsonp({});
             //console.log('FIND ALL EXAM :',JSON.stringify(result.rows,2,2));
             let exams = JSON.parse(JSON.stringify(result.rows));
             exams = exams.filter(function (exam) {
