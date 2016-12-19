@@ -16,6 +16,14 @@ module.exports = function (controller, component, app) {
                 header: 'id'
             },
             {
+                column: 'title',
+                header: 'title',
+                filter: {
+                    data_type: 'string',
+                    filter_key: 'title'
+                }
+            },
+            {
                 column: 'subject.title',
                 header: 'subject-title',
                 filter: {
@@ -49,7 +57,8 @@ module.exports = function (controller, component, app) {
         let filter = ArrowHelper.createFilter(req, res, table, {
             limit: itemOfPage
         });
-
+        filter.conditions.push(' gift_code = null or gift_code = "" ');
+        //console.log(filter.conditions);
         actions.examFindAndCountAll({
             where: filter.conditions,
             include: [{
@@ -96,6 +105,7 @@ module.exports = function (controller, component, app) {
         let actions = app.feature.examination.actions;
         let host = req.protocol + '://'+req.get('host');
         let result;
+        let user = req.user;
         actions.examFind({
             where: {
                 id: req.params.examId
@@ -880,7 +890,7 @@ module.exports = function (controller, component, app) {
                 user_id : user.id
             }
         }).then(function (_userInfo) {
-            console.log(_userInfo);
+            //console.log(_userInfo);
             if(!_userInfo){
                 throw new Error('Not found !');
             }
