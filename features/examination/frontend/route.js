@@ -17,12 +17,7 @@ module.exports = function (component, app) {
                 handler: [controller.examLists]
             }
         },
-        "/exam/sort/:sort/(:order)/page/:page?": {
-            get: {
-                handler: [controller.examLists]
-            }
-        },
-        "/exam/page/:page/sort/:sort/(:order)?": {
+        "/exam/page/:page/sort/:sort/:order?": {
             get: {
                 handler: [controller.examLists]
             }
@@ -108,14 +103,9 @@ module.exports = function (component, app) {
                 handler: [jwtAuth,controller.getExamGiftCode]
             }
         },
-        "/user/exam/gift/sort/:sort/(:order)/page/:page?": {
+        "/user/exam/gift/page/:page/sort/:sort/:order?": {
             get: {
                 handler: [jwtAuth,controller.getExamGiftCode]
-            }
-        },
-        "/user/exam/gift/page/:page/sort/:sort/(:order)?": {
-            get: {
-                handler: [jwtAuth,controller.getExamGiftCodes]
             }
         }
 

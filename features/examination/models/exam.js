@@ -90,7 +90,7 @@ module.exports = function (sequelize,DataTypes) {
         },
         rating: {
             type: DataTypes.INTEGER,
-            default : 1,
+            defaultValue : 1,
             set: function (val) {
                 if(typeof val !== 'number'){
                     this.setDataValue('rating','1');

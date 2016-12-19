@@ -5,6 +5,7 @@
 let _ = require('arrowjs')._;
 module.exports = function (controller, component, app) {
     controller.examLists = function (req, res) {
+
         let actions = app.feature.examination.actions;
         let host = req.protocol + '://'+req.get('host');
         // Get current page and default sorting
@@ -14,14 +15,6 @@ module.exports = function (controller, component, app) {
             {
                 column: 'id',
                 header: 'id'
-            },
-            {
-                column: 'title',
-                header: 'title',
-                filter: {
-                    data_type: 'string',
-                    filter_key: 'title'
-                }
             },
             {
                 column: 'subject.title',
@@ -57,8 +50,9 @@ module.exports = function (controller, component, app) {
         let filter = ArrowHelper.createFilter(req, res, table, {
             limit: itemOfPage
         });
-        filter.conditions.push(' gift_code = null or gift_code = "" ');
-        //console.log(filter.conditions);
+        //filter.conditions[0] += ' and gift_code = ? or gift_code = ? ';
+        //filter.conditions.push([null,''])
+        console.log(filter.conditions);
         actions.examFindAndCountAll({
             where: filter.conditions,
             include: [{
@@ -883,28 +877,79 @@ module.exports = function (controller, component, app) {
         let host = req.protocol + '://'+req.get('host');
         // Get current page and default sorting
         let page = req.params.page || 1;
+
         let itemOfPage = 6;
+        let table = [
+            {
+                column: 'id',
+                header: 'id'
+            },
+            {
+                column: 'title',
+                header: 'title',
+                filter: {
+                    data_type: 'string',
+                    filter_key: 'title'
+                }
+            },
+            {
+                column: 'subject.title',
+                header: 'subject-title',
+                filter: {
+                    data_type: 'string',
+                    filter_key: 'subject.title'
+                }
+            },
+            {
+                column: 'level',
+                header: 'level',
+                filter: {
+                    data_type: 'integer'
+                }
+            },
+            {
+                column: 'rating',
+                header: 'rating',
+                filter: {
+                    data_type: 'integer'
+                }
+            },
+            {
+                column: 'subject.id',
+                header: 'subject-id',
+                filter: {
+                    data_type: 'string',
+                    filter_key: 'subject.id'
+                }
+            }
+        ];
+        let filter = ArrowHelper.createFilter(req, res, table, {
+            limit: itemOfPage
+        });
+
 
         app.models.userInfo.find({
             where: {
                 user_id : user.id
             }
         }).then(function (_userInfo) {
-            //console.log(_userInfo);
+            //console.log(_userInfo.gift_codes);
+            _userInfo.gift_codes = _userInfo.gift_codes ? _userInfo.gift_codes : [null];
             if(!_userInfo){
                 throw new Error('Not found !');
             }
+            //console.log(filter.conditions);
+            //filter.conditions.push(
+            //    'gift_code : { '+
+            //        '$in: '+ JSON.stringify(_userInfo.gift_codes)+' }');
+            console.log(filter.conditions);
             return actions.examFindAndCountAll({
-                where: {
-                    gift_code : {
-                        $in: _userInfo.gift_codes
-                    }
-                },
+                where: filter.conditions,
                 include: [{
                     model: app.models.subject,
                     as: 'subject'
                 }],
-                order: 'created_at DESC',
+                order: filter.order || 'created_at DESC',
                 limit: itemOfPage,
                 offset: (page - 1) * itemOfPage
             })
