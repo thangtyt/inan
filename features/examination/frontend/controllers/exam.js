@@ -10,43 +10,43 @@ module.exports = function (controller, component, app) {
         // Get current page and default sorting
         let page = req.params.page || 1;
         let itemOfPage = 6;
-        //let table = [
-        //    {
-        //        column: 'id',
-        //        header: 'id'
-        //    },
-        //    {
-        //        column: 'subject.title',
-        //        header: 'subject-title',
-        //        filter: {
-        //            data_type: 'string',
-        //            filter_key: 'subject.title'
-        //        }
-        //    },
-        //    {
-        //        column: 'level',
-        //        header: 'level',
-        //        filter: {
-        //            data_type: 'integer'
-        //        }
-        //    },
-        //    {
-        //        column: 'rating',
-        //        header: 'rating',
-        //        filter: {
-        //            data_type: 'integer'
-        //        }
-        //    },
-        //    {
-        //        column: 'subject.id',
-        //        header: 'subject-id',
-        //        filter: {
-        //            data_type: 'string',
-        //            filter_key: 'subject.id'
-        //        }
-        //    }
-        //];
-        let filter = ArrowHelper.createFilter(req, res, [], {
+        let table = [
+            {
+                column: 'id',
+                header: 'id'
+            },
+            {
+                column: 'subject.title',
+                header: 'subject-title',
+                filter: {
+                    data_type: 'string',
+                    filter_key: 'subject.title'
+                }
+            },
+            {
+                column: 'level',
+                header: 'level',
+                filter: {
+                    data_type: 'integer'
+                }
+            },
+            {
+                column: 'rating',
+                header: 'rating',
+                filter: {
+                    data_type: 'integer'
+                }
+            },
+            {
+                column: 'subject.id',
+                header: 'subject-id',
+                filter: {
+                    data_type: 'string',
+                    filter_key: 'subject.id'
+                }
+            }
+        ];
+        let filter = ArrowHelper.createFilter(req, res,table, {
             limit: itemOfPage
         });
         let conditions = createFilter(req.query);
