@@ -5,59 +5,58 @@
 let _ = require('arrowjs')._;
 module.exports = function (controller, component, app) {
     controller.examLists = function (req, res) {
-
         let actions = app.feature.examination.actions;
         let host = req.protocol + '://'+req.get('host');
         // Get current page and default sorting
         let page = req.params.page || 1;
         let itemOfPage = 6;
-        let table = [
-            {
-                column: 'id',
-                header: 'id'
-            },
-            {
-                column: 'subject.title',
-                header: 'subject-title',
-                filter: {
-                    data_type: 'string',
-                    filter_key: 'subject.title'
-                }
-            },
-            {
-                column: 'level',
-                header: 'level',
-                filter: {
-                    data_type: 'integer'
-                }
-            },
-            {
-                column: 'rating',
-                header: 'rating',
-                filter: {
-                    data_type: 'integer'
-                }
-            },
-            {
-                column: 'subject.id',
-                header: 'subject-id',
-                filter: {
-                    data_type: 'string',
-                    filter_key: 'subject.id'
-                }
-            }
-        ];
-        let filter = ArrowHelper.createFilter(req, res, table, {
+        //let table = [
+        //    {
+        //        column: 'id',
+        //        header: 'id'
+        //    },
+        //    {
+        //        column: 'subject.title',
+        //        header: 'subject-title',
+        //        filter: {
+        //            data_type: 'string',
+        //            filter_key: 'subject.title'
+        //        }
+        //    },
+        //    {
+        //        column: 'level',
+        //        header: 'level',
+        //        filter: {
+        //            data_type: 'integer'
+        //        }
+        //    },
+        //    {
+        //        column: 'rating',
+        //        header: 'rating',
+        //        filter: {
+        //            data_type: 'integer'
+        //        }
+        //    },
+        //    {
+        //        column: 'subject.id',
+        //        header: 'subject-id',
+        //        filter: {
+        //            data_type: 'string',
+        //            filter_key: 'subject.id'
+        //        }
+        //    }
+        //];
+        let filter = ArrowHelper.createFilter(req, res, [], {
             limit: itemOfPage
         });
-        //filter.conditions[0] += ' and gift_code = ? or gift_code = ? ';
-        //filter.conditions.push([null,''])
-        console.log(filter.conditions);
+        let conditions = createFilter(req.query);
+        conditions[0].gift_code = null;
         actions.examFindAndCountAll({
-            where: filter.conditions,
+            where: conditions[0],
             include: [{
                 model: app.models.subject,
-                as: 'subject'
+                as: 'subject',
+                where: conditions[1]
             }],
             order: filter.order || 'created_at DESC',
             limit: itemOfPage,
@@ -877,116 +876,107 @@ module.exports = function (controller, component, app) {
         let host = req.protocol + '://'+req.get('host');
         // Get current page and default sorting
         let page = req.params.page || 1;
-
         let itemOfPage = 6;
-        let table = [
+        let filter = ArrowHelper.createFilter(req, res, [
             {
                 column: 'id',
                 header: 'id'
-            },
-            {
-                column: 'title',
-                header: 'title',
-                filter: {
-                    data_type: 'string',
-                    filter_key: 'title'
-                }
-            },
-            {
-                column: 'subject.title',
-                header: 'subject-title',
-                filter: {
-                    data_type: 'string',
-                    filter_key: 'subject.title'
-                }
-            },
-            {
-                column: 'level',
-                header: 'level',
-                filter: {
-                    data_type: 'integer'
-                }
-            },
-            {
-                column: 'rating',
-                header: 'rating',
-                filter: {
-                    data_type: 'integer'
-                }
-            },
-            {
-                column: 'subject.id',
-                header: 'subject-id',
-                filter: {
-                    data_type: 'string',
-                    filter_key: 'subject.id'
-                }
             }
-        ];
-        let filter = ArrowHelper.createFilter(req, res, table, {
+        ], {
             limit: itemOfPage
         });
 
-
+        let conditions = createFilter(req.query);
         app.models.userInfo.find({
             where: {
                 user_id : user.id
             }
         }).then(function (_userInfo) {
-            //console.log(_userInfo.gift_codes);
-            _userInfo.gift_codes = _userInfo.gift_codes ? _userInfo.gift_codes : [null];
+            _userInfo.gift_codes = _userInfo.gift_codes ? _userInfo.gift_codes : [];
             if(!_userInfo){
                 throw new Error('Not found !');
+            }else if(_userInfo.gift_codes.length == 0 || _userInfo.gift_codes == null){
+                return null;
+            }else{
+                conditions[0].gift_code = {
+                    $in: _userInfo.gift_codes
+                };
+                return actions.examFindAndCountAll({
+                    where: conditions[0],
+                    include: [{
+                        model: app.models.subject,
+                        as: 'subject',
+                        where: conditions[1]
+                    }],
+                    order: filter.order || 'created_at DESC',
+                    limit: itemOfPage,
+                    offset: (page - 1) * itemOfPage
+                })
             }
-            //console.log(filter.conditions);
-            //filter.conditions.push(
-            //    'gift_code : { '+
-            //        '$in: '+ JSON.stringify(_userInfo.gift_codes)+' }');
-            console.log(filter.conditions);
-            return actions.examFindAndCountAll({
-                where: filter.conditions,
-                include: [{
-                    model: app.models.subject,
-                    as: 'subject'
-                }],
-                order: filter.order || 'created_at DESC',
-                limit: itemOfPage,
-                offset: (page - 1) * itemOfPage
-            })
+
         })
         .then(function (result) {
-                if(!result)
-                    res.status(200).jsonp({});
-            //console.log('FIND ALL EXAM :',JSON.stringify(result.rows,2,2));
-            let exams = JSON.parse(JSON.stringify(result.rows));
-            exams = exams.filter(function (exam) {
-                exam.timeDoExam = Math.floor((Math.random() * 100) + 1);
-                if (_.has(exam, 'subject')) {
-                    try {
-                        exam.subject.icons = JSON.parse(exam.subject.icons);
-                        exam.subject.icons.icon.default = host+exam.subject.icons.icon.default;
-                        exam.subject.icons.icon.hover = host+exam.subject.icons.icon.hover;
-                        return exam;
-                    } catch (err) {
+            if(!result){
+                res.status(200).jsonp({
+                    currentPage: page,
+                    totalPage: 0,
+                    items: []
+                });
+            }else{
+                //console.log('FIND ALL EXAM :',JSON.stringify(result.rows,2,2));
+                let exams = JSON.parse(JSON.stringify(result.rows));
+                exams = exams.filter(function (exam) {
+                    exam.timeDoExam = Math.floor((Math.random() * 100) + 1);
+                    if (_.has(exam, 'subject')) {
+                        try {
+                            exam.subject.icons = JSON.parse(exam.subject.icons);
+                            exam.subject.icons.icon.default = host+exam.subject.icons.icon.default;
+                            exam.subject.icons.icon.hover = host+exam.subject.icons.icon.hover;
+                            return exam;
+                        } catch (err) {
 
+                        }
                     }
-                }
 
-            })
-            res.status(200);
-            res.jsonp({
-                currentPage: page,
-                totalPage: Math.ceil(result.count / itemOfPage),
-                items: exams
-            })
+                })
+                res.status(200).jsonp({
+                    currentPage: page,
+                    totalPage: Math.ceil(result.count / itemOfPage),
+                    items: exams
+                })
+            }
+
+
         }).catch(function (err) {
-            res.status(300);
-            res.jsonp({
+                console.log(err);
+            res.status(300).jsonp({
                 error: err.message
             })
         })
     }
 };
+function createFilter(query){
+    let result = [{},{}];
+    _.forEach(query, function (val,key) {
+        switch (key) {
+            case "subject.title" :
+                result[1]['title'] = {
+                    $iLike: '%'+val+'%'
+                };
+                break;
+            case "rating":
+                result[0][key] = parseInt(val);
+                break;
+            case "level":
+                result[0][key] = parseInt(val);
+                break;
+            default:
+                break;
+        }
+
+    })
+    return result;
+}
 function checkAnswer(data,user_answers){
     let mark = 0;
     let total_mark = 0;
