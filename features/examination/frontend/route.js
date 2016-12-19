@@ -102,6 +102,21 @@ module.exports = function (component, app) {
             get: {
                 handler: [jwtAuth,controller.getExamGiftCode]
             }
+        },
+        "/user/exam/gift/page/:page": {
+            get: {
+                handler: [jwtAuth,controller.getExamGiftCode]
+            }
+        },
+        "/user/exam/gift/sort/:sort/(:order)/page/:page?": {
+            get: {
+                handler: [jwtAuth,controller.getExamGiftCode]
+            }
+        },
+        "/user/exam/gift/page/:page/sort/:sort/(:order)?": {
+            get: {
+                handler: [jwtAuth,controller.getExamGiftCodes]
+            }
         }
 
     }
