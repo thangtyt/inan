@@ -297,8 +297,7 @@ module.exports = function (controller, component, app) {
             .then(function (listAnswers) {
                 //    console.log(1);
                 let afterCheckAnswer = checkAnswer(JSON.parse(JSON.stringify(listAnswers)),answers);
-                data.mark = afterCheckAnswer.mark;
-                data.total_mark = afterCheckAnswer.total_mark;//điểm đạt được sau lần thi
+                data.mark = afterCheckAnswer.mark;//điểm đạt được sau lần thi
                 wrongAnswer = afterCheckAnswer.wrongAnswer;
                     //console.log(afterCheckAnswer);
                 return actions.examSubmit(data); //nhập vào bảng dữ liệu mỗi lần thi
@@ -331,10 +330,8 @@ module.exports = function (controller, component, app) {
             .then(function (userInfo) {
                 let result = userInfo[0] ? userInfo[0] : userInfo[1];
                 //console.log(JSON.stringify(result,2,2));
-                if (Number(data.total_mark) > 10) {
-                    score = Number(data.mark) / 10
-                }
-                score = score * Number(data.level);
+                score = Number(data.mark) ;
+                //score = score * Number(data.level);
                 //todo: check userInfo
                 if (Number(data.mark) < Number(data.total_mark) / 2) {
                     score = 0;
@@ -979,7 +976,6 @@ function createFilter(query){
 }
 function checkAnswer(data,user_answers){
     let mark = 0;
-    let total_mark = 0;
     let keyChose = -1 ;
     let wrongAnswer = _.filter(data, function (data_answer) {
 
@@ -1005,7 +1001,6 @@ function checkAnswer(data,user_answers){
     });
     return {
         mark: mark,
-        total_mark : total_mark,
         wrongAnswer: wrongAnswer
     }
 }
