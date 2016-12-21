@@ -50,7 +50,7 @@ module.exports = function (controller, component, app) {
             limit: itemOfPage
         });
         let conditions = createFilter(req.query);
-        conditions[0].gift_code = null;
+        conditions[0]['$or'] = [{gift_code : null},{gift_code : ''}];
         actions.examFindAndCountAll({
             where: conditions[0],
             include: [{
@@ -78,7 +78,6 @@ module.exports = function (controller, component, app) {
 
                     }
                 }
-
             })
             res.status(200);
             res.jsonp({
@@ -268,7 +267,7 @@ module.exports = function (controller, component, app) {
         let user = req.user;
         let data = req.body;
         let answers = [];
-        let wrongAnswer = []
+        let wrongAnswer = [];
         data.user_id = user.id;
         if (typeof data.answers !== 'object') {
             try {
@@ -1000,7 +999,7 @@ function checkAnswer(data,user_answers){
         }
     });
     return {
-        mark: mark,
+        mark: Math.round(mark*10)/10,
         wrongAnswer: wrongAnswer
     }
 }
