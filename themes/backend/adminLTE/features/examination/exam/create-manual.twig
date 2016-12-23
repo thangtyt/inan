@@ -70,7 +70,15 @@
                                 {#</div>#}
                                 <div class="form-group" id="giftCodeDiv">
                                     <label>Gift Code</label>
-                                    <input name="gift_code" id="gift_code" pattern="[0-9A-Z]{5}" title="Please input 5 (characters and numbers) for gift code" class="form-control" value="{{ exam.gift_code }}"/>
+                                    <select multiple="multiple" style="width: 100%" name="giftsSelect" id="giftsSelect"
+                                            class="form-control">
+                                        {% if gifts %}
+                                            {% for gift in gifts %}
+                                            <option value="{{ gift.id }}">{{ gift.title }}</option>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </select>
+                                    <input type="hidden" name="gifts" id="gifts" value="{{ exam.gift_code }}"/>
                                 </div>
                             </div>
                         </div>
@@ -125,6 +133,13 @@
         }
         $(function () {
             /* BEGIN init select2 */
+            $('#giftsSelect').select2({
+                templateSelection: function (option) {
+                    var text = $(option.element).text().trim();
+                    text = text.replace(/^[—]+/, '');
+                    return text;
+                }
+            });
             select2Sections.select2({
                 templateSelection: function (option) {
                     var text = $(option.element).text().trim();
@@ -148,6 +163,19 @@
             _sections = {{ exam.sections | dump | safe }};
                 loadSections();
             {% endif %}
+            {% if exam.gifts %}
+            var giftsId = '{{ exam.gifts }}';
+            giftsId = giftsId.split('::');
+            giftsId.shift();
+            giftsId.pop(giftsId[giftsId.length - 1]);
+            $('#giftsSelect').val(giftsId).trigger('change');
+            {% endif %}
+            $('#edit-form').submit(function () {
+                var listId = $('#giftsSelect').val();
+                if (listId) {
+                    $('#gifts').val('::' + listId.join('::') + '::');
+                }
+            });
         });
         function deleteRecords() {
             var ids = [];

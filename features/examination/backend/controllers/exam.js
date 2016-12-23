@@ -63,12 +63,12 @@ module.exports = function (controller,component,app) {
                 }
             },
             {
-                column : 'gift_code',
+                column : 'gift',
                 width : '10%',
                 header : 'Gift Code',
                 filter : {
                     data_type : 'string',
-                    filter_key: 'gift_code'
+                    filter_key: 'gift'
                 }
             },
             {
