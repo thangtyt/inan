@@ -1,0 +1,40 @@
+{% extends '_layout.' + getConfig('viewExtension') %}
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="row toolbar">
+                <div class="col-md-12">
+                    {{ toolbar | safe }}
+                </div>
+            </div>
+
+            <div class="box box-solid box-primary">
+                <div class="box-body table-responsive">
+                    {% include 'basic_table/_table.' + getConfig('viewExtension') %}
+                    {{ paginateLinks(totalPage, currentPage, baseRoute+'page/{page}/sort/'+currentColumn+'/'+currentOrder+queryString) | safe }}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block jsExtends %}
+    <script>
+        function deleteRecords() {
+            var ids = [];
+            $("input:checkbox[name='ids[]']:checked").each(function () {
+                ids.push($(this).val());
+            });
+            if (ids.length > 0) {
+                $.ajax({
+                    url: $(location).attr('href'),
+                    type: 'DELETE',
+                    data: {
+                        ids: ids.join()
+                    }
+                }).done(function () {
+                    window.location.href = $(location).attr('href');
+                });
+            }
+        }
+    </script>
+{% endblock %}

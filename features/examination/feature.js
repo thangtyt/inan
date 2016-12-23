@@ -25,27 +25,27 @@ module.exports = {
         }
     ],
     backend_menu: {
-        title: __("m_examination_feature_backend_menu_title"),
-        icon: 'fa fa-book',
+        title: "Thi cử",
+        icon: 'fa fa-university',
         menus: [
             {
                 permission: ['q-a'],
-                title: 'Q&A',
+                title: 'Câu hỏi & câu trả lời',
                 link: '/q-a'
             },
             {
                 permission: ['subject'],
-                title: 'Subject',
+                title: 'Các môn học',
                 link: '/subject'
             },
             {
                 permission: ['section'],
-                title: "Section",
+                title: "Mục câu hỏi (section)",
                 link: '/section'
             },
             {
                 permission: ['exam'],
-                title: "Exam",
+                title: "Đề thi",
                 link: '/exam'
             }
         ]

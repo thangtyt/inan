@@ -145,11 +145,22 @@ module.exports = function (controller,component,app) {
         let toolbar = new ArrowHelper.Toolbar();
         toolbar.addBackButton(req, 'qa_back_link');
         toolbar.addSaveButton();
-        actions.sFindAll()
-        .then(function (subjects) {
+        Promise.all([
+            actions.sFindAll(),
+            app.models.gift.findAll({
+                attributes: ['id','title'],
+                where: {
+                    status : 1
+                }
+            })
+        ])
+
+        .then(function (result) {
+                console.log(JSON.stringify(result,2,2));
             res.backend.render('exam/create-manual',{
                 title: 'Create Exam Manual',
-                subjects: subjects,
+                subjects: result[0],
+                gifts: result[1],
                 toolbar: toolbar.render()
             });
         }).catch(function (err) {
@@ -336,6 +347,12 @@ module.exports = function (controller,component,app) {
             }),
             actions.sFindAll({
                 attributes: ['id','title']
+            }),
+            app.models.gift.findAll({
+                attributes: ['id','title'],
+                where: {
+                    status : 1
+                }
             })
         ])
         .then(function (result) {
@@ -343,6 +360,7 @@ module.exports = function (controller,component,app) {
             res.backend.render('exam/create-manual',{
                 exam : result[0],
                 subjects: result[1],
+                gifts: result[2],
                 toolbar: toolbar.render()
             });
         }).catch(function (err) {
@@ -353,7 +371,7 @@ module.exports = function (controller,component,app) {
             });
         })
 
-    }
+    };
     controller.eDelete = function (req,res) {
         let ids = [];
         if (req.params.examId){

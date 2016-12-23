@@ -825,46 +825,73 @@ module.exports = function (controller, component, app) {
     controller.giftCode = function (req,res) {
         let user = req.user;
         let data = req.body;
-        app.models.userInfo.findOrCreate({
+        app.models.giftCode.find({
             where: {
-                user_id: user.id
+                gift_code: data.gift_code,
+                status: 0
             },
-            defaults: {
-                user_id: user.id,
-                gift_codes: [data.gift_code]
-            }
-        }).then(function (result) {
-            //chua co userInfo => tao moi
-            //console.log(result);
-            if(result[1]){
-                return result[1];
-            }else{//co roi cap nhat
-                if(result[0].gift_codes == null || result[0].gift_codes.length == 0 || result[0].gift_codes.indexOf(data.gift_code) == -1){
-                    let gift_codes = [];
-                    if(result[0].gift_codes == null || result[0].gift_codes.length == 0){
-                        gift_codes = [data.gift_code];
-                    }else{
-                        gift_codes = result[0].gift_codes;
-                        gift_codes.push(data.gift_code);
+            raw: true
+        }).then(function (_giftCode) {
+            console.log(_giftCode);
+            if(!_.has(_giftCode,'gift_code')){
+                throw new Error('Không thấy mã hoặc mã quà tặng đã được kích hoạt vui lòng nhập mã khác !')
+            }else{
+                return app.models.userInfo.findOrCreate({
+                    where: {
+                        user_id: user.id
+                    },
+                    defaults: {
+                        user_id: user.id,
+                        gift_codes: [data.gift_code]
                     }
-                    return result[0].updateAttributes({
-                        gift_codes : gift_codes
-                    })
-                }else{
-                    throw new Error('This giftcode is used ! Please enter another giftcode !');
-                }
-            }
+                }).then(function (result) {
+                    //chua co userInfo => tao moi
+                    //console.log(result);
+                    if(result[1]){
+                        return app.models.giftCode.update({
+                                status: 1
+                            },{
+                                where: {
+                                    gift_code: data.gift_code
+                                }
+                            })
+                    }else{//co roi cap nhat
+                        if(result[0].gift_codes == null || result[0].gift_codes.length == 0 || result[0].gift_codes.indexOf(data.gift_code) == -1){
+                            let gift_codes = [];
+                            if(result[0].gift_codes == null || result[0].gift_codes.length == 0){
+                                gift_codes = [data.gift_code];
+                            }else{
+                                gift_codes = result[0].gift_codes;
+                                gift_codes.push(data.gift_code);
+                            }
+                            return Promise.all([
+                                result[0].updateAttributes({
+                                    gift_codes : gift_codes
+                                }),
+                                app.models.giftCode.update({
+                                        status: 1
+                                    },{
+                                        where: {
+                                            gift_code: data.gift_code
+                                        }
+                                    })
+                            ])
+                        }else{
+                            throw new Error('Mã quà tặng đã được kích hoạt vui lòng nhập mã khác !');
+                        }
+                    }
 
+                })
+            }
         }).then(function () {
             res.status(200).jsonp({
-                message: 'GiftCode add successfully !'
+                message: 'Mã quà tặng đã được nhập thành công !'
             })
         }).catch(function (err) {
             res.status(500).jsonp({
                 message: err.message
             })
-        })
-        //res.sendStatus(200);
+        });
     };
     controller.getExamGiftCode = function (req,res) {
         let user = req.user;

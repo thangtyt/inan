@@ -20,9 +20,9 @@
         {% else %}
             {% if col.type=='datetime' %}
                 {% if col.dateFormat and col.dateFormat == 'withTime' %}
-                    {{ col.column|get_value(item)|moment }}
+                    {{ col.column|get_value(item)|moment(col.dateFormat) }}
                 {% else %}
-                    {{ col.column|get_value(item)|moment }}
+                    {{ col.column|get_value(item)|moment(col.dateFormat) }}
                 {% endif %}
             {% elif col.type=='price' %}
                 {{ col.column|get_value(item)|vnd }}

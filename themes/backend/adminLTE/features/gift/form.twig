@@ -1,0 +1,160 @@
+{% extends '_layout.' + getConfig('viewExtension') %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            <form id="edit-form" method="post" enctype="multipart/form-data">
+                {{ toolbar | safe }}
+                <div class="nav-tabs-custom">
+                    <ul class="nav nav-tabs">
+                        <li class="active">
+                            <a href="#infoGift" data-toggle="tab" aria-expanded="true">
+                                <i class="fa fa-question-circle padd-right-5"></i> &nbsp;&nbsp;&nbsp;Thông tin quà tặng</a>
+                        </li>
+                        {% if gift %}
+                        <li class="">
+                            <a href="#giftCode" data-toggle="tab" aria-expanded="false">
+                                <span class="glyphicon glyphicon-ok-sign"> </span> &nbsp;&nbsp;&nbsp;Danh sách mã code
+                            </a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                    <div class="tab-content">
+                        <div class="row tab-pane active" id="infoGift">
+                            <div class="box-body">
+                                <div class="row">
+                                    <div class="col-md-12 col-sm-12">
+                                        <div class="form-group">
+                                            <label for="name"> Tiêu đề <span class="required">*</span></label>
+                                            <input type="text" class="form-control" name="title" id="title"
+                                                   value="{{ gift.title }}" autocomplete="off" required="required"/>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="description">Mô tả </label>
+                                            <textarea name="desc" id="desc" class="form-control" maxlength="255"
+                                                      rows="5">{{ gift.desc }}</textarea>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="status">Trạng thái</label>
+                                            <select data-tags="true" name="status" id="status" class="form-control" required="required">
+                                                <option value="0"
+                                                        {% if gift.status == 0 %}selected="selected"{% endif %}>
+                                                    Không kích hoạt
+                                                </option>
+                                                <option value="1"
+                                                        {% if gift.status == 1 %}selected="selected"{% endif %}>
+                                                    Kích hoạt
+                                                </option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>File mã quà tặng </label>
+                                            <div class="input-group ">
+                                                <div class="input-group-addon">
+                                                    <i class="fa fa-file"></i>
+                                                </div>
+                                                <input class="form-control" type="file" name="file" id="file"
+                                                       value="{{ gift.file }}"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="box box-solid tab-pane" id="giftCode">
+                            <div class="box-header">
+                                <div class="input-group margin">
+                                    <div class="input-group-btn">
+                                        <button type="button" class="btn btn-default dropdown-toggle"
+                                                data-toggle="dropdown">
+                                            <span id="typeBtnDisplay">All</span>
+
+                                            <span class="fa fa-caret-down"> </span>
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <li><a href="javascript:changeTypeOfGiftCode(2)">All</a></li>
+                                            <li><a href="javascript:changeTypeOfGiftCode(1)">Active</a></li>
+                                            <li><a href="javascript:changeTypeOfGiftCode(0)">De-Active</a></li>
+                                        </ul>
+                                        <input type="hidden" name="typeOfGiftCode" id="typeOfGiftCode" value="2">
+                                    </div>
+                                    <!-- /btn-group -->
+                                    <input type="text" class="form-control" name="keySearch" id="keySearch">
+                                    <span class="input-group-btn">
+                                      <button type="button" class="btn btn-info btn-flat" onclick="searchGiftCode(1)">
+                                          Search
+                                      </button>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="box-body" style="overflow:auto; height:600px;" id="giftCodesDiv">
+                                {#<button type="button" style="margin: 5px !important;" class="btn btn-info">2dZT50S5KJzmyal</button>#}
+                            </div>
+                            <div class="box-footer">
+                                <div class="row" id="paginationGiftCode">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block jsExtends %}
+    {% include '_editorScript.' + getConfig('viewExtension') %}
+    <script>
+        var giftData = [];
+        var currPage = 1;
+        var giftCodes;
+        var giftId = 'null';
+        {% if gift %}
+            giftId = '{{ gift.id }}';
+        {% endif %}
+        $(function () {
+            {% if giftCodes %}
+            giftCodes = {{ giftCodes | dump | safe }};
+            generateGiftCodeDisplay(giftCodes);
+            {% endif %}
+            $('form').bind("keypress", function(e) {
+                if (e.keyCode == 13) {
+                    e.preventDefault();
+                    return false;
+                }
+            });
+            $('#keySearch').bind("keypress", function(e) {
+                if (e.keyCode == 13) {
+                    searchGiftCode(1);
+                }
+            });
+        });
+        function deleteRecords() {
+            var ids = [];
+            $("input:checkbox[name='ids[]']:checked").each(function () {
+                ids.push($(this).val());
+            });
+            $.ajax({
+                url: window.location.href,
+                type: 'DELETE',
+                success: function (result) {
+                    //console.log(JSON.stringify(result,2,2));
+                    // Do something with the result
+                    if(result.error)
+                        window.location.href = '{{ baseRoute }}/{{ section.id }}';
+                    else
+                        window.location.href = '{{ baseRoute }}';
+                }
+            });
+        }
+
+    </script>
+    <script src="/backend/adminLTE/dist/js/gift.js"></script>
+    <script>
+        function exportExcel(){
+            window.location.href = '{{ baseRoute }}/gift-code/excel?giftId='+giftId+'&type='+$('#typeOfGiftCode').val()+'&key='+$('#keySearch').val();
+        }
+    </script>
+{% endblock %}
