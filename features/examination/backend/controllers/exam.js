@@ -66,10 +66,8 @@ module.exports = function (controller,component,app) {
                 column : 'gift',
                 width : '10%',
                 header : 'Gift Code',
-                filter : {
-                    data_type : 'string',
-                    filter_key: 'gift'
-                }
+                type: 'icon',
+                icon: 'fa-gift'
             },
             {
                 column : 'level',
@@ -156,7 +154,7 @@ module.exports = function (controller,component,app) {
         ])
 
         .then(function (result) {
-                console.log(JSON.stringify(result,2,2));
+                //console.log(JSON.stringify(result,2,2));
             res.backend.render('exam/create-manual',{
                 title: 'Create Exam Manual',
                 subjects: result[0],
@@ -178,19 +176,8 @@ module.exports = function (controller,component,app) {
             attributes: ['id','title'],
             where: {
                 subject_id: req.params.subjectId
-            }//,
-            //include: [
-            //    {
-            //        model: app.models.question,
-            //        include: [
-            //            {
-            //                model: app.models.answer,
-            //                as: 'answers'
-            //            }
-            //        ],
-            //        as: 'questions'
-            //    }
-            //]
+            },
+            order: 'created_at desc'
         })
         .then(function (sections) {
 
@@ -213,7 +200,8 @@ module.exports = function (controller,component,app) {
                     as: 'answers',
                     where: ['1=1']
                 }
-            ]
+            ],
+            order: 'created_at desc'
         })
         .then(function (questions) {
             res.jsonp(JSON.parse(JSON.stringify(questions)));
@@ -314,7 +302,7 @@ module.exports = function (controller,component,app) {
             next();
         })
         .catch(function (err) {
-                console.log(err);
+                //console.log(err);
             req.flash.error("This Exam is used ! Please don't edit it !");
             actions.sFindAll()
             .then(function (subjects) {

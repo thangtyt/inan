@@ -50,7 +50,7 @@ module.exports = function (controller, component, app) {
             limit: itemOfPage
         });
         let conditions = createFilter(req.query);
-        conditions[0]['$or'] = [{gift_code : null},{gift_code : ''}];
+        conditions[0]['$or'] = [{gifts : null},{gifts : ''}];
         actions.examFindAndCountAll({
             where: conditions[0],
             include: [{

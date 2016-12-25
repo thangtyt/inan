@@ -35,6 +35,10 @@
                 {% set value = col.column|get_value(item) %}{{ value|get_value_from_source2(sources[col.source], col.key_to_compare, col.key_to_value) }}
             {% elif col.type=='image' %}
                 <img class="img-circle" src="{{ col.column|get_value(item) }}" style="width: 55px;">
+            {% elif col.type=='icon' %}
+                {% if col.column | get_value(item) %}
+                    <i class="fa {{ col.icon }}"></i>
+                {% endif %}
             {% elif col.type == 'title'%}
                     {% if col.filter.length %}
                         {{ col.column | get_value(item) | title(col.filter.length,'...') }}
