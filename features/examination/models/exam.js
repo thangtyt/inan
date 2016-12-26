@@ -136,6 +136,9 @@ module.exports = function (sequelize,DataTypes) {
         gifts: {
             type: DataTypes.TEXT
         },
+        reference: {
+            type: DataTypes.TEXT
+        },
         updated_at: {
             type: DataTypes.DATE,
             validate: {

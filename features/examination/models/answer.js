@@ -29,6 +29,10 @@ module.exports = function (sequelize, DataTypes) {
         },
         explanation: {
             type: DataTypes.TEXT
+        },
+        layout: {
+            type: DataTypes.INTEGER,
+            defaultValue: 2
         }
     }, {
         tableName: "tk_answer",

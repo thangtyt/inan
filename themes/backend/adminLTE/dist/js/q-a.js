@@ -170,8 +170,9 @@ function addAnswer(){
 }
 // reset
 function resetAnswer(){
-    $('#answerMark').val(0);
-    $('#answerTime').val(0);
+    $('#answerMark').val(1);
+    $('#answerTime').val(1);
+    $('#layout').val(0);
     CKEDITOR.instances['answerContent'].setData('');
     CKEDITOR.instances['answer0'].setData('');
     CKEDITOR.instances['answer1'].setData('');
@@ -223,13 +224,18 @@ function renderView(){
                     '</div>' ;
                 html += '<div class="col-lg-12">';
                 if(answer.hasOwnProperty('answer_keys')){
+                    var _layout = 3;
+                    if(answer.layout == 1)
+                        _layout = 6;
+                    else if (answer.layout == 2)
+                        _layout = 12;
                     answer.answer_keys.map(function (val) {
                         var tempStyle = '';
                         if(val.isTrue){
                             tempStyle = ' style="color: #0063dc"';
                         }
                         //html+='<div class="col-md-3"'+tempStyle+'>'+String.fromCharCode(keyCode)+'.'+val.answer+'</div>';
-                        html+='<div class="col-md-3"'+tempStyle+'>'+val.answer+'</div>';
+                        html+='<div class="col-md-'+_layout+'"'+tempStyle+'>'+val.answer+'</div>';
                     })
                 }
                 html+=       '</div>' ;
@@ -245,9 +251,11 @@ function renderView(){
 }
 
 function fillAnswer(index,require,content){
+    console.log('fillAnswer: ',answers);
     var answerContent = require == 0 ? content : answers[index].content;
     $('#answerMark').val(answers[index].mark);
     $('#answerTime').val(answers[index].time);
+    $('#layout').val(answers[index].layout);
     CKEDITOR.instances['answerContent'].setData(answerContent);
     [0,1,2,3].map(function (i) {
         if(answers[index].answer_keys[i].isTrue){
@@ -265,12 +273,12 @@ function fillAnswer(index,require,content){
 
 }
 function pushAnswer(require){
-    console.log('pushAnswer');
+    //console.log('pushAnswer');
     //console.log("dasdasdas : ",CKEDITOR.instances);
     var answerContent = require == 0 ? "" : CKEDITOR.instances['answerContent'].getData();
     [0,1,2,3].map(function (i) {
         var isTrue = $('input[name=rightAnswer]').val() == i ? true : false;
-        console.log(isTrue, i);
+        //console.log(isTrue, i);
         answerKeys.push({
             index: i,
             answer: CKEDITOR.instances['answer'+i].getData(),
@@ -284,12 +292,12 @@ function pushAnswer(require){
         mark: $('#answerMark').val(),
         content: answerContent,
         time: $('#answerTime').val(),
+        layout: $('#layout').val(),
         answer_keys: answerKeys
     })
     answerKeys = [];
 }
 function editAnswer(index,require){
-    console.log('editAnswer');
     if(require == 0){
         var answerContent = require == 0 ? "" : CKEDITOR.instances['answerContent'].getData();
         var _answer = [];
@@ -297,7 +305,7 @@ function editAnswer(index,require){
         var keys = [0,1,2,3];
         keys.map(function (key) {
             var isTrue = Number($('input[name=rightAnswer]:checked').val()) == key ? true : false;
-            console.log(isTrue, key);
+            //console.log(isTrue, key);
             answer_keys.push({
                 index: key,
                 answer: CKEDITOR.instances['answer'+key].getData(),
@@ -309,6 +317,7 @@ function editAnswer(index,require){
             mark: $('#answerMark').val(),
             content : answerContent,
             time: $('#answerTime').val(),
+            layout: $('#layout').val(),
             answer_keys: answer_keys
         })
         if(answers.length > 0)
@@ -337,6 +346,7 @@ function editAnswer(index,require){
             answers[index].mark = $('#answerMark').val();
             answers[index].content = answerContent;
             answers[index].time = $('#answerTime').val();
+            answers[index].layout = $('#layout').val();
         }
     }
 

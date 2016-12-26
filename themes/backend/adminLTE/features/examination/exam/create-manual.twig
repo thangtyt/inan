@@ -33,6 +33,10 @@
                                     <label for="desc">Desc</label>
                                     <textarea class="form-control" name="desc" id="desc">{{ exam.desc }}</textarea>
                                 </div>
+                                <div class="form-group">
+                                    <label for="reference">Tham khảo</label>
+                                    <textarea class="form-control" name="reference" id="desc">{{ exam.reference }}</textarea>
+                                </div>
                             </div>
                             <div class="col-md-3 col-sm-3">
                                 <div class="form-group">
@@ -126,6 +130,15 @@
                 ['Bold','Italic','Underline','StrikeThrough','-','Undo','Redo','-','Cut','Copy','Paste','Find','Replace'],
                 ['NumberedList','BulletedList','-','JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock'],
                 ['Image','Table','-','TextColor','BGColor','Source']
+            ]
+        } );
+        CKEDITOR.replace( 'reference', {
+            height: 100,
+            toolbar : [
+                ['Styles','Format','Font','FontSize'],
+                ['Bold','Italic','Underline','StrikeThrough','-','Undo','Redo','-','Cut','Copy','Paste','Find','Replace'],
+                ['NumberedList','BulletedList','-','JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock'],
+                ['Image','Table','-','TextColor','BGColor','Mathjax','Source']
             ]
         } );
         if ( CKEDITOR.env.ie && CKEDITOR.env.version == 8 ) {
