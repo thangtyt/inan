@@ -8,6 +8,8 @@ module.exports = function (controller,component,app) {
     controller.listGift = function (req,res) {
         let user = req.user;
         let host = req.protocol + '://'+req.get('host');
+        let result ;
+        let giftIds = [];
         app.models.userInfo.find({
             where: {
                 user_id: user.id
@@ -33,24 +35,80 @@ module.exports = function (controller,component,app) {
                     })
                 ])
             }
-        }).then(function (result) {
-            result = JSON.parse(JSON.stringify(result));
-            if(!result)
-                result = [];
+        }).then(function (gifts) {
+            gifts = JSON.parse(JSON.stringify(gifts[0]));
+            if(!gifts[0])
+                gifts = [];
             else{
-                result = _.filter(result, function (val) {
-                    return _.filter(val, function (_gift) {
-                        _gift["icon"] = {
-                            "default": host+"/img/icon/gift.png",
-                            "hover": host+"/img/icon/gift-hover.png"
-                        };
-                        delete _gift.giftCodes;
-                        return _gift
-                    })
+                gifts = _.filter(gifts, function (val) {
+                    delete val.giftCodes;
+                    return val;
+                    //val["icon"] = {
+                    //    "default": host+"/img/icon/gift.png",
+                    //    "hover": host+"/img/icon/gift-hover.png"
+                    //};
                 })
+                _.map(gifts, function (val) {
+                    giftIds.push(val.id);
+                });
+                let getExamByGift = [];
+                result = gifts;
+                giftIds.map(function (_gId) {
+                    getExamByGift.push(app.models.exam.findAndCountAll({
+                        where: {
+                            gifts: {
+                                $iLike: '%'+_gId+'%'
+                            }
+                        },
+                        include: [
+                            {
+                                model: app.models.subject
+                            }
+                        ]
+                    }))
+                });
+                return Promise.all(getExamByGift);
+                //result = _.filter(result, function (val) {
+                //    //delete val.giftCodes;
+                //    return
+                //        val["icon"] = {
+                //            "default": host+"/img/icon/gift.png",
+                //            "hover": host+"/img/icon/gift-hover.png"
+                //        };
+                //
+                //
+                //})
+            }
+            //res.status(200).jsonp(gifts);
+        }).then(function (_exams) {
+            console.log(JSON.stringify(_exams,2,2));
+            let examCounts = [];
+            for(var i = 0 ; i < _exams.length ; i++){
+                let icons = JSON.parse(_exams[i]['rows'][0]['subject']['icons']);
+                result[i]['done'] = _exams[i]['count'];
+                result[i]['icons'] = icons['icon'];
+                let _eIds = []
+                _exams[i]['rows'].map(function (_ex) {
+                    _eIds.push(_ex.id)
+                })
+                examCounts.push(app.models.userResult.count({
+                    where: {
+                        exam_id: {
+                            $in: _eIds
+                        }
+                    }
+                }));
+            }
+            return Promise.all(examCounts);
+
+        }).then(function (examCount) {
+            console.log(JSON.stringify(examCount,2,2));
+            for(var i = 0 ; i < examCount.length ; i++){
+                result[i]['done'] = examCount[i]+'/'+result[i]['done']
             }
             res.status(200).jsonp(result);
         }).catch(function (err) {
+            console.log(err);
             res.status(500).jsonp({
                 message: err.message
             })
