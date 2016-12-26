@@ -10,6 +10,18 @@ module.exports = function (controller,component,app) {
         let host = req.protocol + '://'+req.get('host');
         let result ;
         let giftIds = [];
+        let page = req.params.page || 1;
+        let itemOfPage = 6;
+        let filter = ArrowHelper.createFilter(req, res, [
+            {
+                column: 'id',
+                header: 'id'
+            }
+        ], {
+            limit: itemOfPage
+        });
+
+        let conditions = createFilter(req.query);
         app.models.userInfo.find({
             where: {
                 user_id: user.id
@@ -17,7 +29,7 @@ module.exports = function (controller,component,app) {
         }).then(function (_userInfo) {
             if(_userInfo && _userInfo.gift_codes){
                 return Promise.all([
-                    app.models.gift.findAll({
+                    app.models.gift.findAndCountAll({
                         where: {
                             status: 1
                         },
@@ -31,28 +43,32 @@ module.exports = function (controller,component,app) {
                                 }
                             }
                         ],
-                        attributes: ['id','title','desc']
+                        attributes: ['id','title','desc'],
+                        order: filter.order || 'created_at DESC',
+                        limit: itemOfPage,
+                        offset: (page - 1) * itemOfPage
                     })
                 ])
             }
-        }).then(function (gifts) {
-            gifts = JSON.parse(JSON.stringify(gifts[0]));
+        }).then(function (resultGift) {
+            console.log(JSON.stringify(resultGift,2,2));
+            let gifts = JSON.parse(JSON.stringify(resultGift[0].rows));
             if(!gifts[0])
                 gifts = [];
             else{
                 gifts = _.filter(gifts, function (val) {
                     delete val.giftCodes;
                     return val;
-                    //val["icon"] = {
-                    //    "default": host+"/img/icon/gift.png",
-                    //    "hover": host+"/img/icon/gift-hover.png"
-                    //};
                 })
                 _.map(gifts, function (val) {
                     giftIds.push(val.id);
                 });
                 let getExamByGift = [];
-                result = gifts;
+                result = {
+                    currentPage: page,
+                    totalPage: Math.ceil(resultGift[0].count / itemOfPage),
+                    items: gifts
+                };
                 giftIds.map(function (_gId) {
                     getExamByGift.push(app.models.exam.findAndCountAll({
                         where: {
@@ -85,8 +101,8 @@ module.exports = function (controller,component,app) {
             let examCounts = [];
             for(var i = 0 ; i < _exams.length ; i++){
                 let icons = JSON.parse(_exams[i]['rows'][0]['subject']['icons']);
-                result[i]['done'] = _exams[i]['count'];
-                result[i]['icons'] = icons['icon'];
+                result['items'][i]['done'] = _exams[i]['count'];
+                result['items'][i]['icons'] = icons['icon'];
                 let _eIds = []
                 _exams[i]['rows'].map(function (_ex) {
                     _eIds.push(_ex.id)
@@ -104,7 +120,7 @@ module.exports = function (controller,component,app) {
         }).then(function (examCount) {
             console.log(JSON.stringify(examCount,2,2));
             for(var i = 0 ; i < examCount.length ; i++){
-                result[i]['done'] = examCount[i]+'/'+result[i]['done']
+                result['items'][i]['done'] = examCount[i]+'/'+result['items'][i]['done']
             }
             res.status(200).jsonp(result);
         }).catch(function (err) {

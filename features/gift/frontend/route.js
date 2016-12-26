@@ -11,6 +11,16 @@ module.exports = function (component, app) {
                 handler: [jwtAuth,controller.listGift]
             }
         },
+        "/gift/page/:page": {
+            get: {
+                handler: [jwtAuth,controller.listGift]
+            }
+        },
+        "/gift/page/:page/sort/:sort/:order?": {
+            get: {
+                handler: [jwtAuth,controller.listGift]
+            }
+        },
         "/gift/exam/:giftId": {
             get: {
                 handler: [jwtAuth,controller.listExam]
