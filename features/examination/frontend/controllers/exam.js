@@ -832,7 +832,7 @@ module.exports = function (controller, component, app) {
             },
             raw: true
         }).then(function (_giftCode) {
-            console.log(_giftCode);
+            //console.log(_giftCode);
             if(!_.has(_giftCode,'gift_code')){
                 throw new Error('Không thấy mã hoặc mã quà tặng đã được kích hoạt vui lòng nhập mã khác !')
             }else{
