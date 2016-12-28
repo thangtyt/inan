@@ -27,7 +27,9 @@ module.exports = function (controller,component,app) {
                 user_id: user.id
             }
         }).then(function (_userInfo) {
+            console.log(_userInfo);
             if(_userInfo && _userInfo.gift_codes){
+                console.log(11);
                 return Promise.all([
                     app.models.gift.findAndCountAll({
                         where: {
@@ -49,9 +51,11 @@ module.exports = function (controller,component,app) {
                         offset: (page - 1) * itemOfPage
                     })
                 ])
+            }else{
+                throw new Error('Bạn không có quà tặng nào');
             }
         }).then(function (resultGift) {
-            console.log(JSON.stringify(resultGift,2,2));
+            //console.log(JSON.stringify(1,resultGift,2,2));
             let gifts = JSON.parse(JSON.stringify(resultGift[0].rows));
             if(!gifts[0])
                 gifts = [];
@@ -84,21 +88,13 @@ module.exports = function (controller,component,app) {
                     }))
                 });
                 return Promise.all(getExamByGift);
-                //result = _.filter(result, function (val) {
-                //    //delete val.giftCodes;
-                //    return
-                //        val["icon"] = {
-                //            "default": host+"/img/icon/gift.png",
-                //            "hover": host+"/img/icon/gift-hover.png"
-                //        };
-                //
-                //
-                //})
+
             }
             //res.status(200).jsonp(gifts);
         }).then(function (_exams) {
-            console.log(JSON.stringify(_exams,2,2));
+            //console.log(JSON.stringify(2,_exams,2,2));
             let examCounts = [];
+            //console.log(2);
             for(var i = 0 ; i < _exams.length ; i++){
                 let icons = JSON.parse(_exams[i]['rows'][0]['subject']['icons']);
                 result['items'][i]['done'] = _exams[i]['count'];
@@ -115,16 +111,17 @@ module.exports = function (controller,component,app) {
                     }
                 }));
             }
+            //console.log(3);
             return Promise.all(examCounts);
 
         }).then(function (examCount) {
-            console.log(JSON.stringify(examCount,2,2));
+            //console.log(JSON.stringify(examCount,2,2));
             for(var i = 0 ; i < examCount.length ; i++){
                 result['items'][i]['done'] = examCount[i]+'/'+result['items'][i]['done']
             }
             res.status(200).jsonp(result);
         }).catch(function (err) {
-            console.log(err);
+            //console.log(err);
             res.status(500).jsonp({
                 message: err.message
             })
