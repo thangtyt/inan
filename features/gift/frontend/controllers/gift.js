@@ -96,7 +96,12 @@ module.exports = function (controller,component,app) {
             let examCounts = [];
             //console.log(2);
             for(var i = 0 ; i < _exams.length ; i++){
+
                 let icons = JSON.parse(_exams[i]['rows'][0]['subject']['icons']);
+
+                    icons['icon'].default = host + icons['icon'].default;
+                    icons['icon'].hover = host + icons['icon'].hover;
+
                 result['items'][i]['done'] = _exams[i]['count'];
                 result['items'][i]['icons'] = icons['icon'];
                 let _eIds = []
