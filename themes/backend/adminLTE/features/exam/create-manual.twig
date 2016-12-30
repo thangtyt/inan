@@ -1,0 +1,265 @@
+{% extends '_layout.' + getConfig('viewExtension') %}
+{% block cssExtends %}
+    <link href="/backend/adminLTE/assets/plugins/ckeditor/plugins/codemirror/theme/monokai.css" rel="stylesheet">
+    <link href="/backend/adminLTE/assets/plugins/select2/select2.css" rel="stylesheet">
+        <style>
+
+            .ui-sortable li.ui-state-default {
+                color: rgb(79, 79, 79);
+                list-style: none;
+                min-height: 40px;
+                line-height: 40px;
+                font-size: 1.4em;
+                outline: 0;
+                padding-left: 30px;
+                text-indent: 15px;
+                border: 1px solid rgba(0, 0, 0, .3);
+                border-radius: 5px;
+                position: relative;
+                cursor: move;
+                margin: 10px 15px;
+            }
+
+
+            .ui-sortable li.ui-state-default:after {
+                content: "\f0c9";
+                display: inline-block;
+                font-family: "FontAwesome";
+                position: absolute;
+                left: 0;
+                top: 4px;
+                text-align: center;
+                line-height: 35px;
+                color: rgba(0, 0, 0, .7);
+                text-shadow: 0 0 0 rgba(0, 0, 0, 0);
+                cursor: move;
+            }
+        </style>
+{% endblock %}
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            <form id="edit-form" method="post">
+                {{ toolbar | safe }}
+                <div class="nav-tabs-custom">
+                    <ul class="nav nav-tabs">
+                        <li class="active">
+                            <a href="#exam" data-toggle="tab" aria-expanded="true">
+                                <i class="fa fa-question-circle padd-right-5"></i> &nbsp;&nbsp;&nbsp;Infomations</a>
+                        </li>
+                        <li class="">
+                            <a href="#question" data-toggle="tab" aria-expanded="false">
+                                <span class="glyphicon glyphicon-ok-sign"> </span> &nbsp;&nbsp;&nbsp;Choose Question
+                            </a>
+                        </li>
+                    </ul>
+                    <div class="tab-content">
+                        {#Tab question#}
+                        <div class="row tab-pane active" id="exam">
+                            <div class="col-md-9 col-sm-9">
+                                <div class="form-group">
+                                    <label for="title">Title<span class="required">*</span></label>
+                                    <input class="form-control" value="{{ exam.title }}" name="title" id="title"
+                                           required="require"/>
+                                    <input type="hidden" name="content" id="content"/>
+                                </div>
+                                <div class="form-group">
+                                    <label for="desc">Desc</label>
+                                    <textarea class="form-control" name="desc" id="desc">{{ exam.desc }}</textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label for="reference">Tham khảo</label>
+                                    <textarea class="form-control" name="reference"
+                                              id="desc">{{ exam.reference }}</textarea>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-3">
+                                <div class="form-group">
+                                    <label>Subject<span class="required">*</span></label>
+                                    <select class="form-control" name="subject_id" required="required"
+                                            onchange="loadSections()">
+                                        <option value=""> --Choose Subject--</option>
+                                        {% for subject in subjects %}
+                                            <option value="{{ subject.id }}" {% if exam.subject_id == subject.id %} selected{% endif %}>{{ subject.title }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Total Mark<span class="required">*</span></label>
+                                    <input type="number" name="total_mark" id="total_mark" class="form-control"
+                                           value="{{ exam.total_mark }}"/>
+                                </div>
+                                <div class="form-group">
+                                    <label>Total Question<span class="required">*</span></label>
+                                    <input type="number" name="total_question" id="total_question" class="form-control"
+                                           value="{{ exam.total_question }}" required="require"/>
+                                </div>
+                                <div class="form-group">
+                                    <label>Total Time <span> ( minute ) </span> <span class="required">*</span></label>
+                                    <input type="number" name="total_time" id="total_time" class="form-control"
+                                           value="{{ exam.total_time }}" required="require"/>
+                                </div>
+                                <div class="form-group">
+                                    <label>Level</label>
+                                    <select class="form-control" name="level">
+                                        <option value="1" {% if exam.level == 1 %}selected="selected" {% endif %}>Easy
+                                        </option>
+                                        <option value="2" {% if exam.level == 2 %}selected="selected" {% endif %}>
+                                            Normal
+                                        </option>
+                                        <option value="3" {% if exam.level == 3 %}selected="selected" {% endif %}>
+                                            Difficult
+                                        </option>
+                                    </select>
+                                </div>
+                                {#<div class="form-group">#}
+                                {#<label>Gift : </label>#}
+                                {#<input type="checkbox" value="1" name="gift" id="gift"  onchange="isGift()">#}
+                                {#</div>#}
+                                <div class="form-group" id="giftCodeDiv">
+                                    <label>Gift Code</label>
+                                    <select multiple="multiple" style="width: 100%" name="giftsSelect" id="giftsSelect"
+                                            class="form-control">
+                                        {% if gifts %}
+                                            {% for gift in gifts %}
+                                                <option value="{{ gift.id }}">{{ gift.title }}</option>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </select>
+                                    <input type="hidden" name="gifts" id="gifts" value="{{ exam.gift_code }}"/>
+                                </div>
+                            </div>
+                        </div>
+                        {#tab content answer#}
+                        <div class="row tab-pane" id="question">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label for="sections">Choose section</label>
+                                    <br>
+                                    <select multiple="multiple" style="width: 100%" name="select2sections"
+                                            id="select2sections"
+                                            class="form-control">
+                                    </select>
+                                    {#<input type="hidden" name="sections" id="sections"/>#}
+                                </div>
+
+                            </div>
+                            <div class="col-md-12" id="sortable">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+{% block jsExtends %}
+    <script src="/backend/adminLTE/assets/plugins/ckeditor/ckeditor.js"></script>
+    <script src="/backend/adminLTE/assets/plugins/select2/select2.min.js" type="text/javascript"></script>
+    <script src="/backend/adminLTE/assets/plugins/jQueryUI/jquery-ui.min.js" type="text/javascript"></script>
+    <script>
+        var select2Sections = $('#select2sections');
+        var _sections = [];
+        var _content;
+        var sort = $("#sortable");
+        var data = '';
+
+        {% if exam.content %}
+        var _content = {{ exam.content | dump | safe }};
+        {% endif %}
+        {% if exam.sections %}
+        _sections = {{ exam.sections | dump | safe }};
+        {% endif %}
+        //        CKEDITOR.replace( 'question', {
+        //            height: 200
+        //        } );
+        CKEDITOR.replace('desc', {
+            height: 200,
+            toolbar: [
+                ['Styles', 'Format', 'Font', 'FontSize'],
+                ['Bold', 'Italic', 'Underline', 'StrikeThrough', '-', 'Undo', 'Redo', '-', 'Cut', 'Copy', 'Paste', 'Find', 'Replace'],
+                ['NumberedList', 'BulletedList', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'],
+                ['Image', 'Table', '-', 'TextColor', 'BGColor', 'Source']
+            ]
+        });
+        CKEDITOR.replace('reference', {
+            height: 100,
+            toolbar: [
+                ['Styles', 'Format', 'Font', 'FontSize'],
+                ['Bold', 'Italic', 'Underline', 'StrikeThrough', '-', 'Undo', 'Redo', '-', 'Cut', 'Copy', 'Paste', 'Find', 'Replace'],
+                ['NumberedList', 'BulletedList', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'],
+                ['Image', 'Table', '-', 'TextColor', 'BGColor', 'Mathjax', 'Source']
+            ]
+        });
+        if (CKEDITOR.env.ie && CKEDITOR.env.version == 8) {
+            document.getElementById('ie8-warning').className = 'tip alert';
+        }
+        $(function () {
+            /* BEGIN init select2 */
+            $('#giftsSelect').select2({
+                templateSelection: function (option) {
+                    var text = $(option.element).text().trim();
+                    text = text.replace(/^[—]+/, '');
+                    return text;
+                }
+            });
+            select2Sections.select2({
+                templateSelection: function (option) {
+                    var text = $(option.element).text().trim();
+                    text = text.replace(/^[—]+/, '');
+                    return text;
+                }
+            });
+            select2Sections.on('select2:select', function (e) {
+                addSection(e.params.data);
+                addElement(e.params.data.id, null);
+            });
+            select2Sections.on('select2:unselect', function (e) {
+                removeSection(e.params.data);
+                removeElement(e.params.data.id, null);
+            });
+            $('#edit-form').submit(function () {
+                $('#content').val(JSON.stringify(content));
+                $('#sections').val(select2Sections.val());
+            });
+            {% if exam.sections %}
+            _sections = {{ exam.sections | dump | safe }};
+            loadSections();
+            {% endif %}
+            {% if exam.gifts %}
+            var giftsId = '{{ exam.gifts }}';
+            giftsId = giftsId.split('::');
+            giftsId.shift();
+            giftsId.pop(giftsId[giftsId.length - 1]);
+            $('#giftsSelect').val(giftsId).trigger('change');
+            {% endif %}
+            $('#edit-form').submit(function () {
+                var listId = $('#giftsSelect').val();
+                if (listId) {
+                    $('#gifts').val('::' + listId.join('::') + '::');
+                }
+            });
+        });
+        function deleteRecords() {
+            var ids = [];
+            $("input:checkbox[name='ids[]']:checked").each(function () {
+                ids.push($(this).val());
+            });
+            $.ajax({
+                url: window.location.href,
+                type: 'DELETE',
+                success: function (result) {
+                    //console.log(JSON.stringify(result,2,2));
+                    // Do something with the result
+                    if (result.error)
+                        window.location.href = '{{ baseRoute }}/{{ exam.id }}';
+                    else
+                        window.location.href = '{{ baseRoute }}';
+                }
+            });
+        }
+        ;
+    </script>
+    <script src="/backend/adminLTE/dist/js/exam.js"></script>
+{% endblock %}

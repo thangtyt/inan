@@ -31,6 +31,7 @@ module.exports = {
     backend_menu: {
         title: "Phần quà tặng",
         icon: 'fa fa-gift',
+        group: 'user_features',
         menus: [
             {
                 permission: ['all','create'],

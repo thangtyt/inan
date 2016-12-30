@@ -10,7 +10,7 @@ function loadChapter(subject_id){
     var subId = subject_id ? subject_id : $('#subject_id option:selected').val();
     if( Number(subId) !==0 ){
         $.ajax({
-            url: '/admin/examination/q-a/list-chapter/'+subId,
+            url: '/admin/qa/list-chapter/'+subId,
             type: 'GET'
         }).done(function(result){
             $('#chapter_id').empty();
@@ -23,7 +23,7 @@ function loadChapter(subject_id){
             })
         });
         $.ajax({
-            url: '/admin/examination/q-a/list-section/'+subId,
+            url: '/admin/qa/list-section/'+subId,
             type: 'GET'
         }).done(function(results){
             if(!results.hasOwnProperty('error')){

@@ -1,0 +1,495 @@
+{% extends '_layout.' + getConfig('viewExtension') %}
+{% block cssExtends %}
+    {#<link rel="stylesheet" href="/backend/adminLTE/assets/plugins/mathquill/mathquill.css"/>#}
+{% endblock %}
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            <form id="edit-form" method="post">
+                {{ toolbar | safe }}
+                <div class="nav-tabs-custom">
+                    <ul class="nav nav-tabs">
+                        <li class="active">
+                            <a href="#infoContentTab" data-toggle="tab" aria-expanded="true" id="infoTab">
+                                <i class="fa fa-question-circle padd-right-5"></i> &nbsp;&nbsp;&nbsp;Thông tin chung</a>
+                        </li>
+                        <li class="">
+                            <a href="#qaContentTab" data-toggle="tab" aria-expanded="false" id="qaTab" class="">
+                                <span class="glyphicon glyphicon-ok-sign"> </span> &nbsp;&nbsp;&nbsp;Câu hỏi và trả lời
+                            </a>
+                        </li>
+                        <li class="">
+                            <a href="#previewContentTab" data-toggle="tab" aria-expanded="false" class=""
+                               id="previewTab" onclick="renderView()">
+                                <span class="fa fa-list"> </span> &nbsp;&nbsp;&nbsp; Xem trước
+                            </a>
+                        </li>
+                    </ul>
+                    <div class="tab-content">
+                        {#Tab question#}
+                        <div class="row tab-pane active" id="infoContentTab">
+                            <div class="col-md-1 col-sm-1"></div>
+                            <div class="col-md-10 col-sm-10 form-horizontal">
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label" for="question_type">Tiêu đề <span
+                                                class="required">*</span></label>
+
+                                    <div class="col-sm-9">
+                                        <input type="text" name="title" id="title" value="{{ question.title }}"
+                                               class="form-control" required>
+                                    </div>
+
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label" for="question_type">Loại câu hỏi <span
+                                                class="required">*</span></label>
+
+                                    <div class="col-sm-9">
+                                        <select class="form-control" id="question_type" name="question_type"
+                                                required>
+                                            <option value="0" {% if question.type == 0 %}selected{% endif %}> Trắc
+                                                nghiệm
+                                            </option>
+                                            <option value="1" {% if question.type == 1 %}selected{% endif %}> Tự luận
+                                            </option>
+                                        </select>
+                                    </div>
+
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label" for="subject_id">Môn thi <span
+                                                class="required">*</span></label>
+
+                                    <div class="col-sm-9">
+                                        <select class="form-control" id="subject_id" name="subject_id"
+                                                required onchange="loadChapter()">
+                                            <option value="">-- Chọn --</option>
+                                            {% for subject in subjects %}
+                                                <option value="{{ subject.id }}"
+                                                        {% if subject.id == question.subject_id %}selected {% endif %}>{{ subject.title }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label" for="quesion">Dạng câu hỏi <span
+                                                class="required">*</span></label>
+
+                                    <div class="col-sm-9">
+                                        <select class="form-control" id="section_id" name="section_id" required>
+                                            <option value="">-- Chọn --</option>
+                                            {% if sections %}
+                                                {% for section in sections %}
+                                                    <option value="{{ section.id }}"{% if section.id == question.section_id %} selected{% endif %}>{{ section.title }}</option>
+                                                {% endfor %}
+                                            {% endif %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">Chương</label>
+
+                                    <div class="col-sm-9">
+                                        <select class="form-control" name="chapter_id" id="chapter_id"
+                                                onchange="loadLesson()">
+                                            <option value="">-- Chọn --</option>
+                                            {% if chapters %}
+                                                {% for chapter in chapters %}
+                                                    <option value="{{ chapter.id }}"{% if chapter.id == question.chapter_id %} selected{% endif %}>{{ chapter.title }}</option>
+                                                {% endfor %}
+                                            {% endif %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">Bài học</label>
+
+                                    <div class="col-sm-9">
+                                        <select class="form-control" name="lesson" id="lesson">
+                                            <option value="">-- chọn --</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">Độ khó</label>
+
+                                    <div class="col-sm-9">
+                                        <select class="form-control" name="level" id="level">
+                                            <option value="0" {% if question.level == 0 %}selected{% endif %}>Dễ
+                                            </option>
+                                            <option value="1" {% if question.level == 1 %}selected{% endif %}>Bình
+                                                thường
+                                            </option>
+                                            <option value="2" {% if question.level == 2 %}selected{% endif %}>Khó
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">Nhóm câu hỏi có chung đề bài</label>
+
+                                    <div class="col-sm-9">
+                                        <select class="form-control" name="require" id="require" required
+                                                onchange="requirementQuestion()">
+                                            <option value="0" {% if question.require == 0 %}selected{% endif %}>Không
+                                            </option>
+                                            <option value="1" {% if question.require == 1 %}selected{% endif %}>Có
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group hidden" id="requirementContent">
+                                    <hr>
+                                    <label for="quesion">Nội dung chung</label>
+                                    <textarea class="form-control" name="content"
+                                              id="content" {% if question.require == 1 %}{{ question.content }}{% endif %}></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <hr>
+                                    <button type="button" href="#" class="btn btn-info pull-right"
+                                            onclick="clickNav('qaTab')">Thêm câu hỏi
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="col-md-1 col-sm-1"></div>
+                        </div>
+                        <input type="hidden" name="answers">
+
+                        <div class="row tab-pane" id="qaContentTab">
+                            <div class="col-md-12 col-sm-12" id="addQuestionDiv">
+                                <div class="col-md-3 col-sm-3">
+                                    <div class="form-group">
+                                        <label>Điểm</label>
+                                        <input name="answerMark" type="text" id="answerMark" class="form-control"
+                                               value="1">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Thời gian ( phút )</label>
+                                        <input name="answerTime" type="number" id="answerTime" class="form-control"
+                                               value="1">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Dạng hiển thị câu trả lời</label>
+                                        <select class="form-control" name="layout" id="layout">
+                                            <option value="0" selected>1 x 4</option>
+                                            <option value="1">2 x 2</option>
+                                            <option value="2">4 x 1</option>
+                                        </select>
+                                    </div>
+                                    {#<div class="form-group">#}
+                                    {#<label>Dạng trả lời</label>#}
+                                    {#<select class="form-control" name="layout" id="layout">#}
+                                    {#<option value="0" selected>Câu</option>#}
+                                    {#<option value="1">Đoạn văn</option>#}
+                                    {#</select>#}
+                                    {#</div>#}
+                                    {#<div class="form-group">#}
+                                    {#<label>Số từ giới hạn</label>#}
+                                    {#<input name="wordLength" id="wordLength" class="form-control">#}
+                                    {#</div>#}
+                                    <div class="form-group hidden" id="divEditAnswer">
+                                        <label>Chọn câu hỏi để sửa</label>
+                                        <select class="form-control" name="editAnswerIndex"
+                                                onchange="chooseQuestionToEdit()">
+
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-9 col-sm-9">
+                                    <div class="form-group">
+                                        <label for="quesion">Nội dung câu hỏi</label>
+                                        <textarea class="form-control" name="answerContent" id="answerContent"
+                                                  required></textarea>
+                                    </div>
+                                    <div class="box-group" id="accordion">
+                                        <!-- we are adding the .panel class so bootstrap.js collapse plugin detects it -->
+                                        <div class="panel box box-danger" id="panelAnswer0">
+                                            <div class="box-header with-border">
+                                                <h4 class="box-title">
+                                                    <a data-toggle="collapse" data-parent="#accordion"
+                                                       href="#answerCollapse0" aria-expanded="false" class="collapsed">
+                                                        Câu trả lời #1
+                                                    </a>
+                                                </h4>
+
+                                                <p class="text-light-blue pull-right">Đáp án : <input
+                                                            onclick="changeRightAnswer('panelAnswer0')" type="radio"
+                                                            value="0" checked name="rightAnswer" id="answerRadio0"></p>
+                                            </div>
+                                            <div id="answerCollapse0" class="panel-collapse collapse"
+                                                 aria-expanded="false" style="height: 0px;">
+                                                <div class="form-group">
+                                                    <label for="answer0">Nội dung câu trả lời</label>
+                                                    <textarea class="form-control" name="answer0" id="answer0"
+                                                              required></textarea>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="answerExplain0">Giải thích câu 1</label>
+                                                    <textarea class="form-control" name="answerExplain0"
+                                                              id="answerExplain0" required></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {#ANSWER 2#}
+                                        <div class="panel box box-danger" id="panelAnswer1">
+                                            <div class="box-header with-border">
+                                                <h4 class="box-title">
+                                                    <a data-toggle="collapse" data-parent="#accordion"
+                                                       href="#answerCollapse1" class="collapsed" aria-expanded="false">
+                                                        Câu trả lời #2
+                                                    </a>
+                                                </h4>
+
+                                                <p class="text-light-blue pull-right">Đáp án : <input
+                                                            onclick="changeRightAnswer('panelAnswer1')" type="radio"
+                                                            value="1" name="rightAnswer" id="answerRadio1"></p>
+                                            </div>
+                                            <div id="answerCollapse1" class="panel-collapse collapse"
+                                                 aria-expanded="false" style="height: 0px;">
+                                                <div class="form-group">
+                                                    <label for="answer1">Nội dung</label>
+                                                    <textarea class="form-control" name="answer1" id="answer1"
+                                                              required></textarea>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="answerExplain1">Giải thích câu 2</label>
+                                                    <textarea class="form-control" name="answerExplain1"
+                                                              id="answerExplain1" required></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {#ANSWER 3#}
+                                        <div class="panel box box-danger" id="panelAnswer2">
+                                            <div class="box-header with-border">
+                                                <h4 class="box-title">
+                                                    <a data-toggle="collapse" data-parent="#accordion"
+                                                       href="#answerCollapse2" class="collapsed" aria-expanded="false">
+                                                        Câu trả lời #3
+                                                    </a>
+                                                </h4>
+
+                                                <p class="text-light-blue pull-right">Đáp án : <input
+                                                            onclick="changeRightAnswer('panelAnswer2')" type="radio"
+                                                            value="2" name="rightAnswer" id="answerRadio2"></p>
+                                            </div>
+                                            <div id="answerCollapse2" class="panel-collapse collapse"
+                                                 aria-expanded="false" style="height: 0px;">
+                                                <div class="form-group">
+                                                    <label for="answer2">Nội dung</label>
+                                                    <textarea class="form-control" name="answer2" id="answer2"
+                                                              required></textarea>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="answerExplain2">Giải thích câu 3</label>
+                                                    <textarea class="form-control" name="answer-2-explain"
+                                                              id="answerExplain2" required></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {#ANSWER 4#}
+                                        <div class="panel box box-danger" id="panelAnswer3">
+                                            <div class="box-header with-border">
+                                                <h4 class="box-title">
+                                                    <a data-toggle="collapse" data-parent="#accordion"
+                                                       href="#answerCollapse3" class="collapsed" aria-expanded="false">
+                                                        Câu trả lời #4
+                                                    </a>
+                                                </h4>
+
+                                                <p class="text-light-blue pull-right">Đáp án : <input
+                                                            onclick="changeRightAnswer('panelAnswer3')" type="radio"
+                                                            value="3" name="rightAnswer" id="answerRadio3"></p>
+                                            </div>
+                                            <div id="answerCollapse3" class="panel-collapse collapse"
+                                                 aria-expanded="false" style="height: 0px;">
+                                                <div class="form-group">
+                                                    <label for="answer3">Nội dung</label>
+                                                    <textarea class="form-control" name="answer3" id="answer3"
+                                                              required></textarea>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="answerExplain3">Giải thích câu 4</label>
+                                                    <textarea class="form-control" name="answerExplain3"
+                                                              id="answerExplain3" required></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <button name="btnRequireAnswer" id="addQuestionBtn" type="button"
+                                                class="btn btn-primary pull-right hidden" onclick="addAnswer()">Thêm câu
+                                            hỏi
+                                        </button>
+                                        <button name="btnRequireAnswer" id="editQuestionBtn" type="button"
+                                                class="btn btn-info pull-right hidden" onclick="editAnswerArray()">Sửa
+                                            câu hỏi
+                                        </button>
+                                        <button name="btnRequireAnswer" id="resetBtn" type="button"
+                                                class="btn btn-default pull-left hidden" onclick="resetAnswer()">Nhập
+                                            lại
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-sm-12">
+                                <div class="form-group">
+                                    <hr>
+                                    <button type="button" href="#" class="btn btn-default pull-left"
+                                            onclick="clickNav('infoTab')">Trở lại
+                                    </button>
+                                    <button type="button" href="#" class="btn btn-info pull-right"
+                                            onclick="clickNav('previewTab')">Xem trước
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row tab-pane" id="previewContentTab" onfocus="renderView()">
+                            <div class="col-md-12 col-sm-12">
+                                <div class="row tab-pane" id="previewDiv">
+
+                                </div>
+                                <br>
+
+                                <div class="form-group">
+                                    <hr>
+                                    <button type="button" href="#" class="btn btn-default pull-left"
+                                            onclick="clickNav('qaTab')">Trở lại
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+{% block jsExtends %}
+    <script src="/backend/adminLTE/assets/plugins/ckeditor4.6/ckeditor.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/2.6-latest/MathJax.js?config=TeX-AMS_HTML">
+    </script>
+    <script>
+        $(function () {
+            changeRightAnswer('panelAnswer0');
+            $('#title').focus();
+            CKEDITOR.replace('answerContent', {
+                height: 200
+            });
+            CKEDITOR.replace('content', {
+                height: 200
+            });
+            initCkeditorBasic([
+                'answer0',
+                'answerExplain0',
+                'answer1',
+                'answerExplain1',
+                'answer2',
+                'answerExplain2',
+                'answer3',
+                'answerExplain3']);
+            {% if sections %}
+            $.ajax({
+                url: '/admin/qa/list-chapter/' + '{{ question.subject_id }}',
+                type: 'GET'
+            }).done(function (result) {
+                $('#chapter_id').empty();
+                //$('#chapter_id').append();
+                chapters = result;
+                $('#chapter_id').append(new Option('-- Choose --', 0));
+                chapters.map(function (val) {
+                    var opt = new Option(val.title, val.id);
+                    $('#chapter_id').append(opt);
+                })
+                renderChapterLesson('{{ question.chapter_id }}', '{{ question.lesson }}');
+            });
+            {% endif %}
+
+            {% if answers %}
+            {% for answer in answers %}
+            answers.push({{ answer | dump | safe }});
+            {% endfor %}
+            {% endif %}
+            {% if question %}
+            {% if question.require == 0 %}
+            requirementQuestion(0);
+            fillAnswer(0, 0, {{ question.content | dump | safe }});
+            {% else %}
+            requirementQuestion(1);
+            CKEDITOR.instances['content'].setData({{ question.content | dump | safe }});
+            fillAnswer(0, 1, '');
+            renderEditAnswerChoose(0);
+
+            {% endif %}
+            {% endif %}
+        });
+        $('form').bind("keypress", function (e) {
+            if (e.keyCode == 13) {
+                e.preventDefault();
+                return false;
+            }
+        });
+
+
+        function clickNav(id) {
+            $('#' + id).click();
+        }
+
+    </script>
+    <script src="/backend/adminLTE/dist/js/q-a.js"></script>
+
+{% endblock %}
+
+
+<li class="treeview">
+    <a href="#">
+        <i class="fa fa-share"></i> <span>Multilevel</span>
+            <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
+    </a>
+    <ul class="treeview-menu" style="display: none;">
+        <li><a href="#"><i class="fa fa-circle-o"></i> Level One</a></li>
+        <li class="active">
+            <a href="#">
+                <i class="fa fa-circle-o"></i>
+                Level One
+                <span class="pull-right-container">
+                  <i class="fa fa-angle-left pull-right"></i>
+                </span>
+            </a>
+            <ul class="treeview-menu menu-open" style="display: block;">
+                <li><a href="#"><i class="fa fa-circle-o"></i> Level Two</a></li>
+                <li class="">
+                    <a href="#"><i class="fa fa-circle-o"></i> Level Two
+                    <span class="pull-right-container">
+                      <i class="fa fa-angle-left pull-right"></i>
+                    </span>
+                    </a>
+                </li>
+            </ul>
+        </li>
+        <li><a href="#"><i class="fa fa-circle-o"></i> Level One</a></li>
+    </ul>
+</li>
+
+<li class="treeview">
+    <a href="#">
+        <i class="fa fa-question-circle"></i> <span>Câu hỏi &amp; câu trả lời</span>
+        <i class="fa fa-angle-left pull-right"></i></a>
+    <ul class="treeview-menu" style="display: none;">
+        <li><a href="#"><i class="fa fa-circle-o"></i> Trắc nghiệm<span class="pull-right-container"><i
+                            class="fa fa-angle-left pull-right"></i></span></a>
+            <ul class="treeview-menu" style="display: none;">
+                <li><a href="/admin/qa/choice/create"><i class="fa fa-circle-o"></i> Tạo mới</a></li>
+                <li><a href="/admin/qa/choice"><i class="fa fa-circle-o"></i> Danh sách</a></li>
+            </ul>
+        </li>
+        <li><a href="#"><i class="fa fa-circle-o"></i> Tự luận<span class="pull-right-container"><i
+                            class="fa fa-angle-left pull-right"></i></span></a>
+            <ul class="treeview-menu" style="display: none;">
+                <li><a href="/admin/qa/choice/create"><i class="fa fa-circle-o"></i> Tạo mới</a></li>
+                <li><a href="/admin/qa/choice"><i class="fa fa-circle-o"></i> Danh sách</a></li>
+            </ul>
+        </li>
+    </ul>
+</li>
