@@ -119,7 +119,7 @@ module.exports = function (controller,component,app) {
                     items: items,
                     currentPage: page,
                     queryString: (req.url.indexOf('?') == -1) ? '' : ('?' + req.url.split('?').pop()),
-                    baseRoute: baseRoute
+                    baseRoute: baseRoute+'/choice/'
                 })
         }).catch(function (err) {
                 //console.log(err);
