@@ -200,10 +200,13 @@ module.exports = function (controller,component,app) {
         let form = req.body;
         let toolbar = new ArrowHelper.Toolbar();
         let back_link = baseRoute;
-        if (!form.gifts || form.gifts !== ''){
+        console.log(form);
+        if (form.gifts != null || form.gifts == ''){
             let giftSplit = form.gifts.split('::');
-            console.log(giftSplit[giftSplit.length - 2]);
+            //console.log(giftSplit[giftSplit.length - 2]);
             back_link = '/admin/exam/gift/'+giftSplit[giftSplit.length - 2];
+        }else{
+            back_link = req.session.search['exam_back_link'];
         }
         toolbar.addBackButton(req, 'exam_back_link');
         toolbar.addSaveButton();
@@ -225,10 +228,10 @@ module.exports = function (controller,component,app) {
         .then(function (exam) {
             //console.log('create ok');
             req.flash.success('Tạo mới đề thành công !');
-            res.redirect(back_link);
+            res.redirect(baseRoute);
         }).catch(function (err) {
-                //console.log(err);
-            req.flash.error(err.message);
+                console.log(err);
+            //req.flash.error(err.message);
             app.models.subject.findAll()
             .then(function (subjects) {
                 res.backend.render('create-manual',{
@@ -238,7 +241,7 @@ module.exports = function (controller,component,app) {
                     toolbar: toolbar.render()
                 });
             }).catch(function (err) {
-                    console.log(err);
+                    //console.log(err);
                 req.flash.error(err.message);
                 res.backend.render('create-manual',{
                     title: 'Tạo mới đề',
@@ -294,22 +297,8 @@ module.exports = function (controller,component,app) {
         })
         .catch(function (err) {
                 //console.log(err);
-            req.flash.error("Đề này đã được sửa dụng vui lòng không sửa !");
-            app.models.subject.findAll()
-            .then(function (subjects) {
-                res.backend.render('create-manual',{
-                    title: 'Tạo mới đề thi',
-                    exam: form,
-                    subjects: subjects,
-                    toolbar: toolbar.render()
-                });
-            }).catch(function (err1) {
-                req.flash.error(err1.message);
-                res.backend.render('create-manual',{
-                    title: 'Tạo mới đề thi',
-                    toolbar: toolbar.render()
-                });
-            })
+            req.flash.error("Đề này đã được thi vui lòng không sửa !");
+            next();
         })
     }
     controller.viewManual = function (req,res) {

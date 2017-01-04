@@ -31,36 +31,21 @@
                             <div class="col-md-1 col-sm-1"></div>
                             <div class="col-md-10 col-sm-10 form-horizontal">
                                 <div class="form-group">
-                                    <label class="col-sm-3 control-label" for="question_type">Tiêu đề <span
+                                    <label class="col-sm-2 control-label" for="question_type">Tiêu đề <span
                                                 class="required">*</span></label>
 
-                                    <div class="col-sm-9">
+                                    <div class="col-sm-10">
                                         <input type="text" name="title" id="title" value="{{ question.title }}"
                                                class="form-control" required>
                                     </div>
 
                                 </div>
+                                <input type="hidden" name="question_type" value="0">
                                 <div class="form-group">
-                                    <label class="col-sm-3 control-label" for="question_type">Loại câu hỏi <span
+                                    <label class="col-sm-2 control-label" for="subject_id">Môn thi <span
                                                 class="required">*</span></label>
 
-                                    <div class="col-sm-9">
-                                        <select class="form-control" id="question_type" name="question_type"
-                                                required>
-                                            <option value="0" {% if question.type == 0 %}selected{% endif %}> Trắc
-                                                nghiệm
-                                            </option>
-                                            <option value="1" {% if question.type == 1 %}selected{% endif %}> Tự luận
-                                            </option>
-                                        </select>
-                                    </div>
-
-                                </div>
-                                <div class="form-group">
-                                    <label class="col-sm-3 control-label" for="subject_id">Môn thi <span
-                                                class="required">*</span></label>
-
-                                    <div class="col-sm-9">
+                                    <div class="col-sm-10">
                                         <select class="form-control" id="subject_id" name="subject_id"
                                                 required onchange="loadChapter()">
                                             <option value="">-- Chọn --</option>
@@ -72,10 +57,10 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="col-sm-3 control-label" for="quesion">Dạng câu hỏi <span
+                                    <label class="col-sm-2 control-label" for="quesion">Dạng câu hỏi <span
                                                 class="required">*</span></label>
 
-                                    <div class="col-sm-9">
+                                    <div class="col-sm-10">
                                         <select class="form-control" id="section_id" name="section_id" required>
                                             <option value="">-- Chọn --</option>
                                             {% if sections %}
@@ -87,9 +72,9 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="col-sm-3 control-label">Chương</label>
+                                    <label class="col-sm-2 control-label">Chương</label>
 
-                                    <div class="col-sm-9">
+                                    <div class="col-sm-10">
                                         <select class="form-control" name="chapter_id" id="chapter_id"
                                                 onchange="loadLesson()">
                                             <option value="">-- Chọn --</option>
@@ -102,18 +87,18 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="col-sm-3 control-label">Bài học</label>
+                                    <label class="col-sm-2 control-label">Bài học</label>
 
-                                    <div class="col-sm-9">
+                                    <div class="col-sm-10">
                                         <select class="form-control" name="lesson" id="lesson">
                                             <option value="">-- chọn --</option>
                                         </select>
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="col-sm-3 control-label">Độ khó</label>
+                                    <label class="col-sm-2 control-label">Độ khó</label>
 
-                                    <div class="col-sm-9">
+                                    <div class="col-sm-10">
                                         <select class="form-control" name="level" id="level">
                                             <option value="0" {% if question.level == 0 %}selected{% endif %}>Dễ
                                             </option>
@@ -126,9 +111,9 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="col-sm-3 control-label">Nhóm câu hỏi có chung đề bài</label>
+                                    <label class="col-sm-2 control-label">Nhóm câu hỏi có chung đề bài</label>
 
-                                    <div class="col-sm-9">
+                                    <div class="col-sm-10">
                                         <select class="form-control" name="require" id="require" required
                                                 onchange="requirementQuestion()">
                                             <option value="0" {% if question.require == 0 %}selected{% endif %}>Không
