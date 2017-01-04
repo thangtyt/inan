@@ -135,7 +135,6 @@ module.exports = function (controller,component,app) {
     controller.listExam = function (req,res) {
         let giftId = req.params.giftId;
         let user = req.user;
-        let actions = app.feature.examination.actions;
         let host = req.protocol + '://'+req.get('host');
         // Get current page and default sorting
         let page = req.params.page || 1;
@@ -176,7 +175,7 @@ module.exports = function (controller,component,app) {
                 conditions[0].gifts = {
                     $iLike: "%"+result.id+"%"
                 };
-                actions.examFindAndCountAll({
+                app.models.exam.findAndCountAll({
                     where: conditions[0],
                     include: [{
                         model: app.models.subject,
