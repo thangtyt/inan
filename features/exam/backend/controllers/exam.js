@@ -287,7 +287,7 @@ module.exports = function (controller,component,app) {
         .then(function (result) {
                 //console.log(JSON.stringify(result, 2, 2));
             if(result[0] && result[1] < 1){
-                return app.models.exam.update(result[0],form);
+                return result[0].updateAttributes(form);
             }else{
                 throw new Error('');
             }
@@ -296,7 +296,7 @@ module.exports = function (controller,component,app) {
             next();
         })
         .catch(function (err) {
-                //console.log(err);
+                console.log(err);
             req.flash.error("Đề này đã được thi vui lòng không sửa !");
             next();
         })
