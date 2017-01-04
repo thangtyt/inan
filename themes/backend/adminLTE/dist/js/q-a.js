@@ -215,33 +215,32 @@ function renderView(){
                                 +
                             `</p>
                         </div>`;
-        if( $('#question_type').prop('value') == 0 ){
-            //var keyCode= 65;
-            answers.map(function (answer) {
-                var answerContent = $('#require').val() == 0 ? CKEDITOR.instances.answerContent.getData() : answer.content;
-                    html += '<div class="col-lg-12">' +
-                    '<p><b>Question: '+answerIndex+' : </b>'+answerContent+'</p>' +
-                    '</div>' ;
-                html += '<div class="col-lg-12">';
-                if(answer.hasOwnProperty('answer_keys')){
-                    var _layout = 3;
-                    if(answer.layout == 1)
-                        _layout = 6;
-                    else if (answer.layout == 2)
-                        _layout = 12;
-                    answer.answer_keys.map(function (val) {
-                        var tempStyle = '';
-                        if(val.isTrue){
-                            tempStyle = ' style="color: #0063dc"';
-                        }
-                        //html+='<div class="col-md-3"'+tempStyle+'>'+String.fromCharCode(keyCode)+'.'+val.answer+'</div>';
-                        html+='<div class="col-md-'+_layout+'"'+tempStyle+'>'+val.answer+'</div>';
-                    })
-                }
-                html+=       '</div>' ;
-                answerIndex++;
-            })
-        }
+
+        //var keyCode= 65;
+        answers.map(function (answer) {
+            var answerContent = $('#require').val() == 0 ? CKEDITOR.instances.answerContent.getData() : answer.content;
+                html += '<div class="col-lg-12">' +
+                '<p><b>Question: '+answerIndex+' : </b>'+answerContent+'</p>' +
+                '</div>' ;
+            html += '<div class="col-lg-12">';
+            if(answer.hasOwnProperty('answer_keys')){
+                var _layout = 3;
+                if(answer.layout == 1)
+                    _layout = 6;
+                else if (answer.layout == 2)
+                    _layout = 12;
+                answer.answer_keys.map(function (val) {
+                    var tempStyle = '';
+                    if(val.isTrue){
+                        tempStyle = ' style="color: #0063dc"';
+                    }
+                    //html+='<div class="col-md-3"'+tempStyle+'>'+String.fromCharCode(keyCode)+'.'+val.answer+'</div>';
+                    html+='<div class="col-md-'+_layout+'"'+tempStyle+'>'+val.answer+'</div>';
+                })
+            }
+            html+=       '</div>' ;
+            answerIndex++;
+        });
         html+='</div>';
         $('#previewDiv').append(html);
         //re-render latex
@@ -251,7 +250,6 @@ function renderView(){
 }
 
 function fillAnswer(index,require,content){
-    console.log('fillAnswer: ',answers);
     var answerContent = require == 0 ? content : answers[index].content;
     $('#answerMark').val(answers[index].mark);
     $('#answerTime').val(answers[index].time);
