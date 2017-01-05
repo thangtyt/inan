@@ -114,7 +114,7 @@ function addSection(element) {
                 addElement(element.id,ques);
             })
         };
-        $("div.sortable").sortable();
+        //$("div.sortable").sortable();
         //sort.sortable({
         //    placeholder: "ui-sortable-placeholder",
         //    cancel: ".sort-box-title",
