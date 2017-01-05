@@ -4,35 +4,23 @@
     <link href="/backend/adminLTE/assets/plugins/select2/select2.css" rel="stylesheet">
         <style>
 
-            .ui-sortable li.ui-state-default {
-                color: rgb(79, 79, 79);
-                list-style: none;
-                min-height: 40px;
-                line-height: 40px;
-                font-size: 1.4em;
-                outline: 0;
-                padding-left: 30px;
-                text-indent: 15px;
-                border: 1px solid rgba(0, 0, 0, .3);
-                border-radius: 5px;
-                position: relative;
-                cursor: move;
-                margin: 10px 15px;
+            body.dragging, body.dragging * {
+                cursor: move !important;
             }
 
-
-            .ui-sortable li.ui-state-default:after {
-                content: "\f0c9";
-                display: inline-block;
-                font-family: "FontAwesome";
+            .dragged {
                 position: absolute;
-                left: 0;
-                top: 4px;
-                text-align: center;
-                line-height: 35px;
-                color: rgba(0, 0, 0, .7);
-                text-shadow: 0 0 0 rgba(0, 0, 0, 0);
-                cursor: move;
+                opacity: 0.5;
+                z-index: 2000;
+            }
+
+            div.sortable div.placeholder {
+                position: relative;
+                /** More li styles **/
+            }
+            div.sortable div.placeholder:before {
+                position: absolute;
+                /** Define arrowhead **/
             }
         </style>
 {% endblock %}
@@ -45,11 +33,11 @@
                     <ul class="nav nav-tabs">
                         <li class="active">
                             <a href="#exam" data-toggle="tab" aria-expanded="true">
-                                <i class="fa fa-question-circle padd-right-5"></i> &nbsp;&nbsp;&nbsp;Infomations</a>
+                                <i class="fa fa-question-circle padd-right-5"></i> &nbsp;&nbsp;&nbsp;Thông tin chung</a>
                         </li>
                         <li class="">
                             <a href="#question" data-toggle="tab" aria-expanded="false">
-                                <span class="glyphicon glyphicon-ok-sign"> </span> &nbsp;&nbsp;&nbsp;Choose Question
+                                <span class="glyphicon glyphicon-ok-sign"> </span> &nbsp;&nbsp;&nbsp;Chọn câu hỏi
                             </a>
                         </li>
                     </ul>
@@ -58,57 +46,58 @@
                         <div class="row tab-pane active" id="exam">
                             <div class="col-md-9 col-sm-9">
                                 <div class="form-group">
-                                    <label for="title">Title<span class="required">*</span></label>
+                                    <label for="title">Tiêu đề<span class="required">*</span></label>
                                     <input class="form-control" value="{{ exam.title }}" name="title" id="title"
                                            required="require"/>
                                     <input type="hidden" name="content" id="content"/>
                                 </div>
                                 <div class="form-group">
-                                    <label for="desc">Desc</label>
+                                    <label for="desc">Miêu tả</label>
                                     <textarea class="form-control" name="desc" id="desc">{{ exam.desc }}</textarea>
                                 </div>
                                 <div class="form-group">
-                                    <label for="reference">Tham khảo</label>
+                                    <label for="reference">Thông tin tham khảo</label>
                                     <textarea class="form-control" name="reference"
                                               id="desc">{{ exam.reference }}</textarea>
                                 </div>
                             </div>
                             <div class="col-md-3 col-sm-3">
                                 <div class="form-group">
-                                    <label>Subject<span class="required">*</span></label>
+                                    <label>Môn thi<span class="required">*</span></label>
                                     <select class="form-control" name="subject_id" required="required"
                                             onchange="loadSections()">
-                                        <option value=""> --Choose Subject--</option>
+                                        <option value=""> --Chọn môn học--</option>
                                         {% for subject in subjects %}
                                             <option value="{{ subject.id }}" {% if exam.subject_id == subject.id %} selected{% endif %}>{{ subject.title }}</option>
                                         {% endfor %}
                                     </select>
                                 </div>
                                 <div class="form-group">
-                                    <label>Total Mark<span class="required">*</span></label>
+                                    <label>Tổng điểm<span class="required">*</span></label>
                                     <input type="number" name="total_mark" id="total_mark" class="form-control"
                                            value="{{ exam.total_mark }}"/>
                                 </div>
                                 <div class="form-group">
-                                    <label>Total Question<span class="required">*</span></label>
+                                    <label>Tổng số câu hỏi<span class="required">*</span></label>
                                     <input type="number" name="total_question" id="total_question" class="form-control"
                                            value="{{ exam.total_question }}" required="require"/>
                                 </div>
                                 <div class="form-group">
-                                    <label>Total Time <span> ( minute ) </span> <span class="required">*</span></label>
+                                    <label>Tổng thời gian<span> ( minute ) </span> <span class="required">*</span></label>
                                     <input type="number" name="total_time" id="total_time" class="form-control"
                                            value="{{ exam.total_time }}" required="require"/>
                                 </div>
                                 <div class="form-group">
-                                    <label>Level</label>
+                                    <label>Độ khó</label>
                                     <select class="form-control" name="level">
-                                        <option value="1" {% if exam.level == 1 %}selected="selected" {% endif %}>Easy
+                                        <option value="1" {% if exam.level == 1 %}selected="selected" {% endif %}>
+                                            Dễ
                                         </option>
                                         <option value="2" {% if exam.level == 2 %}selected="selected" {% endif %}>
-                                            Normal
+                                            Bình thường
                                         </option>
                                         <option value="3" {% if exam.level == 3 %}selected="selected" {% endif %}>
-                                            Difficult
+                                            Khó
                                         </option>
                                     </select>
                                 </div>
@@ -117,7 +106,7 @@
                                 {#<input type="checkbox" value="1" name="gift" id="gift"  onchange="isGift()">#}
                                 {#</div>#}
                                 <div class="form-group" id="giftCodeDiv">
-                                    <label>Gift Code</label>
+                                    <label>Nhóm đề thi</label>
                                     <select multiple="multiple" style="width: 100%" name="giftsSelect" id="giftsSelect"
                                             class="form-control">
                                         {% if gifts %}
@@ -134,7 +123,7 @@
                         <div class="row tab-pane" id="question">
                             <div class="col-md-12">
                                 <div class="form-group">
-                                    <label for="sections">Choose section</label>
+                                    <label for="sections">Chọn dạng câu hỏi</label>
                                     <br>
                                     <select multiple="multiple" style="width: 100%" name="select2sections"
                                             id="select2sections"
@@ -144,7 +133,7 @@
                                 </div>
 
                             </div>
-                            <div class="col-md-12" id="sortable">
+                            <div class="col-md-12 sortable" id="sortable">
 
                             </div>
                         </div>
@@ -157,7 +146,7 @@
 {% block jsExtends %}
     <script src="/backend/adminLTE/assets/plugins/ckeditor/ckeditor.js"></script>
     <script src="/backend/adminLTE/assets/plugins/select2/select2.min.js" type="text/javascript"></script>
-    <script src="/backend/adminLTE/assets/plugins/jQueryUI/jquery-ui.min.js" type="text/javascript"></script>
+    <script src="/backend/adminLTE/assets/plugins/sortable/sortable.js" type="text/javascript"></script>
     <script>
         var select2Sections = $('#select2sections');
         var _sections = [];

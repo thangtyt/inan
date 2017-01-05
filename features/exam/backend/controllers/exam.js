@@ -159,7 +159,6 @@ module.exports = function (controller,component,app) {
                 toolbar: toolbar.render()
             });
         })
-
     }
     controller.getSections = function (req,res) {
         app.models.section.findAll({
@@ -200,10 +199,9 @@ module.exports = function (controller,component,app) {
         let form = req.body;
         let toolbar = new ArrowHelper.Toolbar();
         let back_link = baseRoute;
-        console.log(form);
+
         if (form.gifts != null || form.gifts == ''){
             let giftSplit = form.gifts.split('::');
-            //console.log(giftSplit[giftSplit.length - 2]);
             back_link = '/admin/exam/gift/'+giftSplit[giftSplit.length - 2];
         }else{
             back_link = req.session.search['exam_back_link'];
@@ -296,7 +294,6 @@ module.exports = function (controller,component,app) {
             next();
         })
         .catch(function (err) {
-                console.log(err);
             req.flash.error("Đề này đã được thi vui lòng không sửa !");
             next();
         })
@@ -383,9 +380,10 @@ module.exports = function (controller,component,app) {
         // Get current page and default sorting
         let page = req.params.page || 1;
         let itemOfPage = app.getConfig('pagination').numberItem || 10;
+        req.query.status = '1';
         // Add button on view
         let toolbar = new ArrowHelper.Toolbar();
-        toolbar.addRefreshButton(baseRoute);
+        toolbar.addRefreshButton(req.originalUrl);
         toolbar.addSearchButton();
         //toolbar.addGeneralButton(isAllow(req, permission.create), {
         //    link: baseRoute + '/create-manual',
@@ -430,31 +428,6 @@ module.exports = function (controller,component,app) {
                     data_type: 'datetime',
                     filter_key: 'created_at'
                 }
-            },
-            {
-                column: 'status',
-                width: '15%',
-                header: 'Trạng thái',
-                type: 'custom',
-                alias: {
-                    "0": '<span class="label label-danger">Không kích hoạt</span>',
-                    "1": '<span class="label label-success">Kích hoạt</span>'
-                },
-                filter: {
-                    type: 'select',
-                    filter_key: 'status',
-                    data_source: [
-                        {
-                            name: 'Không kích hoạt',
-                            value: 0
-                        }, {
-                            name: 'Kích hoạt',
-                            value: 1
-                        }
-                    ],
-                    display_key: 'name',
-                    value_key: 'value'
-                }
             }
 
         ];
@@ -463,8 +436,9 @@ module.exports = function (controller,component,app) {
             limit: itemOfPage,
             backLink: 'exam_back_link'
         });
+
         filter.order = req.params.sort ? req.params.sort : 'created_at DESC';
-        filter.conditions = filter.conditions.length == 1 ? [' status = 1 '] : filter.conditions.push(' status = 1 ');
+        //filter.conditions = filter.conditions.length == 1 ? [' status = ? ','1'] : filter.conditions.concat([' status = ? ','1']);
         Promise.all([
             app.models.gift.findAll({
                 where: filter.conditions,
@@ -472,8 +446,7 @@ module.exports = function (controller,component,app) {
                 include: [
                     {
                         model: app.models.user,
-                        attributes: ['user_email'],
-                        where: ['1=1']
+                        attributes: ['user_email']
                     }
                 ],
                 limit: filter.limit,
@@ -484,8 +457,7 @@ module.exports = function (controller,component,app) {
                 include: [
                     {
                         model: app.models.user,
-                        attributes: ['user_email'],
-                        where: ['1=1']
+                        attributes: ['user_email']
                     }
                 ]
             })
@@ -629,4 +601,4 @@ module.exports = function (controller,component,app) {
         })
 
     };
-}
+};
