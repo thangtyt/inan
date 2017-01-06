@@ -27,9 +27,7 @@ module.exports = function (controller,component,app) {
                 user_id: user.id
             }
         }).then(function (_userInfo) {
-            console.log(_userInfo);
             if(_userInfo && _userInfo.gift_codes){
-                console.log(11);
                 return Promise.all([
                     app.models.gift.findAndCountAll({
                         where: {
@@ -112,7 +110,8 @@ module.exports = function (controller,component,app) {
                     where: {
                         exam_id: {
                             $in: _eIds
-                        }
+                        },
+                        user_id: user.id
                     }
                 }));
             }
