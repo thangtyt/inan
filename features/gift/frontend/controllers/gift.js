@@ -169,10 +169,10 @@ module.exports = function (controller,component,app) {
                     id: giftId
                 }
             });
-        }).then(function (result) {
-            if (result){
+        }).then(function (resultGift) {
+            if (resultGift){
                 conditions[0].gifts = {
-                    $iLike: "%"+result.id+"%"
+                    $iLike: "%"+resultGift.id+"%"
                 };
                 app.models.exam.findAndCountAll({
                     where: conditions[0],
@@ -212,6 +212,7 @@ module.exports = function (controller,component,app) {
                             res.status(200).jsonp({
                                 currentPage: page,
                                 totalPage: Math.ceil(result.count / itemOfPage),
+                                gift_title: resultGift.title,
                                 items: exams
                             })
                         }
@@ -219,6 +220,7 @@ module.exports = function (controller,component,app) {
             }else{
                 res.status(200).jsonp({
                     currentPage: page,
+                    gift_title: resultGift.title,
                     totalPage: Math.ceil(result.count / itemOfPage),
                     items: []
                 })

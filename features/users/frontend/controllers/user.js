@@ -94,26 +94,52 @@ module.exports = function (controller, component, app) {
         let host = req.protocol + '://'+req.get('host');
         let user = req.user;
         let data = req.body;
-        app.models.userInfo.find({
-            where : {
-                user_id : user.id
-            }
-        })
-        .then(function (_userInfo) {
-            return _userInfo.updateAttributes({
-                birthday : moment(data.birthday, "DD-MM-YYYY"),
-                sex: data.sex,
-                city: data.city,
-                district: data.district,
-                school : data.school,
-                class: data.class
+        if (!_.has(data,'full_name')){
+            data.full_name = user.full_name
+        }
+
+        Promise.all([
+            app.models.user.find({
+                where: {
+                    id: user.id
+                }
+            }),
+            app.models.userInfo.find({
+                where : {
+                    user_id : user.id
+                }
             })
+        ])
+
+        .then(function (result) {
+                if (_.isDate(data.birthday)){
+                    data.birthday = moment(data.birthday, "DD-MM-YYYY");
+                }else{
+                    data.birthday = result[1].birthday || null;
+                };
+            return Promise.all([
+                result[0].updateAttributes({
+                    display_name: data.full_name
+                }),
+                result[1].updateAttributes({
+                    birthday : data.birthday,
+                    sex: data.sex,
+                    city: data.city,
+                    district: data.district,
+                    school : data.school,
+                    class: data.class
+                })
+            ])
         })
-        .then(function (_userInfo) {
-                _userInfo = JSON.parse(JSON.stringify(_userInfo));
-                _userInfo.birthday = moment(_userInfo.birthday).format('D/M/YYYY').toString();
-            res.status(200).jsonp(_userInfo);
+        .then(function (result) {
+                result[1] = JSON.parse(JSON.stringify(result[1]));
+                if(result[1].birthday)
+                result[1].birthday = moment(result[1].birthday).format('D/M/YYYY').toString();
+                result[1].full_name = result[0].display_name;
+                console.log(result[0]);
+            res.status(200).jsonp(result[1]);
         }).catch(function (err) {
+                //console.log(err);
             res.status(500).jsonp(err.message);
         })
     }

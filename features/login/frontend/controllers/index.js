@@ -135,8 +135,7 @@ module.exports = function (controller, component, app) {
                             message : 'E-mail is not registered ! Please enter another e-mail'
                     });
                 }else{
-                    let href = 'dadasda';//req.protocol + '://'+req.get('host')+req.originalUrl;
-                    console.log(app.getConfig('token.timeExpires'));
+                    let href = req.protocol + '://'+req.get('host')+req.originalUrl;
                     return user.updateAttributes({
                         reset_password_expires : Number(Date.now()) + Number(app.getConfig('token.timeExpires')),
                         reset_password_token : tokenGenerate(50)
