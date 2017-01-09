@@ -27,6 +27,7 @@ module.exports = function (controller,component,app) {
                 user_id: user.id
             }
         }).then(function (_userInfo) {
+            //console.log(_userInfo);
             if(_userInfo && _userInfo.gift_codes){
                 return Promise.all([
                     app.models.gift.findAndCountAll({
@@ -90,30 +91,32 @@ module.exports = function (controller,component,app) {
             }
             //res.status(200).jsonp(gifts);
         }).then(function (_exams) {
-            //console.log(JSON.stringify(2,_exams,2,2));
+            _exams = JSON.parse(JSON.stringify(_exams));
             let examCounts = [];
-            //console.log(2);
+            //console.log(JSON.stringify(_exams,3,3));
             for(var i = 0 ; i < _exams.length ; i++){
+                if(_exams[i]['rows'].length > 0){
+                    let icons = JSON.parse(_exams[i]['rows'][0]['subject']['icons']);
 
-                let icons = JSON.parse(_exams[i]['rows'][0]['subject']['icons']);
+                    icons['icon'].default = host + icons['icon'].default;
+                    icons['icon'].hover = host + icons['icon'].hover;
 
-                icons['icon'].default = host + icons['icon'].default;
-                icons['icon'].hover = host + icons['icon'].hover;
+                    result['items'][i]['done'] = _exams[i]['count'];
+                    result['items'][i]['icons'] = icons['icon'];
+                    let _eIds = []
+                    _exams[i]['rows'].map(function (_ex) {
+                        _eIds.push(_ex.id)
+                    })
+                    examCounts.push(app.models.userResult.count({
+                        where: {
+                            exam_id: {
+                                $in: _eIds
+                            },
+                            user_id: user.id
+                        }
+                    }));
+                }
 
-                result['items'][i]['done'] = _exams[i]['count'];
-                result['items'][i]['icons'] = icons['icon'];
-                let _eIds = []
-                _exams[i]['rows'].map(function (_ex) {
-                    _eIds.push(_ex.id)
-                })
-                examCounts.push(app.models.userResult.count({
-                    where: {
-                        exam_id: {
-                            $in: _eIds
-                        },
-                        user_id: user.id
-                    }
-                }));
             }
             //console.log(3);
             return Promise.all(examCounts);
@@ -121,11 +124,10 @@ module.exports = function (controller,component,app) {
         }).then(function (examCount) {
             //console.log(JSON.stringify(examCount,2,2));
             for(var i = 0 ; i < examCount.length ; i++){
-                result['items'][i]['done'] = examCount[i]+'/'+result['items'][i]['done']
+                result['items'][i]['done'] = examCount[i]+'/'+ (result['items'][i]['done'] || 0)
             }
             res.status(200).jsonp(result);
         }).catch(function (err) {
-            //console.log(err);
             res.status(500).jsonp({
                 message: err.message
             })
@@ -185,38 +187,38 @@ module.exports = function (controller,component,app) {
                     limit: itemOfPage,
                     offset: (page - 1) * itemOfPage
                 })
-                    .then(function (result) {
-                        if(!result){
-                            res.status(200).jsonp({
-                                currentPage: page,
-                                totalPage: 0,
-                                items: []
-                            });
-                        }else{
-                            //console.log('FIND ALL EXAM :',JSON.stringify(result.rows,2,2));
-                            let exams = JSON.parse(JSON.stringify(result.rows));
-                            exams = exams.filter(function (exam) {
-                                exam.timeDoExam = Math.floor((Math.random() * 100) + 1);
-                                if (_.has(exam, 'subject')) {
-                                    try {
-                                        exam.subject.icons = JSON.parse(exam.subject.icons);
-                                        exam.subject.icons.icon.default = host+exam.subject.icons.icon.default;
-                                        exam.subject.icons.icon.hover = host+exam.subject.icons.icon.hover;
-                                        return exam;
-                                    } catch (err) {
+                .then(function (result) {
+                    if(!result){
+                        res.status(200).jsonp({
+                            currentPage: page,
+                            totalPage: 0,
+                            items: []
+                        });
+                    }else{
+                        //console.log('FIND ALL EXAM :',JSON.stringify(result.rows,2,2));
+                        let exams = JSON.parse(JSON.stringify(result.rows));
+                        exams = exams.filter(function (exam) {
+                            exam.timeDoExam = Math.floor((Math.random() * 100) + 1);
+                            if (_.has(exam, 'subject')) {
+                                try {
+                                    exam.subject.icons = JSON.parse(exam.subject.icons);
+                                    exam.subject.icons.icon.default = host+exam.subject.icons.icon.default;
+                                    exam.subject.icons.icon.hover = host+exam.subject.icons.icon.hover;
+                                    return exam;
+                                } catch (err) {
 
-                                    }
                                 }
+                            }
 
-                            })
-                            res.status(200).jsonp({
-                                currentPage: page,
-                                totalPage: Math.ceil(result.count / itemOfPage),
-                                gift_title: resultGift.title,
-                                items: exams
-                            })
-                        }
-                    })
+                        })
+                        res.status(200).jsonp({
+                            currentPage: page,
+                            totalPage: Math.ceil(result.count / itemOfPage),
+                            gift_title: resultGift.title,
+                            items: exams
+                        })
+                    }
+                })
             }else{
                 res.status(200).jsonp({
                     currentPage: page,

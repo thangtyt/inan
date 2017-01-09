@@ -135,7 +135,7 @@ module.exports = function (controller, component, app) {
                             message : 'E-mail is not registered ! Please enter another e-mail'
                     });
                 }else{
-                    let href = req.protocol + '://'+req.get('host')+req.originalUrl;
+                    let href = req.protocol + '://'+'test.tkbooks.vn'+req.originalUrl;
                     return user.updateAttributes({
                         reset_password_expires : Number(Date.now()) + Number(app.getConfig('token.timeExpires')),
                         reset_password_token : tokenGenerate(50)
@@ -354,10 +354,8 @@ module.exports = function (controller, component, app) {
     controller.userRegisterInfo = function (req,res) {
         let host = req.protocol + '://'+req.get('host');
         let user = req.user;
-        //console.log('userRegisterInfo',user);
         let userInfo = req.body;
         user = optimizeUser(user,host);
-        //console.log(JSON.stringify(userInfo,3,3));
         if( userInfo ){
             userInfo.user_id = user.id;
             Promise.all([
@@ -381,7 +379,6 @@ module.exports = function (controller, component, app) {
                         }),
                         _userInfo.updateAttributes(userInfo)
                     ])
-
             })
             .then(function (result) {
                    let _user = optimizeUser(JSON.parse(JSON.stringify(result[0])),host);
