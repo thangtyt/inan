@@ -438,9 +438,12 @@ module.exports = function (controller, component, app) {
                             }
                         }).then(function (_userInfo) {
                             _user.userInfo = _userInfo;
+                            _user = optimizeUser(_user,host);
+                            if(!_user.full_name)
+                                _user.full_name = userFB.name || userFB.email;
                             res.status(200).jsonp({
                                 token: jwtSign(jwt_conf,_user,host),
-                                user: optimizeUser(_user,host)
+                                user: _user
                             })
                         });
 
@@ -462,10 +465,11 @@ module.exports = function (controller, component, app) {
     }
 };
 function optimizeUser(user,host){
-
+    user = JSON.parse(JSON.stringify(user));
     if(!user){
         return null;
-    }else if(user.hasOwnProperty('display_name')){
+    }else if(_.has(user,'display_name')){
+        console.log(1111);
         return {
             id : user.id,
             user_email : user.user_email,
