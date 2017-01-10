@@ -410,6 +410,7 @@ module.exports = function (controller, component, app) {
     };
     controller.facebookToken = function (req,res) {
         let token = req.headers['authorization'];
+        let host = req.protocol + '://'+req.get('host');
         token = token.split(' ').pop();
         request.get('https://graph.facebook.com/me?fields=id,name,birthday,cover,email&access_token='+token, function (err,response,body) {
             if(err){
@@ -431,7 +432,19 @@ module.exports = function (controller, component, app) {
 
                     }).then(function (_user) {
                         _user = _user[0] != false ? _user[0] : _user[1];
-                        res.status(200).jsonp(_user);
+                        app.models.userInfo.find({
+                            where: {
+                                user_id : _user.id
+                            }
+                        }).then(function (_userInfo) {
+                            _user.userInfo = _userInfo;
+                            res.status(200).jsonp({
+                                token: jwtSign(jwt_conf,_user,host),
+                                user: optimizeUser(_user,host)
+                            })
+                        });
+
+                        //res.status(200).jsonp(_user);
                     }).catch(function (err) {
                         res.status(300).jsonp({
                             message: err.message
