@@ -2,6 +2,7 @@
 const nodeMailer = require('nodemailer');
 let jwt = require('jsonwebtoken');
 let moment = require('moment');
+let request = require('request');
 let _ = require('arrowjs')._;
 module.exports = function (controller, component, app) {
     let jwt_conf = app.getConfig('jwt');
@@ -402,10 +403,49 @@ module.exports = function (controller, component, app) {
             })
         }
 
-    }
+    };
     controller.getCityData = function (req,res) {
         let dataUserInfo = app.getConfig('userInfo');
         res.status(200).jsonp(dataUserInfo);
+    };
+    controller.facebookToken = function (req,res) {
+        let token = req.headers['authorization'];
+        token = token.split(' ').pop();
+        request.get('https://graph.facebook.com/me?fields=id,name,birthday,cover,email&access_token='+token, function (err,response,body) {
+            if(err){
+                res.status(400).jsonp({
+                    error: err.message
+                })
+            }else{
+                let userFB = JSON.parse(body);
+                if (_.has(userFB,'email')){
+                    app.models.user.findOrCreate({
+                        where : {
+                            user_email : userFB.email
+                        },
+                        default: {
+                            display_name: userFB.name,
+                            user_email : userFB.email,
+                            user_image_url : userFB.cover.source
+                        }
+
+                    }).then(function (_user) {
+                        _user = _user[0] != false ? _user[0] : _user[1];
+                        res.status(200).jsonp(_user);
+                    }).catch(function (err) {
+                        res.status(300).jsonp({
+                            message: err.message
+                        });
+                    })
+                }else{
+                    res.status(300).jsonp({
+                        message: ' Thiếu thông tin về email của user'
+                    });
+                }
+
+
+            }
+        });
     }
 };
 function optimizeUser(user,host){

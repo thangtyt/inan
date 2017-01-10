@@ -4,9 +4,9 @@ module.exports = function (component, app) {
     let controller = component.controllers.frontend;
     let jwtAuth = ArrowHelper.jwt;
     return {
-        "/auth/facebook" : {
+        "/auth/facebook/token" : {
             get: {
-                authenticate: 'facebook_login'
+                handler: controller.facebookToken
             }
         },
         "/auth/facebook/callback":{
