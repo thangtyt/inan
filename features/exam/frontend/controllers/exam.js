@@ -33,7 +33,16 @@ module.exports = function (controller, component, app) {
                 column: 'rating',
                 header: 'rating',
                 filter: {
-                    data_type: 'integer'
+                    data_type: 'integer',
+                    filter_key: 'rating'
+                }
+            },
+            {
+                column: 'status',
+                header: 'status',
+                filter: {
+                    data_type: 'integer',
+                    filter_key: 'status'
                 }
             },
             {
@@ -48,6 +57,7 @@ module.exports = function (controller, component, app) {
         let filter = ArrowHelper.createFilter(req, res,table, {
             limit: itemOfPage
         });
+        req.query.status = '1';
         let conditions = createFilter(req.query);
         conditions[0]['$or'] = [{gifts : null},{gifts : ''}];
         app.models.exam.findAndCountAll({
@@ -981,6 +991,9 @@ function createFilter(query){
                 result[0][key] = parseInt(val);
                 break;
             case "level":
+                result[0][key] = parseInt(val);
+                break;
+            case "status":
                 result[0][key] = parseInt(val);
                 break;
             default:

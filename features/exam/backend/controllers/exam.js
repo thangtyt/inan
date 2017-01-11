@@ -45,7 +45,7 @@ module.exports = function (controller,component,app) {
             {
                 column : 'title',
                 width : '69%',
-                header : 'Title',
+                header : 'Tiêu đề',
                 link : baseRoute + '/' + '{id}',
                 filter : {
                     data_type : 'string',
@@ -55,34 +55,59 @@ module.exports = function (controller,component,app) {
             {
                 column : 'subject.title',
                 width : '10%',
-                header : 'Subject',
+                header : 'Môn Thi',
                 filter : {
                     data_type : 'string',
                     filter_key: 'subject.title'
                 }
             },
             {
-                column : 'level',
+                column : 'status',
                 width : '10%',
-                header : 'Level',
+                header : 'Trạng thái',
                 type : 'custom',
                 alias : {
-                    "0" : 'Basic' ,
-                    "1" : 'Medium',
-                    "2" : 'Difficult'
+                    "0" : '<span class="label label-danger">Chưa kích hoạt</span>' ,
+                    "1" : '<span class="label label-success">Đã kích hoạt</span>'
+                },
+                filter : {
+                    type : 'select',
+                    filter_key : 'status',
+                    data_source : [
+                        {
+                            name : 'Chưa kích hoạt',
+                            value : 0
+                        },{
+                            name : 'Đã kích hoạt',
+                            value : 1
+                        }
+                    ],
+                    display_key : 'name',
+                    value_key : 'value'
+                }
+            },
+            {
+                column : 'level',
+                width : '10%',
+                header : 'Độ Khó',
+                type : 'custom',
+                alias : {
+                    "0" : 'Dễ' ,
+                    "1" : 'Bình thường',
+                    "2" : 'Khó'
                 },
                 filter : {
                     type : 'select',
                     filter_key : 'level',
                     data_source : [
                         {
-                            name : 'Easy',
+                            name : 'Dễ',
                             value : 0
                         },{
-                            name : 'Medium',
+                            name : 'Bình thường',
                             value : 1
                         },{
-                            name : 'Difficult',
+                            name : 'Khó',
                             value : 2
                         }
                     ],
@@ -191,6 +216,28 @@ module.exports = function (controller,component,app) {
         })
         .then(function (questions) {
             res.jsonp(JSON.parse(JSON.stringify(questions)));
+        }).catch(function (err) {
+            res.jsonp(null);
+        })
+    };
+    controller.getSectionQuestions = function (req,res) {
+        let _questions = [];
+        console.log(JSON.stringify(JSON.parse(req),2,2));
+        let query = {
+            where: {
+                section_id: req.params.sectionId
+            },
+            attributes: ['id','title','question_type','require','level','section_id'],
+            order: 'created_at desc'
+        };
+
+        app.models.question.findAndCountAll(query)
+        .then(function (result) {
+                res.jsonp({
+                    totalPage: Math.ceil(result.count / 10),
+                    page: 1,
+                    items: result.rows
+                });
         }).catch(function (err) {
             res.jsonp(null);
         })

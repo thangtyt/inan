@@ -40,7 +40,7 @@ module.exports = function (controller,component,app) {
             {
                 column : 'title',
                 width : '20%',
-                header : 'Question',
+                header : 'Câu hỏi',
                 link : baseRoute + '/choice/' + '{id}',
                 type : 'title',
                 filter : {
@@ -52,7 +52,7 @@ module.exports = function (controller,component,app) {
             {
                 column : 'subject.title',
                 width : '15%',
-                header : 'Subject',
+                header : 'Môn thi',
                 filter : {
                     data_type : 'string'
                 }
@@ -60,25 +60,25 @@ module.exports = function (controller,component,app) {
             {
                 column : 'level',
                 width : '10%',
-                header : 'Level',
+                header : 'Độ khó',
                 type : 'custom',
                 alias : {
-                    "0" : 'Basic' ,
-                    "1" : 'Medium',
-                    "2" : 'Difficult'
+                    "0" : 'Dễ' ,
+                    "1" : 'Bình thường',
+                    "2" : 'Khó'
                 },
                 filter : {
                     type : 'select',
                     filter_key : 'level',
                     data_source : [
                         {
-                            name : 'Easy',
+                            name : 'Dễ',
                             value : 0
                         },{
-                            name : 'Medium',
+                            name : 'Bình thường',
                             value : 1
                         },{
-                            name : 'Difficult',
+                            name : 'Khó',
                             value : 2
                         }
                     ],

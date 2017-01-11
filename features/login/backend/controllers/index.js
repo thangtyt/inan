@@ -42,7 +42,7 @@ module.exports = function (controller, component, app) {
             if(!user){
                 res.backend.render('changePass',{
                     error : {
-                        message : 'This function is expires or not avaiable !'
+                        message : 'Thời gian để thay đổi mật khẩu đã hết !'
                     }
                 });
             }else{
@@ -51,7 +51,7 @@ module.exports = function (controller, component, app) {
         }).catch(function (err) {
             res.backend.render('changePass',{
                 error : {
-                    message : 'This function is expires or not avaiable !'
+                    message : 'Thời gian để thay đổi mật khẩu đã hết  !'
                 }
             });
         })
@@ -69,13 +69,13 @@ module.exports = function (controller, component, app) {
             }
         }).then(function (user) {
             if (data.password == null || data.password.length < 6){
-                req.flash.error('Password is null or too short !');
+                req.flash.error('Mật khẩu quá ngắn !');
                 res.backend.render('changePass');
             }else{
                 if(!user){
                     res.backend.render('changePass',{
                         error : {
-                            message : 'This function is expires or not avaiable !'
+                            message : 'Thời gian để thay đổi mật khẩu đã hết  !'
                         }
                     });
                 }else{
@@ -85,11 +85,11 @@ module.exports = function (controller, component, app) {
                         user_pass : user.hashPassword(data.password)
                     }).then(function (user) {
                         if(user){
-                            req.flash.success('Change password successfully !');
-                            req.flash.success('Please re-login with a new password !');
+                            req.flash.success('Thay đổi mật khẩu thành công !');
+                            req.flash.success('Vui lòng đăng nhập với mật khẩu mới !');
                             res.redirect('/admin/login');
                         }else{
-                            req.flash.error('Change password un-successfully ! \n Please re-enter new password !');
+                            req.flash.error('Thay đổi mật khẩu không thành công !');
                             res.backend.render('changePass');
                         }
 
@@ -101,7 +101,7 @@ module.exports = function (controller, component, app) {
         }).catch(function (err) {
             res.backend.render('changePass',{
                 error : {
-                    message : 'This function is expires or not available !'
+                    message : 'Chức năng này đã hết hạn !'
                 }
             });
         })
@@ -112,7 +112,7 @@ module.exports = function (controller, component, app) {
                 if(!user){
                     res.backend.render('forgot',{
                         messages : {
-                            error : ['E-mail is not registered !','Please enter another e-mail']
+                            error : ['E-mail này chưa được đăng ký !','Vui lòng nhập e-mail khác']
                         }
                     });
                 }else{
@@ -127,9 +127,9 @@ module.exports = function (controller, component, app) {
                                 let transporter = nodeMailer.createTransport(mailConfig);
                                 let message = {
                                     to : 'thangtyt@gmail.com',//userUpdated.user_email,
-                                    subject : 'Confirm email to reset password',
-                                    html : `<p>You have just process reset your password</p>
-                                <p>Please click link below to continue reset your password</>
+                                    subject : 'Thư xác nhận thay đổi mật khẩu',
+                                    html : `<p>Bạn vừa tiến hành quá trình thay đổi mật khẩu</p>
+                                <p>Vui lòng bấm vào link bên dưới để tiếp tục quá trình thay đổi mật khẩu</>
                                 <p><a href='`+href+`'>`+href+`</a></p>`
                                 };
                                 transporter.sendMail(message, function (err,info) {
@@ -143,7 +143,7 @@ module.exports = function (controller, component, app) {
                                     }
                                 })
                             }else{
-                                return new Error('Error when send mail please try again');
+                                return new Error('Có lỗi khi gửi mail, vui lòng nhập lại');
                             }
                     })
                     .catch(function (err) {

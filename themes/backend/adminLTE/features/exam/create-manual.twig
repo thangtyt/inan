@@ -88,6 +88,17 @@
                                            value="{{ exam.total_time }}" required="require"/>
                                 </div>
                                 <div class="form-group">
+                                    <label>Trạng thái</label>
+                                    <select class="form-control" name="status">
+                                        <option value="0" {% if exam.status == 0 %}selected="selected" {% endif %}>
+                                            Chưa kích hoạt
+                                        </option>
+                                        <option value="1" {% if exam.status == 1 %}selected="selected" {% endif %}>
+                                            Kích hoạt
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
                                     <label>Độ khó</label>
                                     <select class="form-control" name="level">
                                         <option value="1" {% if exam.level == 1 %}selected="selected" {% endif %}>
