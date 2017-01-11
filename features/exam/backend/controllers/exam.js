@@ -275,7 +275,7 @@ module.exports = function (controller,component,app) {
             req.flash.success('Tạo mới đề thành công !');
             res.redirect(baseRoute);
         }).catch(function (err) {
-                console.log(err);
+                //console.log(err);
             //req.flash.error(err.message);
             app.models.subject.findAll()
             .then(function (subjects) {
@@ -331,7 +331,8 @@ module.exports = function (controller,component,app) {
         ])
         .then(function (result) {
                 //console.log(JSON.stringify(result, 2, 2));
-            if(result[0] && result[1] < 1){
+            //if(result[0] && result[1] < 1){
+            if(result[0]){
                 return result[0].updateAttributes(form);
             }else{
                 throw new Error('');
