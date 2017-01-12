@@ -365,28 +365,38 @@ function editAnswerArray(){
 $(function(){
     $('form').submit(function (e) {
         //console.log(typeof $('#require').val());
-        if(answers)
-        try{
-            if(Number($('#require').val()) == 0){
-                CKEDITOR.instances.content.setData(CKEDITOR.instances['answerContent'].getData());
-                CKEDITOR.instances['answerContent'].setData('');
-                if( answers.length < 0 ){
-                    pushAnswer(0);
+        if(answers){
+            try{
+                if(Number($('#require').val()) == 0){
+                    CKEDITOR.instances.content.setData(CKEDITOR.instances['answerContent'].getData());
+                    CKEDITOR.instances['answerContent'].setData('');
+                    if( answers.length < 1 ){
+                        pushAnswer(0);
+                    }else{
+                        editAnswer(0,0);
+                        var temp = [];
+                        temp.push(answers[0]);
+                        answers = temp;
+                    }
                 }else{
-                    editAnswer(0,0);
-                    var temp = [];
-                    temp.push(answers[0]);
-                    answers = temp;
+                    if( answers.length < 1 ){
+                        pushAnswer(1);
+                    }else{
+                        editAnswer(0,0);
+                        var temp = [];
+                        temp.push(answers[0]);
+                        answers = temp;
+                    }
+                    if($('select[name=editAnswerIndex]').val() != -1){
+                        editAnswer($('select[name=editAnswerIndex]').val(),1);
+                    }
                 }
-            }else{
-                if($('select[name=editAnswerIndex]').val() != -1){
-                    editAnswer($('select[name=editAnswerIndex]').val(),1);
-                }
+                $('input[name=answers]').val(JSON.stringify(answers));
+            }catch(err){
+                return false;
             }
-            $('input[name=answers]').val(JSON.stringify(answers));
-        }catch(err){
-            return false;
         }
+
     })
 
 });
