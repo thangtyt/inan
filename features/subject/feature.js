@@ -33,7 +33,7 @@ module.exports = {
         }
     ],
     backend_menu: {
-        title: "Môn học",
+        title: "Môn thi",
         icon: 'fa fa-book',
         group: 'user_features',
         menus: [
