@@ -13,12 +13,12 @@
                             <div class="box box-primary">
                                 <div class="box-body box-profile">
                                     <div class="form-group">
-                                        <label for="desc">Title <span class="required">*</span></label>
+                                        <label for="desc">Tiều đề <span class="required">*</span></label>
                                         <input class="form-control" name="title" id="title"
                                                value="{{ subject.title }}" required="required"/>
                                     </div>
                                     <div class="form-group">
-                                        <label for="desc">Icon</label>
+                                        <label for="desc">Biểu Tượng </label>
                                         <select class="form-control" name="icons" id="icons">
                                             {% for item in icons %}
                                                 <option value="{{ item.id }}::{{ item.name }}::{{ item.icon.default }}::{{ item.icon.hover }}"{% if item.id == subject.icons.id %} selected="selected" {% endif %}>{{ item.name }}</option>
@@ -26,7 +26,7 @@
                                         </select>
                                     </div>
                                     <div class="form-group">
-                                        <label for="desc">Class <span class="required">*</span></label>
+                                        <label for="desc">Lớp <span class="required">*</span></label>
                                         <select name="class" class="form-control" required="required">
                                             <option value="12" {% if subject.class == 12 %} selected{% endif %}> 12</option>
                                             <option value="11" {% if subject.class == 11 %} selected{% endif %}> 11</option>
@@ -34,7 +34,7 @@
                                         </select>
                                     </div>
                                     <div class="form-group">
-                                        <label for="desc">Description</label>
+                                        <label for="desc">Mô tả</label>
                                         <textarea class="form-control" name="desc" rows="5"
                                                   id="desc">{{ subject.desc }}</textarea>
                                         <input type="hidden" name="chapter" id="chapter" value="{{ chapter }}">
@@ -46,7 +46,7 @@
                         <div class="col-md-8">
                             <div class="box box-primary">
                                 <div class="box-header with-border">
-                                    <h4>Chapter of subject</h4>
+                                    <h4>Chương của môn</h4>
                                 </div>
                                 <div class="box-body box-profile">
                                     <div class="form-group">
@@ -188,7 +188,6 @@
                 '<div class="dd3-content" id="'+chapter.id+'">'+chapter.title+btnDelete.replace('::id::',chapter.id)+'</div>' +
                 '<div class="dd-handle dd3-handle"><i class="icon-move"></i></div>';
                 if(chapter.lessons.length > 0){
-
                     chapter.lessons.map(function (lesson) {
                         html+='<ol class="dd-list">';
                         html+='<li class="dd-item dd3-item" data-id="'+lesson.id+'">' +
@@ -196,7 +195,6 @@
                         '<div class="dd-handle dd3-handle"><i class="icon-move"></i></div>';
                         html+='</ol>'
                     })
-
                 }
                 html+='</li>';
                 $('#chapterList').append(html);

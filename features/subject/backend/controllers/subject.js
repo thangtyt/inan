@@ -41,7 +41,7 @@ module.exports = function (controller, component, app) {
             {
                 column: 'title',
                 width: '20%',
-                header: 'Title',
+                header: 'Tiêu đề',
                 link: baseRoute + '/' + '{id}',
                 filter: {
                     data_type: 'string'
@@ -50,7 +50,7 @@ module.exports = function (controller, component, app) {
             {
                 column: 'class',
                 width: '10%',
-                header: 'class',
+                header: 'Lớp',
                 filter: {
                     data_type: 'number'
                 }
@@ -73,7 +73,7 @@ module.exports = function (controller, component, app) {
             // Replace title of no-title post
             let items = results.rows;
             items.map(function (item) {
-                if (!item.title) item.title = '(no title)';
+                if (!item.title) item.title = '( Không có tiêu đề )';
             });
 
             // Render view
