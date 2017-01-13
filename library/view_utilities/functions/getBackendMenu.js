@@ -20,14 +20,14 @@ module.exports = {
                     //add item when update new feature
                     _.map(permissions.feature, function (val,key) {
                         if (menu.sorting.indexOf(key) == -1 ){
-                            if(_.has(feature_data[key],'backend_menu')){
+                            if( _.has(feature_data[key],'backend_menu') ){
                                 let flag = false;
                                 _.map(feature_data[key].backend_menu.menus, function (v, k) {
                                     if(isDisplay(v.permission,permissions.feature[key])){
                                         flag = true;
                                     }
                                 });
-                                if(flag){
+                                if( flag ){
                                     menu.sorting.push(key);
                                     if(_.has(feature_data[key].backend_menu,'group'))
                                         menu.default.features[key] = feature_data[key].backend_menu;
@@ -39,7 +39,7 @@ module.exports = {
                     });
                     //remove item when user remove feature
                     _.map(menu.sorting, function (key) {
-                        if (!_.has(feature_data, key)){
+                        if (!_.has(feature_data, key) ){
                             _.remove(menu.sorting, function (ele) {
                                 return ele === key;
                             });
@@ -163,7 +163,9 @@ function addMenuItem(menu,permissions,group,currentUrl,app){
     htmlMenu += '<li class="header">' + menu[group]['title'] + '</li>';
     _.map(menu.sorting, function (key) {
         // Display all features have key 'backend_menus' in feature.js
-        if (_.has(menu[group]['features'], key) && _.has(menu[group]['features'][key], 'menus') && !_.isUndefined(permissions["feature"][key])) {
+
+        //todo: khóa chức năng tạm thời
+        if ( ['blog', 'configuration', 'menu'].indexOf(key) == -1 && _.has(menu[group]['features'], key) && _.has(menu[group]['features'][key], 'menus') && !_.isUndefined(permissions["feature"][key])) {
             htmlMenu += '<li class="treeview ' + active_menu(currentUrl, key, "active", 0, []) + '">';
             // Display item menu of features
             if (_.isArray(menu[group]['features'][key]['menus'])) {
