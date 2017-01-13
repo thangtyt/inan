@@ -977,6 +977,30 @@ module.exports = function (controller, component, app) {
             })
         })
     }
+    //controller.getExamDone = function (req,res) {
+    //    let user = req.user;
+    //    Promise.all([
+    //        app.models.userResult.findAndCountAll({
+    //            //attributes: ['exam_id'],
+    //            where: {
+    //                user_id : user.id
+    //            },
+    //            include: [{
+    //                model : app.models.exam,
+    //                attributes : ['']
+    //            }]
+    //        })
+    //    ])
+    //    .then(function (exam) {
+    //        res.status(200).jsonp({
+    //            exam: exam
+    //        })
+    //    }).catch(function (err) {
+    //        res.status(300).jsonp({
+    //            message: err.message
+    //        })
+    //    })
+    //}
 };
 function createFilter(query){
     let result = [{},{}];

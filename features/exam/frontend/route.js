@@ -63,6 +63,16 @@ module.exports = function (component, app) {
                 handler: [jwtAuth,controller.eGetUserExam]
             }
         },
+        //"/user/user-exam/page/:page/sort/:sort/:order?" : {
+        //    get: {
+        //        handler: [jwtAuth,controller.eGetUserExam]
+        //    }
+        //},
+        "/user/user-exam/page/:page" : {
+            get: {
+                handler: [jwtAuth,controller.eGetUserExam]
+            }
+        },
         "/rating/:rating([1-5]{1})/:examId([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})": {
             get: {
                 handler: [jwtAuth,controller.rating]
@@ -107,7 +117,22 @@ module.exports = function (component, app) {
             get: {
                 handler: [jwtAuth,controller.getExamGiftCode]
             }
-        }
+        }//,
+        //"/user/exam/done": {
+        //    get: {
+        //        handler: [jwtAuth,controller.getExamDone]
+        //    }
+        //},
+        //"/user/exam/done/page/:page": {
+        //    get: {
+        //        handler: [jwtAuth,controller.getExamDone]
+        //    }
+        //},
+        //"/user/exam/done/page/:page/sort/:sort/:order?": {
+        //    get: {
+        //        handler: [jwtAuth,controller.getExamDone]
+        //    }
+        //}
 
     }
 }
