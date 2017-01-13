@@ -165,7 +165,7 @@ function addMenuItem(menu,permissions,group,currentUrl,app){
         // Display all features have key 'backend_menus' in feature.js
 
         //todo: khóa chức năng tạm thời
-        if ( ['blog', 'configuration', 'menu'].indexOf(key) == -1 && _.has(menu[group]['features'], key) && _.has(menu[group]['features'][key], 'menus') && !_.isUndefined(permissions["feature"][key])) {
+        if ( ['blog', 'configuration', 'menu','widgets'].indexOf(key) == -1 && _.has(menu[group]['features'], key) && _.has(menu[group]['features'][key], 'menus') && !_.isUndefined(permissions["feature"][key])) {
             htmlMenu += '<li class="treeview ' + active_menu(currentUrl, key, "active", 0, []) + '">';
             // Display item menu of features
             if (_.isArray(menu[group]['features'][key]['menus'])) {
