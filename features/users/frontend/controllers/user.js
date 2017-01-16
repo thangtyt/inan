@@ -27,38 +27,45 @@ module.exports = function (controller, component, app) {
         let msg = null;
         form.parse(req, function (err, fields, files) {
             if(files.image){
-                let val = files.image;
-                let ext = val['type'].split('/').pop();
-                //console.log(val);
-                if(_.indexOf(allowExtension,ext)){
-                    image_name = image_name+'.'+ext;
-                    fs.readFile(val.path, function (err, file_buffer) {
-                        let params = {
-                            Bucket: bucket+'/user-avatar',
-                            Key: image_name,
-                            Body: file_buffer,
-                            ACL: 'public-read-write'
-                        };
-                        s3.putObject(params, function (perr, pres) {
-                            if (perr) {
-                                msg = "File cannot upload to server"
-                            }
-                            //remove temp file
-                            fs.unlink(val.path, function (err) {
-                                if (err) {
-                                    logger.log(err)
+                if (files.image.size / 1000000 > 5){
+                    done('File quá lớn. Vui lòng chọn file khác !',null);
+                }
+                else if ( files['image']['type'].split('/').shift() != 'image' ) {
+                    done('Vui lòng chỉ chọn file ảnh !',null);
+                }else{
+                    let val = files.image;
+                    let ext = val['type'].split('/').pop();
+                    if(_.indexOf(allowExtension,ext)){
+                        image_name = image_name+'.'+ext;
+                        fs.readFile(val.path, function (err, file_buffer) {
+                            let params = {
+                                Bucket: bucket+'/user-avatar',
+                                Key: image_name,
+                                Body: file_buffer,
+                                ACL: 'public-read-write'
+                            };
+                            s3.putObject(params, function (perr, pres) {
+                                if (perr) {
+                                    msg = "Không thể đăng ảnh lên !"
                                 }
+                                //remove temp file
+                                fs.unlink(val.path, function (err) {
+                                    if (err) {
+                                        logger.log(err)
+                                    }
+                                });
+                                done(msg,s3.endpoint.href+bucket+'/user-avatar/'+image_name);
                             });
-                            done(msg,s3.endpoint.href+bucket+'/user-avatar/'+image_name);
                         });
-                    });
+                    }
+                    else{
+                        done('File không đúng định dạng !',null);
+                    }
                 }
-                else{
-                    done('File not found !',null);
-                }
+
             }
             else{
-                done('File not found !',null);
+                done('Không thấy file !',null);
             }
         });
     }
@@ -136,10 +143,8 @@ module.exports = function (controller, component, app) {
                 if(result[1].birthday)
                 result[1].birthday = moment(result[1].birthday).format('D/M/YYYY').toString();
                 result[1].full_name = result[0].display_name;
-                console.log(result[0]);
             res.status(200).jsonp(result[1]);
         }).catch(function (err) {
-                //console.log(err);
             res.status(500).jsonp(err.message);
         })
     }
