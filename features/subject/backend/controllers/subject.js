@@ -183,7 +183,7 @@ module.exports = function (controller, component, app) {
             if(resultCount[0] > 0 || resultCount[1] > 0){
                 throw new Error();
             }else{
-                return app.models.chapter.delete({
+                return app.models.chapter.destroy({
                     where: {
                         subject_id: {
                             $in: ids
