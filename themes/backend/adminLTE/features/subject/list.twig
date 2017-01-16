@@ -7,7 +7,7 @@
                 <div class="box box-solid box-primary">
                     <div class="box-body table-responsive">
                         {% include 'basic_table/_table.' + getConfig('viewExtension') %}
-                        {{ paginateLinks(totalPage, currentPage,'/admin/examination/subject/page/{page}/sort/'+currentColumn+'/'+currentOrder+queryString)|safe }}
+                        {{ paginateLinks(totalPage, currentPage,'/admin/subject/page/{page}/sort/'+currentColumn+'/'+currentOrder+queryString)|safe }}
                     </div>
                 </div>
         </div>
