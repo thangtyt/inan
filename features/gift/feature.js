@@ -35,7 +35,7 @@ module.exports = {
         menus: [
             {
                 permission: ['all','create'],
-                title: 'Thêm mới',
+                title: 'Tạo mới',
                 link: '/create'
             },
             {

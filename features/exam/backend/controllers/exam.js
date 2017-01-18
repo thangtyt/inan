@@ -222,7 +222,7 @@ module.exports = function (controller,component,app) {
     };
     controller.getSectionQuestions = function (req,res) {
         let _questions = [];
-        console.log(JSON.stringify(JSON.parse(req),2,2));
+        //console.log(JSON.stringify(JSON.parse(req),2,2));
         let query = {
             where: {
                 section_id: req.params.sectionId

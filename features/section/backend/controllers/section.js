@@ -209,7 +209,7 @@ module.exports = function (controller, component, app) {
                 throw Error('Error');
             }
         }).catch(function (err) {
-            console.log(err);
+            //console.log(err);
             req.flash.error('Không thể cập nhật dạng câu hỏi này !');
             next();
         })

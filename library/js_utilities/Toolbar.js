@@ -70,7 +70,7 @@ class Toolbar {
      */
     addCreateButton(permission, link) {
         this.addGeneralButton(permission, {
-            title: '<i class="fa fa-plus"></i> Create new',
+            title: '<i class="fa fa-plus"></i> Tạo mới',
             link: link,
             buttonClass: 'btn btn-primary'
         });

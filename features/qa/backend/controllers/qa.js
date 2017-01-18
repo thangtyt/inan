@@ -321,7 +321,7 @@ module.exports = function (controller,component,app) {
             res.redirect(baseRoute+'/choice/'+questionId);
         })
         .catch(function (err) {
-                console.log(err);
+                //console.log(err);
             req.flash.error('Cập nhật không thành công !');
             res.redirect(baseRoute+'/choice/'+questionId);
         })

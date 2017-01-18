@@ -592,7 +592,7 @@ module.exports = function (controller, component, app) {
                 items: exams
             })
         }).catch(function (err) {
-            console.log(err.message);
+            //console.log(err.message);
             res.sendStatus(499);
         })
     };

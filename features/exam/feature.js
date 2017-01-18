@@ -39,7 +39,7 @@ module.exports = {
         menus: [
             {
                 permission: ['all','create'],
-                title: 'Tạo đề thủ công',
+                title: 'Tạo mới',
                 link: '/create-manual'
             },
             {

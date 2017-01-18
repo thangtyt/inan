@@ -39,12 +39,12 @@ module.exports = {
         menus: [
             {
                 permission: ['all','create'],
-                title: 'Tạo mới môn học',
+                title: 'Tạo mới',
                 link: '/create'
             },
             {
                 permission: ['create','all','edit','view','delete','active'],
-                title: 'Danh sách môn học',
+                title: 'Danh sách',
                 link: '/'
             }
         ]

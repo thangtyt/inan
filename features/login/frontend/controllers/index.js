@@ -142,7 +142,6 @@ module.exports = function (controller, component, app) {
                         reset_password_token : tokenGenerate(50)
                     })
                     .then(function (userUpdated) {
-                            console.log(2222);
                             if(userUpdated){
                                 href += '/'+userUpdated.reset_password_token;
                                 let transporter = nodeMailer.createTransport(mailConfig);
@@ -174,7 +173,7 @@ module.exports = function (controller, component, app) {
                 }
         })
         .catch(function (err) {
-                console.log(err.message);
+                //console.log(err.message);
             res.status(500).jsonp({
                 message : err.message
             });
@@ -256,7 +255,7 @@ module.exports = function (controller, component, app) {
                 return new Error('Not Found user');
             }
         }).catch(function (err) {
-                console.log(err);
+                //console.log(err);
             res.status(503);
             res.jsonp({
                 user: null
@@ -469,7 +468,6 @@ function optimizeUser(user,host){
     if(!user){
         return null;
     }else if(_.has(user,'display_name')){
-        console.log(1111);
         return {
             id : user.id,
             user_email : user.user_email,
@@ -493,10 +491,8 @@ function dateformat(pattern,date){
         yyyy = date.getFullYear();
         result = pattern.replace('dd',dd).replace('mm',mm).replace('yyyy',yyyy)
     }catch(err){
-        console.log(err);
         result = '';
     }
-    console.log(result);
     return result;
 }
 let tokenGenerate = function (length) {

@@ -28,7 +28,7 @@ module.exports = function (controller,component,app) {
         toolbar.addSearchButton();
         toolbar.addGeneralButton(isAllow(req, permission.create), {
             link: baseRoute + '/create',
-            title: '<i class="fa fa-plus"></i> Create ',
+            title: '<i class="fa fa-plus"></i> Tạo mới',
             buttonClass: 'btn btn-primary'
         });
         toolbar.addDeleteButton();
@@ -129,7 +129,7 @@ module.exports = function (controller,component,app) {
             })
         ])
         .then(function (result) {
-                console.log(JSON.stringify(result,2,2));
+                //console.log(JSON.stringify(result,2,2));
             let totalPage = Math.ceil(result[1].count / itemOfPage);
             res.backend.render('list', {
                 title: 'Danh sách các phần quà tặng',
@@ -270,7 +270,7 @@ module.exports = function (controller,component,app) {
                                 error: null
                             });
                         }else{
-                            console.log(1);
+                            //console.log(1);
                             t.rollback();
                             req.flash.error('Xóa phần quà không thành công !');
                             res.jsonp({
@@ -382,7 +382,7 @@ module.exports = function (controller,component,app) {
                                     req.flash.success('Đã cập nhật thành công mã quà tặng !');
                                     res.redirect(baseRoute + '/' + giftId);
                                 }).catch(function (err) {
-                                    console.log(err.message);
+                                    //console.log(err.message);
                                     req.flash.error('Không cập nhật được mã quà tặng !');
                                     res.backend.render('form', {
                                         toolbar: toolbar.render(),
