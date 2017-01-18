@@ -10,7 +10,8 @@ module.exports = function (sequelize, DataTypes) {
             allowNull : false
         },
         title: {
-          type: DataTypes.TEXT
+            type: DataTypes.TEXT,
+            unique:true
         },
         content: {
             type: DataTypes.TEXT

@@ -11,6 +11,7 @@ module.exports = function (sequelize, DataTypes) {
         },
         title: {
             type: DataTypes.STRING,
+            unique: true,
             allowNull: false
         },
         question_type: {
