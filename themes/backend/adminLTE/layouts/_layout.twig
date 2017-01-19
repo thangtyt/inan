@@ -88,17 +88,17 @@
 <script src="/backend/adminLTE/dist/js/app.min.js"></script>
 <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.15.0/jquery.validate.min.js"></script>
 <script>
-    $.validator.addMethod('regex', function(value, element, param) {
-                return this.optional(element) ||
-                        value.match(typeof param == 'string' ? new RegExp(param) : param);
-            },
-    'Vui lòng nhập đúng định dạng.');
-
-    $.validator.addMethod('in_regex', function(value, element, param) {
-                return this.optional(element) ||
-                        !value.match(typeof param == 'string' ? new RegExp(param) : param);
-            },
-            'Bạn nhập không đúng định dạng.');
+//    $.validator.addMethod('regex', function(value, element, param) {
+//                return this.optional(element) ||
+//                        value.match(typeof param == 'string' ? new RegExp(param) : param);
+//            },
+//    'Vui lòng nhập đúng định dạng.');
+//
+//    $.validator.addMethod('in_regex', function(value, element, param) {
+//                return this.optional(element) ||
+//                        !value.match(typeof param == 'string' ? new RegExp(param) : param);
+//            },
+//            'Bạn nhập không đúng định dạng.');
 
 
     $(function () {
