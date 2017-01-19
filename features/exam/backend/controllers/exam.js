@@ -18,7 +18,7 @@ module.exports = function (controller,component,app) {
         // Get current page and default sorting
         let page = req.params.page || 1;
         let itemOfPage = app.getConfig('pagination').numberItem || 10;
-
+        req.params.sort = req.params.sort || 'created_at';
         // Add button on view
         let toolbar = new ArrowHelper.Toolbar();
         toolbar.addRefreshButton(baseRoute);
@@ -122,8 +122,8 @@ module.exports = function (controller,component,app) {
             limit: itemOfPage,
             backLink: 'exam_back_link'
         });
-        filter.order = req.params.sort ? req.params.sort : 'created_at DESC';
-        res.locals.currentColumn = req.params.sort || "created_at";
+        //filter.order = req.params.sort ? req.params.sort : 'created_at';
+        //res.locals.currentColumn = req.params.sort || "created_at";
         app.models.exam.findAndCountAll({
             where: filter.conditions,
             order: filter.order ,
@@ -287,8 +287,11 @@ module.exports = function (controller,component,app) {
                     toolbar: toolbar.render()
                 });
             }).catch(function (err) {
-                    //console.log(err);
-                req.flash.error(err.message);
+                if (err.name == ArrowHelper.UNIQUE_ERROR) {
+                    req.flash.error('Tiêu đề đã được sử dụng vui lòng nhập tiêu đề khác !');
+                } else {
+                    req.flash.error('Name: ' + err.name + '<br />' + 'Message: ' + error.message);
+                }
                 res.backend.render('create-manual',{
                     title: 'Tạo mới đề',
                     toolbar: toolbar.render()
@@ -343,7 +346,11 @@ module.exports = function (controller,component,app) {
             next();
         })
         .catch(function (err) {
-            req.flash.error("Đề này đã được thi vui lòng không sửa !");
+            if (err.name == ArrowHelper.UNIQUE_ERROR) {
+                req.flash.error('Tiêu đề đã được sử dụng vui lòng nhập tiêu đề khác !');
+            } else {
+                req.flash.error("Đề này đã được thi vui lòng không sửa !");
+            }
             next();
         })
     }
@@ -394,13 +401,15 @@ module.exports = function (controller,component,app) {
         }else{
             ids = req.body.ids.split(',');
         }
-        app.models.userResult.count({
+        app.models.exam.count({
             where: {
-                exam_id : {
+                id : {
                     $in : ids
-                }
+                },
+                status : 1
             }
         }).then(function (examCount) {
+            console.log(examCount);
             if(examCount > 0 ){
                 throw new Error();
             }else{

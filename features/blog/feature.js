@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = {
-    title: "Blog",
+    title: "Bài viết",
     author: 'Techmaster',
     version: '0.1.0',
     description: __('m_blog_backend_module_desc'),
@@ -9,25 +9,25 @@ module.exports = {
         // Post
         {
             name: 'post_manage',
-            title: 'Manage own posts'
+            title: 'Quản trị các bài viết của mình'
         },
         {
             name: 'post_manage_all',
-            title: 'Manage all posts'
+            title: 'Quản trị tất cả các bài viết'
         },
         // Page
         {
             name: 'page_manage',
-            title: 'Manage own pages'
+            title: 'Quản trị các bài pages của mình'
         },
         {
             name: 'page_manage_all',
-            title: 'Manage all pages'
+            title: 'Quản trị tất các bài page'
         },
         // Category
         {
             name: 'category_manage',
-            title: 'Manage categories'
+            title: 'Quản trị phần danh mục'
         }
     ],
     backend_menu: {

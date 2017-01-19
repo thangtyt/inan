@@ -2,7 +2,7 @@
 
 module.exports = {
     title: "Plugin Manager",
-    author: 'Techmaster',
+    author: 'ArrowCMS',
     version: '0.1.0',
     description: "Backend Plugin manager",
     permissions: [

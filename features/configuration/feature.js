@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = {
-    title: __('m_configurations_backend_module_title'),
+    title: 'Cấu hình trang web',
     author: 'Techmaster',
     version: '0.1.0',
     description: __('m_configurations_backend_module_desc'),
