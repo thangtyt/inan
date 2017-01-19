@@ -88,17 +88,17 @@
 <script src="/backend/adminLTE/dist/js/app.min.js"></script>
 <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.15.0/jquery.validate.min.js"></script>
 <script>
-//    $.validator.addMethod('regex', function(value, element, param) {
-//                return this.optional(element) ||
-//                        value.match(typeof param == 'string' ? new RegExp(param) : param);
-//            },
-//    'Vui lòng nhập đúng định dạng.');
-//
-//    $.validator.addMethod('in_regex', function(value, element, param) {
-//                return this.optional(element) ||
-//                        !value.match(typeof param == 'string' ? new RegExp(param) : param);
-//            },
-//            'Bạn nhập không đúng định dạng.');
+    $.validator.addMethod('regex', function(value, element, param) {
+                return this.optional(element) ||
+                        value.match(typeof param == 'string' ? new RegExp(param) : param);
+            },
+    'Vui lòng nhập đúng định dạng.');
+
+    $.validator.addMethod('in_regex', function(value, element, param) {
+                return this.optional(element) ||
+                        !value.match(typeof param == 'string' ? new RegExp(param) : param);
+            },
+            'Bạn nhập không đúng định dạng.');
 
 
     $(function () {
@@ -175,25 +175,67 @@
 
 
 
-//        //jquery validator
-//        $('form').validate({
-//            errorElement : "span",
-//            errorClass : "help-block",
-//            rules : {
-//                title : {
-//                    required : true,
-//                    regex: /^[A-Za-z]+$/,
-//                    in_regex: /^(\s)$/
-//                }
-//            },
-//            messages : {
-//                title : {
-//                    required : 'Bạn phải nhập tiêu đề !',
-//                    regex: 'Bạn nhập không đúng định dạng.',
-//                    in_regex: /^(\s)$/
-//                }
-//            }
-//        })
+        //jquery validator
+        $('form').validate({
+            errorElement : "span",
+            errorClass : "help-block",
+            rules : {
+                title : {
+                    required : true,
+//                    regex: /^[A-Za-z -()]+$/,
+                    in_regex: /^(\s)|[\<\>!@#$%^&*+:;\"\']$/
+                },
+                subject_id : {
+                    required : true
+                },
+                total_mark : {
+                    min : 1,
+                    required : true
+                },
+                total_question : {
+                    min : 1,
+                    required : true
+                },
+                total_time : {
+                    min : 1,
+                    required : true
+                },
+                answerMark : {
+                    min : 1
+                },
+                answerTime : {
+                    min :1
+                }
+            },
+            messages : {
+                title : {
+                    required : 'Bạn phải nhập tiêu đề !',
+//                    regex: 'Bạn nhập không đúng định dạng !',
+                    in_regex: 'Bạn nhập không đúng định dạng !'
+                },
+                subject_id : {
+                    required : 'Vui lòng chọn môn học !'
+                },
+                total_mark : {
+                    min : 'Tổng số điểm phải lớn hơn 0 !',
+                    required : 'Bạn phải nhập tổng điểm !'
+                },
+                total_question : {
+                    min : 'Tổng số câu hỏi phải lớn hơn 0 !',
+                    required : 'Bạn phải nhập tổng số câu hỏi !'
+                },
+                total_time : {
+                    min : 'Tổng số thời gian thi phải lớn hơn 0 !',
+                    required : 'Bạn phải nhập tổng thời gian thi !'
+                },
+                answerMark : {
+                    min : 'Điểm phải lớn hơn 0 !'
+                },
+                answerTime : {
+                    min : 'Thời gian thi phải lớn hơn 0 !'
+                }
+            }
+        })
     });
 </script>
 

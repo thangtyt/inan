@@ -504,3 +504,11 @@ input[type="checkbox"] {
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
 }
+
+.help-block {
+    color: #dd4b39;
+    display: block;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    font-weight: normal;
+}
