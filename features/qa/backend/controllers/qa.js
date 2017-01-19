@@ -334,10 +334,12 @@ module.exports = function (controller,component,app) {
             attributes : ['content']
         }).then(function (exams) {//todo: think another ways to compare
             exams.map(function (exam) {
+                if(exam.length > 0)
                 exam.content.map(function (cont) {
+                    if (cont.length > 0)
                     cont.questions.map(function (ques) {
                         if (ids.indexOf(ques) != -1){
-                            throw new Error('Không thể xóa câu hỏi đã được thi !');
+                            throw new Error('Không thể xóa câu hỏi đã được đưa vào đề thi !');
                         }
                     })
                 })

@@ -350,6 +350,8 @@ function editAnswer(index,require){
 
 }
 function chooseQuestionToEdit(){
+    console.log($('select[name=editAnswerIndex]').val());
+    if ($('select[name=editAnswerIndex]').val() >= 0 )
     fillAnswer($('select[name=editAnswerIndex]').val(),1,'');
 }
 
@@ -381,22 +383,23 @@ $(function(){
                 }else{
                     if( answers.length < 1 ){
                         pushAnswer(1);
-                    }else{
-                        editAnswer(0,0);
-                        var temp = [];
-                        temp.push(answers[0]);
-                        answers = temp;
+                    //}else{
+                    //    editAnswer(0,0);
+                    //    var temp = [];
+                    //    temp.push(answers[0]);
+                    //    answers = temp;
                     }
                     if($('select[name=editAnswerIndex]').val() != -1){
                         editAnswer($('select[name=editAnswerIndex]').val(),1);
                     }
                 }
                 $('input[name=answers]').val(JSON.stringify(answers));
+                console.log($('input[name=answers]').val());
+                //return false;
             }catch(err){
                 return false;
             }
         }
-
     })
 
 });
