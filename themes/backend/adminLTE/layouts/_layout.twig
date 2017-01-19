@@ -86,8 +86,21 @@
 <script src="/backend/adminLTE/assets/plugins/fastclick/fastclick.min.js"></script>
 <!-- AdminLTE App -->
 <script src="/backend/adminLTE/dist/js/app.min.js"></script>
-
+<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.15.0/jquery.validate.min.js"></script>
 <script>
+    $.validator.addMethod('regex', function(value, element, param) {
+                return this.optional(element) ||
+                        value.match(typeof param == 'string' ? new RegExp(param) : param);
+            },
+    'Vui lòng nhập đúng định dạng.');
+
+    $.validator.addMethod('in_regex', function(value, element, param) {
+                return this.optional(element) ||
+                        !value.match(typeof param == 'string' ? new RegExp(param) : param);
+            },
+            'Bạn nhập không đúng định dạng.');
+
+
     $(function () {
         // Show, hide go top button
         $(window).scroll(function () {
@@ -159,6 +172,28 @@
             var link = window.location.href;
             $(this).attr('action', link.replace(/\/page\/([0-9])+/, '/page/1'));
         });
+
+
+
+        //jquery validator
+        $('form').validate({
+            errorElement : "span",
+            errorClass : "help-block",
+            rules : {
+                title : {
+                    required : true,
+                    regex: /^[A-Za-z]+$/,
+                    in_regex: /^(\s)$/
+                }
+            },
+            messages : {
+                title : {
+                    required : 'Bạn phải nhập tiêu đề !',
+                    regex: 'Bạn nhập không đúng định dạng.',
+                    in_regex: /^(\s)$/
+                }
+            }
+        })
     });
 </script>
 

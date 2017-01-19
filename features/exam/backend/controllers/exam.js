@@ -123,6 +123,7 @@ module.exports = function (controller,component,app) {
             backLink: 'exam_back_link'
         });
         filter.order = req.params.sort ? req.params.sort : 'created_at DESC';
+        res.locals.currentColumn = req.params.sort || "created_at";
         app.models.exam.findAndCountAll({
             where: filter.conditions,
             order: filter.order ,
