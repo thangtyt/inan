@@ -23,7 +23,7 @@ module.exports = function (controller,component,app) {
         let itemOfPage = app.getConfig('pagination').numberItem || 10;
         //start create toolbar
         let toolbar = new ArrowHelper.Toolbar();
-        toolbar.addRefreshButton(baseRoute);
+        toolbar.addRefreshButton(baseRoute+'/choice');
         toolbar.addSearchButton(isAllow(req, permission.index));
         toolbar.addCreateButton(isAllow(req, permission.all), baseRoute + '/choice/create');
         toolbar.addDeleteButton();
@@ -93,6 +93,7 @@ module.exports = function (controller,component,app) {
             backLink: 'qa_back_link'
         });
         filter.order = req.params.sort ? req.params.sort : 'created_at DESC';
+        res.locals.currentColumn = req.params.sort || "created_at";
         actions.findAndCountAll({
             where: filter.conditions,
             order: filter.order || 'created_at DESC',
