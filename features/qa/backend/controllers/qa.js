@@ -92,7 +92,7 @@ module.exports = function (controller,component,app) {
             limit: itemOfPage,
             backLink: 'qa_back_link'
         });
-        filter.order = req.params.sort ? req.params.sort : 'created_at DESC';
+        filter.order = req.params.sort ? req.params.sort : 'created_at';
         res.locals.currentColumn = req.params.sort || "created_at";
         actions.findAndCountAll({
             where: filter.conditions,
@@ -269,8 +269,11 @@ module.exports = function (controller,component,app) {
 
         }).catch(function (err) {
                 //console.log(err);
-            logger.error(err.message);
-            req.flash.error(err.message);
+            if (err.name == ArrowHelper.UNIQUE_ERROR) {
+                req.flash.error('Tiêu đề đã được sử dụng vui lòng nhập tiêu đề khác !');
+            } else {
+                req.flash.error('Name: ' + err.name + '<br />' + 'Message: ' + error.message);
+            }
             res.redirect(baseRoute);
         })
 
@@ -322,8 +325,11 @@ module.exports = function (controller,component,app) {
             res.redirect(baseRoute+'/choice/'+questionId);
         })
         .catch(function (err) {
-                //console.log(err);
-            req.flash.error('Cập nhật không thành công !');
+            if (err.name == ArrowHelper.UNIQUE_ERROR) {
+                req.flash.error('Tiêu đề đã được sử dụng vui lòng nhập tiêu đề khác !');
+            } else {
+                req.flash.error('Name: ' + err.name + '<br />' + 'Message: ' + error.message);
+            }
             res.redirect(baseRoute+'/choice/'+questionId);
         })
     };

@@ -243,6 +243,11 @@ module.exports = function (controller, component, app) {
             req.flash.success('Thêm mới dạng câu hỏi thành công !');
             res.redirect(baseRoute);
         }).catch(function (err) {
+            if (err.name == ArrowHelper.UNIQUE_ERROR) {
+                req.flash.error('Tiêu đề đã được sử dụng vui lòng nhập tiêu đề khác !');
+            } else {
+                req.flash.error('Name: ' + error.name + '<br />' + 'Message: ' + error.message);
+            }
             req.flash.error(err.message);
             res.redirect(baseRoute+'/create');
         })

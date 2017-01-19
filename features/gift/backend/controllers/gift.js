@@ -394,7 +394,11 @@ module.exports = function (controller,component,app) {
                         }
                     })
             }).catch(function (err) {
-                req.flash.error(err.message);
+                if (err.name == ArrowHelper.UNIQUE_ERROR) {
+                    req.flash.error('Tiêu đề đã được sử dụng vui lòng nhập tiêu đề khác !');
+                } else {
+                    req.flash.error('Name: ' + err.name + '<br />' + 'Message: ' + error.message);
+                }
                 res.backend.render('form',{
                     toolbar : toolbar.render(),
                     title: 'Chi tiết phần quà',
