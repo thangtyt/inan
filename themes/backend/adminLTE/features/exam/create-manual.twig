@@ -220,8 +220,14 @@
                 removeElement(e.params.data.id, null);
             });
             $('#edit-form').submit(function () {
-                $('#content').val(JSON.stringify(content));
-                $('#sections').val(select2Sections.val());
+                if($('#edit-form').valid() == false){
+                    return false;
+                }else{
+                    $('#content').val(JSON.stringify(content));
+                    $('#sections').val(select2Sections.val());
+                    return true;
+                }
+
             });
             {% if exam.sections %}
             _sections = {{ exam.sections | dump | safe }};

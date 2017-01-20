@@ -88,6 +88,9 @@
 <script src="/backend/adminLTE/dist/js/app.min.js"></script>
 <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.15.0/jquery.validate.min.js"></script>
 <script>
+    $.validator.setDefaults({
+        ignore: ""
+    });
     $.validator.addMethod('regex', function(value, element, param) {
                 return this.optional(element) ||
                         value.match(typeof param == 'string' ? new RegExp(param) : param);
@@ -234,15 +237,15 @@
                 answerTime : {
                     min : 'Thời gian thi phải lớn hơn 0 !'
                 }
-            },
-            submitHandler: function (form) {
-                console.log($('form').valid());
-                if($('form').valid() == false){
-                    return false;
-                }else{
-                    return true;
-                }
             }
+//            submitHandler: function (form) {
+//                console.log(2);
+//                if($('form').valid() == false){
+//                    return false;
+//                }else{
+//                    return true;
+//                }
+//            }
         })
     });
 </script>

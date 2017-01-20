@@ -166,5 +166,4 @@ function removeElement(section_id,question_id){
             }
         }
     }
-    //console.log('removeElement',JSON.stringify(content,2,2));
 }
