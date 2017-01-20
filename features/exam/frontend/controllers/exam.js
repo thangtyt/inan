@@ -138,7 +138,7 @@ module.exports = function (controller, component, app) {
                     as: 'questions',
                     include: [{
                         model: app.models.answer,
-                        attributes: ['id', 'mark', 'content', 'time', 'answer_keys', 'question_id'],
+                        attributes: ['id', 'mark', 'content', 'time', 'answer_keys', 'question_id','layout'],
                         as: 'answers'
                     }]
                 }]
@@ -459,7 +459,7 @@ module.exports = function (controller, component, app) {
                         as: 'questions',
                         include: [{
                             model: app.models.answer,
-                            attributes: ['id', 'mark', 'content', 'time', 'answer_keys', 'question_id'],
+                            attributes: ['id', 'mark', 'content', 'time', 'answer_keys', 'question_id' , 'layout'],
                             as: 'answers'
                         }]
                     }]

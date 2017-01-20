@@ -72,6 +72,13 @@ module.exports = function (component, app) {
                 authenticate : true,
                 permissions : permission
             }
+        },
+        "/qa/report/:questionId" : {
+            post: {
+                handler: controller.reportQuestion,
+                authenticate: true,
+                permissions: [permission[2],permission[5]]
+            }
         }
         //END Q&A *****************************
     }

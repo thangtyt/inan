@@ -50,6 +50,11 @@ module.exports = {
                         permission: ['create','all','edit','view','delete','active'],
                         title: 'Danh sách',
                         link: '/choice'
+                    },
+                    {
+                        pẻmission: ['all','active'],
+                        title: 'Câu trả lời lỗi',
+                        link: '/report'
                     }
                 ],
                 link: '#'
