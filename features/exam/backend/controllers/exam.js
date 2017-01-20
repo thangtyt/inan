@@ -18,7 +18,7 @@ module.exports = function (controller,component,app) {
         // Get current page and default sorting
         let page = req.params.page || 1;
         let itemOfPage = app.getConfig('pagination').numberItem || 10;
-        req.params.sort = req.params.sort || 'created_at';
+        req.params.sort = req.params.sort ? req.params.sort : 'created_at';
         // Add button on view
         let toolbar = new ArrowHelper.Toolbar();
         toolbar.addRefreshButton(baseRoute);
@@ -122,8 +122,6 @@ module.exports = function (controller,component,app) {
             limit: itemOfPage,
             backLink: 'exam_back_link'
         });
-        //filter.order = req.params.sort ? req.params.sort : 'created_at';
-        //res.locals.currentColumn = req.params.sort || "created_at";
         app.models.exam.findAndCountAll({
             where: filter.conditions,
             order: filter.order ,

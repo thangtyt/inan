@@ -87,13 +87,12 @@ module.exports = function (controller,component,app) {
                 }
             }
         ];
+        req.params.sort = req.params.sort ? req.params.sort : 'created_at';
         let filter = ArrowHelper.createFilter(req, res, table, {
-            rootLink: baseRoute + '/page/$page/sort',
+            rootLink: baseRoute + '/choice/page/$page/sort',
             limit: itemOfPage,
             backLink: 'qa_back_link'
         });
-        filter.order = req.params.sort ? req.params.sort : 'created_at';
-        res.locals.currentColumn = req.params.sort || "created_at";
         actions.findAndCountAll({
             where: filter.conditions,
             order: filter.order || 'created_at DESC',
