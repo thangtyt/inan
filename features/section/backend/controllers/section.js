@@ -209,8 +209,11 @@ module.exports = function (controller, component, app) {
                 throw Error('Error');
             }
         }).catch(function (err) {
-            //console.log(err);
-            req.flash.error('Không thể cập nhật dạng câu hỏi này !');
+            if (err.name == ArrowHelper.UNIQUE_ERROR) {
+                req.flash.error('Tiêu đề đã được sử dụng vui lòng nhập tiêu đề khác !');
+            } else {
+                req.flash.error(error.message);
+            }
             next();
         })
     };
@@ -229,6 +232,11 @@ module.exports = function (controller, component, app) {
                 subjects: subjects
             })
         }).catch(function (err){
+            if (err.name == ArrowHelper.UNIQUE_ERROR) {
+                req.flash.error('Tiêu đề đã được sử dụng vui lòng nhập tiêu đề khác !');
+            } else {
+                req.flash.error(error.message);
+            }
             res.backend.render('form',{
                 toolbar : toolbar.render(),
                 title : 'Tạo mới dạng câu hỏi'
@@ -248,9 +256,8 @@ module.exports = function (controller, component, app) {
             if (err.name == ArrowHelper.UNIQUE_ERROR) {
                 req.flash.error('Tiêu đề đã được sử dụng vui lòng nhập tiêu đề khác !');
             } else {
-                req.flash.error('Name: ' + error.name + '<br />' + 'Message: ' + error.message);
+                req.flash.error(error.message);
             }
-            req.flash.error(err.message);
             res.redirect(baseRoute+'/create');
         })
 
