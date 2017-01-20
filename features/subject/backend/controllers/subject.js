@@ -353,22 +353,17 @@ module.exports = function (controller, component, app) {
                         );
                     })
                     return Promise.all(chapterPromise);
+                }else{
+                    throw new Error('Không tạo mới được đề thi !');
                 }
             })
-            .then(function (chapters) {
-                if (chapters.length > 0) {
-                    res.redirect(baseRoute);
-                } else {
-                    res.backend.render('form', {
-                        toolbar: toolbar.render(),
-                        subject: form
-                    })
-                }
+            .then(function () {
+                res.redirect(baseRoute);
             }).catch(function (err) {
                 if (err.name == ArrowHelper.UNIQUE_ERROR) {
                     req.flash.error('Tiêu đề đã được sử dụng vui lòng nhập tiêu đề khác !');
                 } else {
-                    req.flash.error('Name: ' + err.name + '<br />' + 'Message: ' + error.message);
+                    req.flash.error(error.message);
                 }
                 res.backend.render('form', {
                     toolbar: toolbar.render(),
