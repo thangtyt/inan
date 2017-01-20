@@ -327,6 +327,7 @@ module.exports = function (controller, component, app) {
         app.models.subject.create(form)
             .then(function (subject) {
                 if (subject) {
+                    req.flash.success('Thêm mới môn thi thành công !');
                     let chapterPromise = [];
                     let chapters = [];
                     try {
@@ -356,7 +357,6 @@ module.exports = function (controller, component, app) {
             })
             .then(function (chapters) {
                 if (chapters.length > 0) {
-                    req.flash.success('Thêm mới môn thi thành công !');
                     res.redirect(baseRoute);
                 } else {
                     res.backend.render('form', {

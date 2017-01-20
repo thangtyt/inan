@@ -225,11 +225,13 @@ module.exports = function (controller, component, app) {
             //console.log(subjects);
             res.backend.render('form',{
                 toolbar : toolbar.render(),
+                title : 'Tạo mới dạng câu hỏi',
                 subjects: subjects
             })
         }).catch(function (err){
             res.backend.render('form',{
-                toolbar : toolbar.render()
+                toolbar : toolbar.render(),
+                title : 'Tạo mới dạng câu hỏi'
             })
         })
     };

@@ -195,7 +195,6 @@ module.exports = function (controller,component,app) {
         .then(function (sections) {
             res.jsonp(JSON.parse(JSON.stringify(sections)));
         }).catch(function (err) {
-                //console.log(err);
             res.jsonp(err);
         })
     }
