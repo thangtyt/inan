@@ -1,9 +1,9 @@
 /**
  * Created by thangnv on 11/19/16.
  */
-let content = [];
+var content = [];
 
-let sectionDiv = `
+var sectionDiv = `
 
 
                                                 <div class="box box-info collapsed-box " id="$id$">
