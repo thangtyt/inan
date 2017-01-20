@@ -396,17 +396,4 @@ module.exports = function (controller,component,app) {
             })
         })
     };
-    controller.reportQuestion = function (req,res) {
-        let questionId = req.params.questionId;
-        let data = req.body;
-        if (questionId){
-            res.status(200).jsonp({
-                message: 'Thông báo câu hỏi bị lỗi thành công !'
-            })
-        }else{
-            res.status(400).jsonp({
-                message: 'Thông báo câu hỏi bị lỗi không thành công !'
-            })
-        }
-    }
 }
