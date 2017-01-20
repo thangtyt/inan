@@ -234,6 +234,14 @@
                 answerTime : {
                     min : 'Thời gian thi phải lớn hơn 0 !'
                 }
+            },
+            submitHandler: function (form) {
+                console.log($('form').valid());
+                if($('form').valid() == false){
+                    return false;
+                }else{
+                    return true;
+                }
             }
         })
     });
