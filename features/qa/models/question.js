@@ -11,7 +11,7 @@ module.exports = function (sequelize, DataTypes) {
         },
         title: {
             type: DataTypes.STRING,
-            unique: true,
+            unique: 'tk_question_compose_unique',
             allowNull: false
         },
         question_type: {
@@ -26,6 +26,7 @@ module.exports = function (sequelize, DataTypes) {
         },
         subject_id: {
             type: DataTypes.UUID,
+            unique: 'tk_question_compose_unique',
             allowNull: false
         },
         chapter_id: {
@@ -88,12 +89,6 @@ module.exports = function (sequelize, DataTypes) {
             }
         }
     },{
-        indexes: [
-            {
-                unique: false,
-                fields: ['content']
-            }
-        ],
         tableName: 'tk_question',
         createdAt: 'created_at',
         updatedAt: 'updated_at',

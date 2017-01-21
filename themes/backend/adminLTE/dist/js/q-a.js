@@ -350,7 +350,7 @@ function editAnswer(index,require){
 
 }
 function chooseQuestionToEdit(){
-    console.log($('select[name=editAnswerIndex]').val());
+    //console.log($('select[name=editAnswerIndex]').val());
     if ($('select[name=editAnswerIndex]').val() >= 0 )
     fillAnswer($('select[name=editAnswerIndex]').val(),1,'');
 }
@@ -394,7 +394,6 @@ $(function(){
                     }
                 }
                 $('input[name=answers]').val(JSON.stringify(answers));
-                console.log($('input[name=answers]').val());
                 //return false;
             }catch(err){
                 return false;

@@ -209,8 +209,11 @@ module.exports = function (controller,component,app) {
                 }
         })
         .catch(function (err) {
-                //console.log(err);
-            req.flash.error(err.message);
+            if (err.name == ArrowHelper.UNIQUE_ERROR) {
+                req.flash.error('Tiêu đề đã được sử dụng vui lòng nhập tiêu đề khác !');
+            } else {
+                req.flash.error(error.message);
+            }
             res.redirect(baseRoute+'/choice/create');
         })
     };
