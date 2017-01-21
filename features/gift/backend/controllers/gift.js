@@ -366,7 +366,7 @@ module.exports = function (controller,component,app) {
                                         let workbook = excel.readFile(files.file.path);
                                         let giftCodes = [];
                                         _.map(workbook.Strings, function (obj) {
-                                            if (obj['t'].match(/[A-Z0-9]{5,}/)) {
+                                            if (obj['t'].match(/[A-Za-z0-9]{5,}/)) {
                                                 giftCodes.push({
                                                     gift_id: giftId,
                                                     gift_code:obj.t
@@ -439,7 +439,7 @@ module.exports = function (controller,component,app) {
                         let workbook = excel.readFile(file.path,{type: 'v'});
                         let giftCodes = [];
                         _.map(workbook.Strings, function (obj) {
-                            if(obj['t'].match(/[A-Z0-9]{5,}/)){
+                            if(obj['t'].match(/[A-Za-z0-9]{5,}/)){
                                 giftCodes.push(obj.t);
                             }
                         });
@@ -449,6 +449,7 @@ module.exports = function (controller,component,app) {
                                 .then(function (_gift) {
                                     let dataGiftCodes = [];
                                      _.map(giftCodes,function (val) {
+                                         console.log(val);
                                         dataGiftCodes.push( {
                                             gift_id: _gift.id,
                                             gift_code: val
