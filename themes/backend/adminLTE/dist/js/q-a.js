@@ -2,7 +2,7 @@
  * Created by thangtyt on 11/30/16.
  */
 var chapters,
-    currentAnswerIndex = 0,
+    currentAnswerId = '',
     answers = [],
     answerKeys = [];
 
@@ -80,7 +80,7 @@ function renderEditAnswerChoose(index){
             i++;
         });
         //$('select[name=editAnswerIndex]').attr('selected', true);
-
+        $('#deleteDiv').removeClass('hidden');
     }else {
         {
             $('#addQuestionBtn').removeClass('hidden');
@@ -254,6 +254,7 @@ function fillAnswer(index,require,content){
     $('#answerMark').val(answers[index].mark);
     $('#answerTime').val(answers[index].time);
     $('#layout').val(answers[index].layout);
+    currentAnswerId = answers[index].id;
     CKEDITOR.instances['answerContent'].setData(answerContent);
     [0,1,2,3].map(function (i) {
         if(answers[index].answer_keys[i].isTrue){
@@ -267,12 +268,14 @@ function fillAnswer(index,require,content){
     if ($('#require option:selected').val() == 1){
         $('#addQuestionBtn').addClass('hidden');
         $('#editQuestionBtn').removeClass('hidden');
+        $('#deleteDiv').removeClass('hidden');
+    }else{
+        $('#addQuestionBtn').addClass('hidden');
+        $('#editQuestionBtn').addClass('hidden');
     }
 
 }
 function pushAnswer(require){
-    //console.log('pushAnswer');
-    //console.log("dasdasdas : ",CKEDITOR.instances);
     var answerContent = require == 0 ? "" : CKEDITOR.instances['answerContent'].getData();
     [0,1,2,3].map(function (i) {
         var isTrue = $('input[name=rightAnswer]').val() == i ? true : false;
@@ -284,9 +287,9 @@ function pushAnswer(require){
             isTrue: isTrue
         })
     })
-
+    var tempId = currentAnswerId == '' ? currentAnswerId : uuid();
     answers.push({
-        id: uuid(),
+        id: tempId,
         mark: $('#answerMark').val(),
         content: answerContent,
         time: $('#answerTime').val(),
@@ -319,7 +322,7 @@ function editAnswer(index,require){
             answer_keys: answer_keys
         })
         if(answers.length > 0)
-        _answer.id = answers[0].id;
+        _answer[0].id = answers[0].id;
         else
         _answer.id = uuid();
 
@@ -350,9 +353,10 @@ function editAnswer(index,require){
 
 }
 function chooseQuestionToEdit(){
-    //console.log($('select[name=editAnswerIndex]').val());
-    if ($('select[name=editAnswerIndex]').val() >= 0 )
-    fillAnswer($('select[name=editAnswerIndex]').val(),1,'');
+    if ($('select[name=editAnswerIndex]').val() >= 0 ){
+        fillAnswer($('select[name=editAnswerIndex]').val(),1,'');
+    }
+
 }
 
 //
@@ -363,10 +367,23 @@ function editAnswerArray(){
     }
 }
 
+function deleteAnswer(){
+    var indexAnswerToDelete = -1;
+    for (var i = 0 ; i < answers.length ; i ++) {
+        if (answers[i].id == currentAnswerId){
+            indexAnswerToDelete = i;
+            break;
+        }
+    }
+    if (indexAnswerToDelete > -1){
+        answers.splice(indexAnswerToDelete,1);
+        resetAnswer();
+        $('#confirm-delete-answer-modal').modal('hide');
+    }
+}
 
 $(function(){
     $('form').submit(function (e) {
-        //console.log(typeof $('#require').val());
         if(answers){
             try{
                 if(Number($('#require').val()) == 0){
@@ -383,11 +400,6 @@ $(function(){
                 }else{
                     if( answers.length < 1 ){
                         pushAnswer(1);
-                    //}else{
-                    //    editAnswer(0,0);
-                    //    var temp = [];
-                    //    temp.push(answers[0]);
-                    //    answers = temp;
                     }
                     if($('select[name=editAnswerIndex]').val() != -1){
                         editAnswer($('select[name=editAnswerIndex]').val(),1);

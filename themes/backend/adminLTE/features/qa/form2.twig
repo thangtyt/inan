@@ -171,11 +171,11 @@
                                     </div>
                                 </div>
                                 <div class="col-md-9 col-sm-9">
-                                    <div class="form-group">
-                                        <button name="btnRequireAnswer" id="deleteBtn" type="button"
-                                                class="btn btn-default pull-left hidden" onclick="deleteAnswer()">Nhập
-                                            mới câu hỏi
+                                    <div class="form-group hidden" id="deleteDiv">
+                                        <button name="deleteBtn" id="deleteBtn" type="button"
+                                                    class="btn btn-danger pull-right" onclick="openDeleteConfirmModal()">Xóa câu trả lời
                                         </button>
+                                        <br>
                                     </div>
                                     <div class="form-group">
                                         <label for="quesion">Nội dung câu hỏi</label>
@@ -344,6 +344,24 @@
             </form>
         </div>
     </div>
+    <div class="modal fade" id="confirm-delete-answer-modal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                    <h4 class="modal-title">Xóa nhận xóa câu trả lời</h4>
+                </div>
+                <div class="modal-body">
+                    Bạn có chắc chắn muốn xóa câu trả lời này ?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn default" data-dismiss="modal">{{ __('cancel') }}</button>
+                    <button type="button" class="btn btn-danger" onclick="deleteAnswer()">{{ __('delete') }}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 {% endblock %}
 {% block jsExtends %}
     <script src="/backend/adminLTE/assets/plugins/ckeditor4.6/ckeditor.js"></script>
@@ -415,6 +433,9 @@
             $('#' + id).click();
         }
 
+        function openDeleteConfirmModal() {
+            $('#confirm-delete-answer-modal').modal('show');
+        }
     </script>
     <script src="/backend/adminLTE/dist/js/q-a.js"></script>
 {% endblock %}

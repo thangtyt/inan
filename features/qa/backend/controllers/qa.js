@@ -287,7 +287,7 @@ module.exports = function (controller,component,app) {
         toolbar.addSaveButton();
         let questionId = req.params.questionId;
         let data = req.body;
-        //console.log(JSON.stringify(data, 2, 2));
+
         actions.findById(questionId)
         .then(function (question) {
             return actions.update(question,data)
