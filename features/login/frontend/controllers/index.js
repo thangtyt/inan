@@ -215,10 +215,11 @@ module.exports = function (controller, component, app) {
         ])
         .then(function (results) {
             if(results){
-                let _user = optimizeUser(JSON.parse(JSON.stringify(results[0])),host);
+                let _user = JSON.parse(JSON.stringify(results[0]));
                 if(results[1]){
                     _user.userInfo = JSON.parse(JSON.stringify(results[1]));
                     _user.userInfo.birthday = _user.userInfo.birthday ? moment(_user.userInfo.birthday).format('D/M/YYYY').toString() : null;
+                    _user = optimizeUser(_user,host);
                 }else{
                     _user.userInfo = null;
                 }
@@ -441,7 +442,6 @@ module.exports = function (controller, component, app) {
 function optimizeUser(user,host){
 
     user = JSON.parse(JSON.stringify(user));
-    console.log(_.has(user,'userInfo'));
     if(!user){
         return null;
     }else if(_.has(user,'display_name')){
