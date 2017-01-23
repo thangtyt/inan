@@ -50,7 +50,7 @@ module.exports = function (controller, component, app) {
             if(!user){
                 res.frontend.render('changePass',{
                     error : {
-                        message : 'This function is expires or not avaiable !'
+                        message : 'Hết thời gian thay đổi mật khẩu hoặc sai chuỗi xác nhận!'
                     }
                 });
             }else{
@@ -59,7 +59,7 @@ module.exports = function (controller, component, app) {
         }).catch(function (err) {
             res.frontend.render('changePass',{
                 error : {
-                    message : 'This function is expires or not avaiable !'
+                    message : 'Hết thời gian thay đổi mật khẩu hoặc sai chuỗi xác nhận !'
                 }
             });
         })
@@ -78,20 +78,13 @@ module.exports = function (controller, component, app) {
         }).then(function (user) {
             if (data.password == null || data.password.length < 6){
                 res.status(500).jsonp({
-                    message: 'Password is null or too short !'
+                    message: 'Mật khẩu quá ngắn !'
                 });
-                //req.flash.error('Password is null or too short !');
-                //res.frontend.render('changePass');
             }else{
                 if(!user){
                     res.status(500).jsonp({
-                        message: 'Expires or not available !'
+                        message: 'Hết thời gian thay đổi mật khẩu !'
                     });
-                    //res.frontend.render('changePass',{
-                    //    error : {
-                    //        message : 'This function is expires or not avaiable !'
-                    //    }
-                    //});
                 }else{
                     return user.updateAttributes({
                         reset_password_expires : 0,
@@ -100,15 +93,10 @@ module.exports = function (controller, component, app) {
                     }).then(function (user) {
                         if(user){
                             res.status(200).jsonp({
-                                message: 'Password update successfully !'
+                                message: 'Thay đổi mật khẩu thành công !'
                             });
-                            //req.flash.success('Change password successfully !');
-                            //req.flash.success('Please re-login with a new password !');
-                            //res.redirect('/admin/login');
                         }else{
-                            throw new Error('Error when user try to change password !');
-                            //req.flash.error('Change password un-successfully ! \n Please re-enter new password !');
-                            //res.frontend.render('changePass');
+                            throw new Error('Lỗi trong quá trình thay đổi mật khẩu !');
                         }
 
                     })
@@ -120,20 +108,14 @@ module.exports = function (controller, component, app) {
             res.status(500).jsonp({
                 message: err.message
             });
-            //res.frontend.render('changePass',{
-            //    error : {
-            //        message : 'This function is expires or not avaiable !'
-            //    }
-            //});
         })
     };
     controller.forgot = function (req,res) {
         app.feature.users.actions.findByEmail(req.body.email)
             .then(function (user) {
-                //console.log(user);
                 if(!user){
                     res.status(500).jsonp({
-                            message : 'E-mail is not registered ! Please enter another e-mail'
+                            message : 'Email chưa được đăng ký vui lòng nhập email khác !'
                     });
                 }else{
                     let href = req.protocol + '://'+'test.tkbooks.vn/auth/reset-password';
@@ -147,33 +129,28 @@ module.exports = function (controller, component, app) {
                                 let transporter = nodeMailer.createTransport(mailConfig);
                                 let message = {
                                     to : userUpdated.user_email,
-                                    subject : 'Confirm email to reset password',
-                                    html : `<p>You have just process reset your password</p>
-                                <p>Please click link below to continue reset your password</>
+                                    subject : 'Xác nhận địa chỉ email để đặt lại mật khẩu',
+                                    html : `<p>Bạn vừa thực hiện chức năng quên mật khâu</p>
+                                <p>Vui lòng bấm vào liên kết bên dưới để tiếp tục đặt lại mật khẩu.</>
                                 <p><a href='`+href+`'>`+href+`</a></p>`
                                 };
                                 return transporter.sendMail(message, function (err,info) {
                                     if(!err){
                                         res.status(200).jsonp({
-                                            message: 'Please check '+req.body.email+' to reset password !'
+                                            message: 'Vui lòng kiểm tra email '+req.body.email+' để tiếp tục đặt lại mật khẩu !'
                                         });
-                                        //res.frontend.render('forgot');
                                     }else{
-                                        throw new Error('E-mail is not exist !');
-                                        //res.frontend.render('forgot',{
-                                        //    sendEmail : user.user_email
-                                        //});
+                                        throw new Error('Email không tồn tại !');
                                     }
                                 })
                             }else{
-                                throw new Error('Expires or not available');
+                                throw new Error('Hết hạn thay đổi mật khẩu hoặc sai mã xác nhận !');
                             }
                     })
 
                 }
         })
         .catch(function (err) {
-                //console.log(err.message);
             res.status(500).jsonp({
                 message : err.message
             });
@@ -183,13 +160,13 @@ module.exports = function (controller, component, app) {
     controller.notHavePermission = function (req, res) {
         res.status(403);
         res.jsonp({
-            message: 'The request was a valid request'
+            message: 'Bạn không có quyền truy cập địa chỉ này !'
         })
     };
     controller.timeOut = function (req, res) {
         res.status(440);
         res.jsonp({
-            message: 'The client\'s session has expired and must log in again.'
+            message: 'Hết phiên làm việc vui lòng đăng nhập lại.'
         })
     };
     controller.requireToken = function (req,res) {
@@ -205,8 +182,6 @@ module.exports = function (controller, component, app) {
             user.role = [];
             user.role_id = [];
             user.role_ids = [];
-            //res.header("Access-Control-Allow-Origin", "*");
-            //res.header("Access-Control-Allow-Headers", "*");
             res.status(200);
             res.jsonp({
                 message: 'login successful !',
@@ -235,7 +210,7 @@ module.exports = function (controller, component, app) {
                 where: {
                     user_id : user.id
                 },
-                attributes : ["birthday","school","class","city","district","uni","sex","score","gift_codes"]
+                attributes : ["birthday","school","class","city","district","uni","sex","score"]
             })
         ])
         .then(function (results) {
@@ -252,10 +227,10 @@ module.exports = function (controller, component, app) {
                     user: _user
                 })
             }else{
-                return new Error('Not Found user');
+                return new Error('Không tìm thấy người dùng !');
             }
         }).catch(function (err) {
-                //console.log(err);
+                console.log(err);
             res.status(503);
             res.jsonp({
                 user: null
@@ -272,7 +247,7 @@ module.exports = function (controller, component, app) {
             if(user){
                 res.status(300);
                 res.jsonp({
-                    error: "Email is registered ! Please choose another email !"
+                    error: "Email đã được đăng ký ! Vui lòng nhập email khác !"
                 })
             }else{
                 return app.feature.users.actions.create({
@@ -290,7 +265,7 @@ module.exports = function (controller, component, app) {
                     dataUserInfo: dataUserInfo //city,district,...
                 })
             }else{
-                return new Error('Cannot create user');
+                return new Error('Không thể tạo mới người dùng !');
             }
         })
         .catch(function (err) {
@@ -317,7 +292,7 @@ module.exports = function (controller, component, app) {
                             where: {
                                 user_id: user.id
                             },
-                            attributes: ['school','class','city','district','uni','sex']
+                            attributes: ["birthday","school","class","city","district","uni","sex","score"]
                         }).then(function (userInfo) {
                             user = JSON.parse(JSON.stringify(user));
                             user.userInfo = userInfo;
@@ -330,13 +305,13 @@ module.exports = function (controller, component, app) {
                         })
                     }else{
                         res.status(401).jsonp({
-                            message: 'Wrong password !'
+                            message: 'Nhập sai mật khẩu !'
                         })
                     }
 
                 }else{
                     res.status(401).jsonp({
-                        message: 'Wrong username !'
+                        message: 'Sai tên đang nhập !'
                     })
                 }
             }).catch(function (err) {
@@ -347,7 +322,7 @@ module.exports = function (controller, component, app) {
             })
         }else{
             res.status(411).jsonp({
-                message: 'Cannot get data form client !'
+                message: 'Không có dữ liệu được gửi lên !'
             })
         }
     }
@@ -391,14 +366,14 @@ module.exports = function (controller, component, app) {
             .catch(function (err) {
                 res.status(503);
                 res.jsonp({
-                    error: 'Cannot add user\'s information'
+                    error: 'Không thể thêm thông tin của user vui lòng nhập lại !'
                 })
             })
 
         }else{
             res.status(503);
             res.jsonp({
-                error: 'Not found data user\'s information send to server'
+                error: 'Không có thông tin gửi lên !'
             })
         }
 
@@ -465,6 +440,7 @@ module.exports = function (controller, component, app) {
 };
 function optimizeUser(user,host){
     user = JSON.parse(JSON.stringify(user));
+    console.log(JSON.stringify(user,2,2));
     if(!user){
         return null;
     }else if(_.has(user,'display_name')){
@@ -473,7 +449,7 @@ function optimizeUser(user,host){
             user_email : user.user_email,
             full_name : user.display_name,
             user_image : user.user_image_url.indexOf('http') == -1 ? host+user.user_image_url : user.user_image_url,
-            mark : Math.floor((Math.random() * 100) + 1),
+            mark : _.has(user,'user.userInfo.score') || 0,
             level : Math.floor((Math.random() * 1000) + 1)
         };
     }else{

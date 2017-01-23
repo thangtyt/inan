@@ -27,21 +27,14 @@ module.exports = function (component, app) {
         "/login": {
             post: {
                 handler: controller.login
-                //authenticate: 'front_local'
             }
         },
         "/forgot-password/:token": {
-            //get: {
-            //    handler : [controller.cPassView]
-            //},
             post: {
                 handler: [controller.cPassSave]
             }
         },
         "/forgot-password": {
-            //get: {
-            //    handler: [controller.forgotview]
-            //},
             post: {
                 handler: [controller.forgot]
             }

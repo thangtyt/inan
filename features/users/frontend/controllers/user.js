@@ -139,10 +139,10 @@ module.exports = function (controller, component, app) {
             ])
         })
         .then(function (result) {
-                result[1] = JSON.parse(JSON.stringify(result[1]));
-                if(result[1].birthday)
-                result[1].birthday = moment(result[1].birthday).format('D/M/YYYY').toString();
-                result[1].full_name = result[0].display_name;
+            result[1] = JSON.parse(JSON.stringify(result[1]));
+            if(result[1].birthday)
+            result[1].birthday = moment(result[1].birthday).format('D/M/YYYY').toString();
+            result[1].full_name = result[0].display_name;
             res.status(200).jsonp(result[1]);
         }).catch(function (err) {
             res.status(500).jsonp(err.message);
