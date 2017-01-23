@@ -439,8 +439,9 @@ module.exports = function (controller, component, app) {
     }
 };
 function optimizeUser(user,host){
+
     user = JSON.parse(JSON.stringify(user));
-    console.log(JSON.stringify(user,2,2));
+    console.log(_.has(user,'userInfo'));
     if(!user){
         return null;
     }else if(_.has(user,'display_name')){
@@ -449,13 +450,12 @@ function optimizeUser(user,host){
             user_email : user.user_email,
             full_name : user.display_name,
             user_image : user.user_image_url.indexOf('http') == -1 ? host+user.user_image_url : user.user_image_url,
-            mark : _.has(user,'user.userInfo.score') || 0,
+            mark : _.has(user,'userInfo') ? Number(user.userInfo.score) : 0,
             level : Math.floor((Math.random() * 1000) + 1)
         };
     }else{
         return user
     }
-    //console.log(user);
 }
 
 function dateformat(pattern,date){
