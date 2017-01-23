@@ -210,6 +210,16 @@
                 answerTime : {
                     min : 1,
                     required : true
+                },
+                user_pass : {
+                    minlength : 8
+                },
+                user_confirm_pass : {
+                    minlength : 8,
+                    equalTo: '#user_pass'
+                },
+                old_pass : {
+                    required : true
                 }
             },
             messages : {
@@ -240,6 +250,16 @@
                 answerTime : {
                     min : 'Thời gian thi phải lớn hơn 0 !',
                     required : 'Bạn phải nhập thời gian thi !'
+                },
+                user_pass : {
+                    minlength : 'Bạn phải nhập it nhất là 8 ký tự !'
+                },
+                user_confirm_pass : {
+                    minlength : 'Bạn phải nhập it nhất là 8 ký tự !',
+                    equalTo: "Nhập lại mật khẩu không đúng !"
+                },
+                old_pass : {
+                    required : 'Bạn phải nhập mật khẩu cũ !'
                 }
             }
         })

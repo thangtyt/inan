@@ -117,8 +117,8 @@ module.exports = function (controller, component, app) {
                     });
                 }else{
                     let href = req.protocol + '://'+req.get('host')+req.originalUrl;
-                    user.updateAttributes({
-                        reset_password_expires : Date.now() + Number(app.getConfig('timeExpires')),
+                    return user.updateAttributes({
+                        reset_password_expires : Date.now() + Number(app.getConfig('token')['timeExpires']),
                         reset_password_token : tokenGenerate(50)
                     })
                     .then(function (userUpdated) {
