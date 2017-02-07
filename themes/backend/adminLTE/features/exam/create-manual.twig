@@ -101,13 +101,13 @@
                                 <div class="form-group">
                                     <label>Độ khó</label>
                                     <select class="form-control" name="level">
-                                        <option value="1" {% if exam.level == 1 %}selected="selected" {% endif %}>
+                                        <option value="0" {% if exam.level == 0 %}selected="selected" {% endif %}>
                                             Dễ
                                         </option>
-                                        <option value="2" {% if exam.level == 2 %}selected="selected" {% endif %}>
+                                        <option value="1" {% if exam.level == 1 %}selected="selected" {% endif %}>
                                             Bình thường
                                         </option>
-                                        <option value="3" {% if exam.level == 3 %}selected="selected" {% endif %}>
+                                        <option value="2" {% if exam.level == 2 %}selected="selected" {% endif %}>
                                             Khó
                                         </option>
                                     </select>

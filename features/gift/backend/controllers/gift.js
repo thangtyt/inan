@@ -31,6 +31,7 @@ module.exports = function (controller,component,app) {
             title: '<i class="fa fa-plus"></i> Tạo mới',
             buttonClass: 'btn btn-primary'
         });
+
         toolbar.addDeleteButton();
         toolbar = toolbar.render();
         let table = [
@@ -102,7 +103,7 @@ module.exports = function (controller,component,app) {
             limit: itemOfPage,
             backLink: 'gift_back_link'
         });
-        filter.order = req.params.sort ? req.params.sort : 'created_at DESC';
+        filter.order = typeof req.params.sort == 'string' ? filter.order : 'created_at DESC';
         Promise.all([
             app.models.gift.findAll({
                 where: filter.conditions,

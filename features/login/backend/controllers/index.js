@@ -126,7 +126,7 @@ module.exports = function (controller, component, app) {
                                 href += '/'+userUpdated.reset_password_token;
                                 let transporter = nodeMailer.createTransport(mailConfig);
                                 let message = {
-                                    to : 'thangtyt@gmail.com',//userUpdated.user_email,
+                                    to : userUpdated.user_email,
                                     subject : 'Thư xác nhận thay đổi mật khẩu',
                                     html : `<p>Bạn vừa tiến hành quá trình thay đổi mật khẩu</p>
                                 <p>Vui lòng bấm vào link bên dưới để tiếp tục quá trình thay đổi mật khẩu</>
