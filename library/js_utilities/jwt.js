@@ -18,7 +18,7 @@ exports.jwt = function (req,res,next) {
             //console.log(decoded);
             if(err||!decoded){
                 res.status(440).jsonp({
-                    messgage: 'Wrong token'
+                    message: 'Đăng nhập không thành công !'
                 })
             }else{
                 req.user = decoded.data;
@@ -27,7 +27,7 @@ exports.jwt = function (req,res,next) {
         })
     }else{
         res.status(499).jsonp({
-            messgage: 'Token required !'
+            message: "Bạn cần đăng nhập để tiếp tục !"
         })
     }
 }

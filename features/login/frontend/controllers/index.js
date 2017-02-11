@@ -231,7 +231,7 @@ module.exports = function (controller, component, app) {
                 return new Error('Không tìm thấy người dùng !');
             }
         }).catch(function (err) {
-                console.log(err);
+                //console.log(err);
             res.status(503);
             res.jsonp({
                 user: null

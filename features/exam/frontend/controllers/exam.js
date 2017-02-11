@@ -530,7 +530,7 @@ module.exports = function (controller, component, app) {
                 res.status(200).jsonp(result);
             })
         }).catch(function (err) {
-            res.status('204').jsonp(err.message);
+            res.status('204').jsonp({error : err.message});
         })
 
     };
@@ -973,7 +973,7 @@ module.exports = function (controller, component, app) {
         }).catch(function (err) {
                 //console.log(err);
             res.status(300).jsonp({
-                error: err.message
+                message: err.message
             })
         })
     }
