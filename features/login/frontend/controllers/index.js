@@ -390,7 +390,8 @@ module.exports = function (controller, component, app) {
         request.get('https://graph.facebook.com/me?fields=id,name,birthday,cover,email&access_token='+token, function (err,response,body) {
             if(err){
                 res.status(400).jsonp({
-                    error: err.message
+                    //message: err.message
+                    message: 'Lỗi không kết nối được với facebook !'
                 })
             }else{
                 let userFB = JSON.parse(body);
@@ -451,7 +452,8 @@ function optimizeUser(user,host){
             full_name : user.display_name,
             user_image : user.user_image_url.indexOf('http') == -1 ? host+user.user_image_url : user.user_image_url,
             mark : _.has(user,'userInfo') ? Number(user.userInfo.score) : 0,
-            level : Math.floor((Math.random() * 1000) + 1)
+            level : Math.floor((Math.random() * 1000) + 1),
+            user_info : _.has(user,'userInfo') ? user.userInfo : null
         };
     }else{
         return user

@@ -660,33 +660,45 @@ module.exports = function (controller, component, app) {
     controller.examSave = function (req,res) {
         let examId = req.params.examId;
         let user = req.user;
-        app.models.exam.findById(examId)
-            .then(function (_exam) {
-                if(_exam){
-                    return app.models.examSave.findOrCreate({
-                        where: {
-                            exam_id : examId,
-                            user_id : user.id
-                        },
-                        defaults: {
-                            exam_id : examId,
-                            user_id : user.id
-                        }
-                    })
-                }else{
-                    throw new Error('Not found exam to save');
-                }
-            })
-            .then(function (_examSave) {
+        app.models.exam.find({
+            where : {
+                id : examId,
+                status : 1
+            }
+        })
+        .then(function (_exam) {
+            if(_exam){
+                return app.models.examSave.findOrCreate({
+                    where: {
+                        exam_id : examId,
+                        user_id : user.id
+                    },
+                    defaults: {
+                        exam_id : examId,
+                        user_id : user.id
+                    }
+                })
+            }else{
+                throw new Error('Đề thi không tồn tại hoặc chưa được duyệt !');
+            }
+        })
+        .then(function (_examSave) {
+            if (_examSave[1]){
                 res.status(200).jsonp({
-                    message: 'done'
+                    message: 'Lưu đề thi thành công !'
                 })
-            })
-            .catch(function (err) {
+            }else{
                 res.status(500).jsonp({
-                    message: err.message
+                    message: 'Đề thi đã được lưu vui lòng chọn đề thi khác !'
                 })
+            }
+
+        })
+        .catch(function (err) {
+            res.status(500).jsonp({
+                message: err.message
             })
+        })
     };
     controller.examListSave = function (req,res) {
         let host = req.protocol + '://'+req.get('host');
@@ -709,7 +721,8 @@ module.exports = function (controller, component, app) {
                 where: {
                     id: {
                         $in : _exams
-                    }
+                    },
+                    status : 1
                 },
                 include: [{
                     model: app.models.subject,

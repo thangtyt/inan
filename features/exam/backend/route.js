@@ -61,6 +61,13 @@ module.exports = function (component, app) {
                 permission: permission
             }
         },
+        "/exam/list-questions/:sectionId([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})": {
+            post: {
+                handler: controller.getSectionQuestions,
+                authenticate: true,
+                permission: permission
+            }
+        },
         "/exam/:examId([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})" : {
             get : {
                 handler: controller.viewManual,
