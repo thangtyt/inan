@@ -68,6 +68,7 @@ module.exports = {
         models.user.hasMany(models.gift,{foreignKey: 'user_id'});
         models.gift.belongsTo(models.user, {foreignKey: 'user_id'});
 
-
+        models.questionReport.belongsTo(models.user,{foreignKey: 'created_by'});
+        models.questionReport.belongsTo(models.question,{foreignKey: 'question_id'});
     }
 };

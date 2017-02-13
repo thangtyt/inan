@@ -395,46 +395,42 @@ module.exports = function (controller, component, app) {
                 })
             }else{
                 let userFB = JSON.parse(body);
-                if (_.has(userFB,'email')){
-                    app.models.user.findOrCreate({
-                        where : {
-                            user_email : userFB.email
-                        },
-                        default: {
-                            display_name: userFB.name,
-                            user_email : userFB.email,
-                            user_image_url : userFB.cover.source
-                        }
-
-                    }).then(function (_user) {
-                        _user = _user[0] != false ? _user[0] : _user[1];
-                        app.models.userInfo.find({
-                            where: {
-                                user_id : _user.id
-                            }
-                        }).then(function (_userInfo) {
-                            _user.userInfo = _userInfo;
-                            _user = optimizeUser(_user,host);
-                            if(!_user.full_name)
-                                _user.full_name = userFB.name || userFB.email;
-                            res.status(200).jsonp({
-                                token: jwtSign(jwt_conf,_user,host),
-                                user: _user
-                            })
-                        });
-
-                        //res.status(200).jsonp(_user);
-                    }).catch(function (err) {
-                        res.status(300).jsonp({
-                            message: err.message
-                        });
-                    })
-                }else{
-                    res.status(300).jsonp({
-                        message: ' Thiếu thông tin về email của user'
-                    });
+                if (_.has(userFB,'email') || userFB.email == null || userFB.email == ''){
+                    userFB.email = userFB.id;
                 }
+                app.models.user.findOrCreate({
+                    where : {
+                        user_email : userFB.email
+                    },
+                    default: {
+                        display_name: userFB.name,
+                        user_email : userFB.email,
+                        user_image_url : userFB.cover.source
+                    }
 
+                }).then(function (_user) {
+                    _user = _user[0] != false ? _user[0] : _user[1];
+                    app.models.userInfo.find({
+                        where: {
+                            user_id : _user.id
+                        }
+                    }).then(function (_userInfo) {
+                        _user.userInfo = _userInfo;
+                        _user = optimizeUser(_user,host);
+                        if(!_user.full_name)
+                            _user.full_name = userFB.name || userFB.email;
+                        res.status(200).jsonp({
+                            token: jwtSign(jwt_conf,_user,host),
+                            user: _user
+                        })
+                    });
+
+                    //res.status(200).jsonp(_user);
+                }).catch(function (err) {
+                    res.status(300).jsonp({
+                        message: err.message
+                    });
+                })
 
             }
         });

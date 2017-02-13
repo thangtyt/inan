@@ -597,6 +597,95 @@ module.exports = function (controller,component,app) {
         });
     };
     controller.updateReport = function (req,res) {
-        //let user_id
+        let user_id = req.user.id;
+        let reportId = req.params['reportId'];
+        let data = req.body;
+        console.log(JSON.stringify(data,2,2));
+        if (data.report_status == 2){
+            app.models.questionReport.update({
+                    status : 2
+                },
+                {
+                    where : {
+                        id : reportId
+                    }
+                }).then(function (_result) {
+                    req.flash.success('Cập nhật câu hỏi lỗi thành công !');
+                    res.redirect(baseRoute+'/report');
+                }).catch(function (err) {
+                    req.flash.error(err.message);
+                    res.redirect(baseRoute+'/report/'+reportId);
+                })
+        }else{
+            let toolbar = new ArrowHelper.Toolbar();
+            let actions = app.feature.qa.actions;
+            toolbar.addBackButton(req,'qa_back_link');
+            toolbar.addSaveButton();
+            let questionId = data.question_id;
+            Promise.all([
+                actions.findById(questionId),
+                app.models.questionReport.find({
+                    where: {
+                        id: reportId
+                    }
+                })
+            ])
+
+                .then(function (result) {
+                    return actions.update(result[0],data)
+                })
+                .then(function (newQuestion) {
+                    return app.models.answer.findAll({
+                        where: {
+                            question_id: questionId
+                        },
+                        attributes: ['id']
+                    })
+
+                }).then(function (ids) {
+                    let idsToDelete = [];
+                    ids.map(function (element) {
+                        idsToDelete.push(element.id);
+                    })
+                    return app.models.answer.destroy({
+                        where: {
+                            id: {
+                                $in: idsToDelete
+                            }
+                        }
+                    });
+                })
+                .then(function (count) {
+                    let answers = JSON.parse(data.answers);
+                    let answerPromise = [];
+                    answers.map(function(answer){
+                        answer.question_id = questionId;
+                        answerPromise.push(app.models.answer.create(answer));
+                    });
+                    return Promise.all(answerPromise) ;
+                })
+                .then(function (answers) {
+                    return app.models.questionReport.update({
+                            status : 1
+                        },
+                        {
+                           where: {
+                               id : reportId
+                           }
+                        }).then(function () {
+                        req.flash.success('Cập nhật thành công !');
+                        res.redirect(baseRoute+'/report/'+reportId);
+                    })
+
+                })
+                .catch(function (err) {
+                    if (err.name == ArrowHelper.UNIQUE_ERROR) {
+                        req.flash.error('Tiêu đề đã được sử dụng vui lòng nhập tiêu đề khác !');
+                    } else {
+                        req.flash.error(err.message);
+                    }
+                    res.redirect(baseRoute+'/report/'+reportId);
+                })
+        }
     }
 }

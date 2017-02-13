@@ -72,6 +72,40 @@ module.exports = function (component, app) {
                 authenticate : true,
                 permissions : permission
             }
+        },
+        ///bao loi cau hoi
+        "/qa/report" : {
+            get : {
+                handler : controller.listReport,
+                authenticate : true,
+                permissions: permission
+            }
+        },
+        "/qa/report/page/:page": {
+            get: {
+                handler: controller.listReport,
+                authenticate: true,
+                permissions: permission
+            }
+        },
+        "/qa/report/page/:page/sort/:sort/(:order)?": {
+            get: {
+                handler: controller.listReport,
+                authenticate: true,
+                permissions: permission
+            }
+        },
+        "/qa/report/:reportId([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})" : {
+            get : {
+                handler : controller.viewReport,
+                authenticate : true,
+                permissions : [permission[0],permission[2]]
+            },
+            post : {
+                handler : controller.updateReport,
+                authenticate : true,
+                permissions : [permission[0],permission[2]]
+            }
         }
         //END Q&A *****************************
     }

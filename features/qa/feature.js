@@ -38,44 +38,20 @@ module.exports = {
         group: 'user',
         menus: [
             {
+                permission: ['create','all'],
+                title: 'Tạo mới',
+                link: '/choice/create'
+            },
+            {
                 permission: ['create','all','edit','view','delete','active'],
-                title: 'Trắc nghiệm',
-                menus: [
-                    {
-                        permission: ['create','all'],
-                        title: 'Tạo mới',
-                        link: '/choice/create'
-                    },
-                    {
-                        permission: ['create','all','edit','view','delete','active'],
-                        title: 'Danh sách',
-                        link: '/choice'
-                    },
-                    {
-                        pẻmission: ['all','active'],
-                        title: 'Câu trả lời lỗi',
-                        link: '/report'
-                    }
-                ],
-                link: '#'
-            }//,
-            //{
-            //    permission: ['view','active','all'],
-            //    title: 'Tự luận',
-            //    menus: [
-            //        {
-            //            permission: ['create','all'],
-            //            title: 'Tạo mới',
-            //            link: '/choice/create'
-            //        },
-            //        {
-            //            permission: ['create','all'],
-            //            title: 'Danh sách',
-            //            link: '/choice'
-            //        },
-            //    ],
-            //    link: '#'
-            //}
+                title: 'Danh sách',
+                link: '/choice'
+            },
+            {
+                permission: ['all','active','create','edit'],
+                title: 'Câu trả lời lỗi',
+                link: '/report'
+            }
         ]
     }
 };

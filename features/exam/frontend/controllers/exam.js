@@ -401,7 +401,7 @@ module.exports = function (controller, component, app) {
     controller.eGetUserExamResult = function (req,res) {
         let examId = req.params.examId;
         let user = req.user;
-        return app.models.userResult.count({//examUserCount
+        return app.models.userResult.count({//examUserCount kiểm tra xem user đã thi đề thi này chưa
             where: {
                 exam_id : examId,
                 user_id: user.id
@@ -409,12 +409,12 @@ module.exports = function (controller, component, app) {
         }).then(function (examCount) {
             if(examCount > 0){
                 return Promise.all([
-                    app.models.exam.find({
+                    app.models.exam.find({ // lấy thông tin của đề thi từ bảng đề thi
                         where: {
                             id: examId
                         }
                     }),
-                    app.models.userResult.findOne({//examUserResultFind
+                    app.models.userResult.findOne({//examUserResultFind lấy thông tin lần thi mới nhất
                         where: {
                             user_id: user.id,
                             exam_id: examId
@@ -482,7 +482,7 @@ module.exports = function (controller, component, app) {
                                 // compare with userAnswers
                                 let doFlash = false;
                                 userAnswers.map(function (_userAnswer) {
-                                    if (_userAnswer.answer_id == answer.id){
+                                    if (_userAnswer.answer_id === answer.id){
                                         doFlash = true;
                                         let right = false;
                                         answer.answer_keys.map(function (key) {
