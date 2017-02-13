@@ -166,8 +166,16 @@ module.exports = function (controller,component,app) {
         }catch(err){
             answers = []
         }
-        //console.log(answers);
+        answers = answers.filter(function (_ans) {
+            if (_ans.hasOwnProperty('id')){
+                if (!_ans.id.match(/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/)){
+                    delete _ans.id;
+                }
+                return _ans;
+            }
+        });
         let question_id = '';
+        //console.log(JSON.stringify(answers,2,2));
         //begin insert to database
         actions.create(data)
         .then(function (question) {
@@ -176,10 +184,6 @@ module.exports = function (controller,component,app) {
                 let answersPromise = [];
                 answers.map(function (answer) {
                     answer.question_id = question_id;
-                    //if (answer.mark){
-                    //    answer.mark = ''+answer.mark;
-                    //}
-                    //console.log(parseInt(answer.time));
                     if( typeof parseInt(answer.time) !== 'Number'  ){
                         answer.time = 0;
                     }
@@ -193,7 +197,7 @@ module.exports = function (controller,component,app) {
 
         })
         .then(function (answer) {
-                //console.log('33333333',answer);
+                console.log('33333333',answer);
             if(answer == null){
                 return actions.delete([question_id]);
             }else{
@@ -201,7 +205,7 @@ module.exports = function (controller,component,app) {
             }
         })
         .then(function (error) {
-                if( error === null ){
+                if( error == null ){
                     req.flash.success('Tạo mới câu hỏi thành công !');
                     res.redirect(baseRoute+'/choice');
                 }else{
@@ -209,10 +213,11 @@ module.exports = function (controller,component,app) {
                 }
         })
         .catch(function (err) {
+                console.log(err);
             if (err.name == ArrowHelper.UNIQUE_ERROR) {
                 req.flash.error('Tiêu đề đã được sử dụng vui lòng nhập tiêu đề khác !');
             } else {
-                req.flash.error(error.message);
+                req.flash.error(err.message);
             }
             res.redirect(baseRoute+'/choice/create');
         })
@@ -274,7 +279,7 @@ module.exports = function (controller,component,app) {
             if (err.name == ArrowHelper.UNIQUE_ERROR) {
                 req.flash.error('Tiêu đề đã được sử dụng vui lòng nhập tiêu đề khác !');
             } else {
-                req.flash.error('Name: ' + err.name + '<br />' + 'Message: ' + error.message);
+                req.flash.error(err.message);
             }
             res.redirect(baseRoute);
         })
@@ -330,7 +335,7 @@ module.exports = function (controller,component,app) {
             if (err.name == ArrowHelper.UNIQUE_ERROR) {
                 req.flash.error('Tiêu đề đã được sử dụng vui lòng nhập tiêu đề khác !');
             } else {
-                req.flash.error('Name: ' + err.name + '<br />' + 'Message: ' + error.message);
+                req.flash.error(err.message);
             }
             res.redirect(baseRoute+'/choice/'+questionId);
         })
@@ -398,4 +403,200 @@ module.exports = function (controller,component,app) {
             })
         })
     };
+    ////Câu hỏi báo lỗi
+    controller.listReport = function (req,res) {
+
+        // Get current page and default sorting
+        let page = req.params.page || 1;
+        let itemOfPage = app.getConfig('pagination').numberItem || 10;
+        //start create toolbar
+        let toolbar = new ArrowHelper.Toolbar();
+        toolbar.addRefreshButton(baseRoute+'/choice');
+        toolbar.addSearchButton(isAllow(req, permission.index));
+        toolbar = toolbar.render();
+        //end toolbar
+        //define column to be displayed
+        let table = [
+            {
+                column : '',
+                width : '1%',
+                header : ' '
+            },
+            {
+                column : 'question.title',
+                width : '20%',
+                header : 'Câu hỏi',
+                link : baseRoute + '/report/' + '{id}',
+                type : 'title',
+                filter : {
+                    data_type : 'string',
+                    filter_key: 'question.title',
+                    length: 100
+                }
+            },
+            {
+                column : 'user.display_name',
+                width : '15%',
+                header : 'Người báo lỗi',
+                filter : {
+                    data_type : 'string'
+                }
+            },
+            {
+                column : 'status',
+                width : '10%',
+                header : 'Trạng thái',
+                type : 'custom',
+                alias : {
+                    "0" : '<span class="label label-warning">Chờ sửa</span>' ,
+                    "1" : '<span class="label label-success">Đã sửa</span>',
+                    "2" : '<span class="label label-danger">Báo sai</span>'
+                },
+                filter : {
+                    type : 'select',
+                    filter_key : 'status',
+                    data_source : [
+                        {
+                            name : 'Chờ sửa',
+                            value : 0
+                        },{
+                            name : 'Đã sửa',
+                            value : 1
+                        },{
+                            name : 'Báo sai',
+                            value : 2
+                        }
+                    ],
+                    display_key : 'name',
+                    value_key : 'value'
+                }
+            }
+        ];
+        req.params.sort = req.params.sort ? req.params.sort : 'created_at';
+        let filter = ArrowHelper.createFilter(req, res, table, {
+            rootLink: baseRoute + '/report/page/$page/sort',
+            limit: itemOfPage,
+            backLink: 'qa_report_back_link'
+        });
+        app.models.questionReport.findAndCountAll({
+            where: filter.conditions,
+            order: filter.order || 'created_at DESC',
+            limit: filter.limit,
+            offset: (page-1)*itemOfPage,
+            include: [
+                {
+                    model: app.models.question,
+                    attributes: ['title'],
+                    as: 'question'
+                },
+                {
+                    model: app.models.user,
+                    attributes: ['display_name'],
+                    as : 'user'
+                }
+            ]
+        })
+        .then(function (results) {
+
+            //console.log(JSON.stringify(results,2,2));
+            let totalPage = Math.ceil(results.count / itemOfPage);
+            let items = results.rows;
+            res.backend.render('listReport',{
+                title : 'Danh sách câu hỏi bị lỗi ',
+                toolbar : toolbar,
+                totalPage: totalPage,
+                items: items,
+                currentPage: page,
+                queryString: (req.url.indexOf('?') == -1) ? '' : ('?' + req.url.split('?').pop()),
+                baseRoute: baseRoute+'/report/'
+            })
+        }).catch(function (err) {
+            //console.log(err);
+            //logger.error(err.message);
+            res.backend.render('listReport',{
+                title : 'Danh sách câu hỏi bị lỗi ',
+                toolbar : toolbar
+            })
+        })
+    },
+    controller.viewReport = function (req,res) {
+        let reportId = req.params['reportId'];
+        let questionId = '';
+        let actions = app.feature.qa.actions;
+        let toolbar = new ArrowHelper.Toolbar();
+        //console.log(questionData);
+        toolbar.addBackButton(req,'qa_report_back_link');
+        toolbar.addSaveButton();
+
+        app.models.questionReport.find({
+            where: {
+                id: reportId
+            }
+        }).then(function (_report) {
+            questionId = _report.question_id;
+            if (_report){
+                return Promise.all([
+                    actions.find({
+                        where: {
+                            id: questionId
+                        }
+                    }),
+                    actions.answerFindAll({
+                        where: {
+                            question_id: questionId
+                        }
+                    }),
+                    app.models.subject.findAll({
+                        attributes: ['id', 'title']
+                    })
+                ])
+                .then(function (result){
+                    return Promise.all([
+                        app.models.section.findAll({
+                            where: {
+                                subject_id: result[0].subject_id
+                            }
+                        }),
+                        app.models.chapter.findAll({
+                            where: {
+                                subject_id: result[0].subject_id
+                            }
+                        })
+                    ])
+                    .then(function (result2) {
+                        res.backend.render('reportIndex',{
+                            title: 'Cập nhật câu hỏi bị lỗi',
+                            toolbar : toolbar.render(),
+                            report : _report,
+                            question: result[0],
+                            answers: result[1],
+                            subjects: result[2],
+                            chapters: result2[1],
+                            sections: result2[0],
+                            chaptersStr: JSON.stringify(result2[1])
+                        })
+                    })
+                    .catch(function (err) {
+                            throw new Error(err.message);
+                    })
+
+                })
+            }else{
+                throw new Error('Không tìm thấy câu hỏi bị lỗi !')
+            }
+
+        })
+        .catch(function (err) {
+            //console.log(err);
+            if (err.name == ArrowHelper.UNIQUE_ERROR) {
+                req.flash.error('Tiêu đề đã được sử dụng vui lòng nhập tiêu đề khác !');
+            } else {
+                req.flash.error(err.message);
+            }
+            res.redirect(baseRoute+'/report');
+        });
+    };
+    controller.updateReport = function (req,res) {
+        //let user_id
+    }
 }
