@@ -449,7 +449,7 @@ function optimizeUser(user,host){
             user_image : user.user_image_url.indexOf('http') == -1 ? host+user.user_image_url : user.user_image_url,
             mark : _.has(user,'userInfo') ? Number(user.userInfo.score) : 0,
             level : Math.floor((Math.random() * 1000) + 1),
-            user_info : _.has(user,'userInfo') ? user.userInfo : null
+            userInfo : _.has(user,'userInfo') ? user.userInfo : null
         };
     }else{
         return user
