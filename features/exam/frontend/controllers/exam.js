@@ -76,13 +76,13 @@ module.exports = function (controller, component, app) {
             //console.log('FIND ALL EXAM :',JSON.stringify(result.rows,2,2));
             let exams = JSON.parse(JSON.stringify(result.rows));
             exams = exams.filter(function (exam) {
-                //if (exam.level == 0){
-                //    exam.level = 'Dễ'
-                //}else if (exam.level == 1){
-                //    exam.level = 'Bình Thường'
-                //} else {
-                //    exam.level = 'Khó'
-                //}
+                if (exam.level == 0){
+                    exam.level = 'Dễ'
+                }else if (exam.level == 1){
+                    exam.level = 'Bình Thường'
+                } else {
+                    exam.level = 'Khó'
+                }
                 if (_.has(exam, 'subject')) {
                     try {
                         exam.subject.icons = JSON.parse(exam.subject.icons);
