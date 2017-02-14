@@ -139,6 +139,10 @@ module.exports = function (sequelize,DataTypes) {
         reference: {
             type: DataTypes.TEXT
         },
+        timeDoExam: {
+            type: DataTypes.INTEGER,
+            defaultValue: 0
+        },
         updated_at: {
             type: DataTypes.DATE,
             validate: {
