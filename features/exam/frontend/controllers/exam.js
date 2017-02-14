@@ -478,12 +478,12 @@ module.exports = function (controller, component, app) {
                     sections = sections.filter(function (section) {
                         section.questions = section.questions.filter(function (question) {
                             question.answers = question.answers.filter(function (answer) {
-                                answer.mark = Number(answer.mark);//todo: change mark to integer
+                                answer.mark = Number(answer.mark);
                                 // compare with userAnswers
-                                let doFlash = false;
+                                let doFlag = false;
                                 userAnswers.map(function (_userAnswer) {
                                     if (_userAnswer.answer_id === answer.id){
-                                        doFlash = true;
+                                        doFlag = true;
                                         let right = false;
                                         answer.answer_keys.map(function (key) {
                                             if(key.isTrue){
@@ -505,21 +505,21 @@ module.exports = function (controller, component, app) {
                                             isSure: _userAnswer.isSure,
                                             chose: _userAnswer.chose
                                         })
-                                    }else{
-                                        detail_answers.push({
-                                            answer_id : answer.id,
-                                            haveAnswer : false
-                                        })
                                     }
                                 });
-                                if(!doFlash)
-                                answer.user_answers = null;
+                                if(!doFlag){
+                                    answer.user_answers = null;
+                                    detail_answers.push({
+                                        answer_id : answer.id,
+                                        haveAnswer : false
+                                    })
+                                }
                                 delete answer.question_id;
                                 //answer.result
                                 return answer;
-                            })
+                            });
                             return question;
-                        })
+                        });
                         return section;
                     });
                 }catch(err){
