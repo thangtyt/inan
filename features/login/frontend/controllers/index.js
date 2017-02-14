@@ -395,8 +395,8 @@ module.exports = function (controller, component, app) {
                 })
             }else{
                 let userFB = JSON.parse(body);
-                if (_.has(userFB,'email') || userFB.email == null || userFB.email == ''){
-                    userFB.email = userFB.id;
+                if (!_.has(userFB,'email') || userFB.email == null || userFB.email == ''){
+                    userFB.email = userFB.id+'@example.com';
                 }
                 app.models.user.findOrCreate({
                     where : {
