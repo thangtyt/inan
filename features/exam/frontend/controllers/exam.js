@@ -77,11 +77,11 @@ module.exports = function (controller, component, app) {
             let exams = JSON.parse(JSON.stringify(result.rows));
             exams = exams.filter(function (exam) {
                 if (exam.level == 0){
-                    exam.level = 'Dễ'
+                    exam.level = 'dễ'
                 }else if (exam.level == 1){
-                    exam.level = 'Bình Thường'
+                    exam.level = 'bình thường'
                 } else {
-                    exam.level = 'Khó'
+                    exam.level = 'khó'
                 }
                 if (_.has(exam, 'subject')) {
                     try {
