@@ -342,13 +342,12 @@ module.exports = function (controller, component, app) {
                 score = Number(data.mark) ;
                 //score = score * Number(data.level);
                 //todo: check userInfo
-                if (Number(data.mark) < Number(data.total_mark) / 2) {
+                if (Number(data.mark) < Number(data.total_mark / 2) ) {
                     score = 0;
                 }
-                    //console.log(4.4);
                 //cap nhat diem so tong cua user
                 return app.models.userInfo.update({
-                    score: Number(result.score) + Number(score)
+                    score: Number(result.score) + score
                 },{
                     where: {
                         user_id: result.user_id
@@ -374,6 +373,9 @@ module.exports = function (controller, component, app) {
                             user_id : user.id,
                             exam_id : data.exam_id
                         }
+                    }),
+                    app.models.exam.increment({
+                        timeDoExam : 1
                     })
                 ])
             })
@@ -578,7 +580,7 @@ module.exports = function (controller, component, app) {
 
             let exams = JSON.parse(JSON.stringify(result.rows));
             exams = exams.filter(function (exam) {
-                exam.timeDoExam = Math.floor((Math.random() * 100) + 1);
+                //exam.timeDoExam = Math.floor((Math.random() * 100) + 1);
                 if (_.has(exam, 'subject')) {
                     try {
                         exam.subject.icons = JSON.parse(exam.subject.icons);

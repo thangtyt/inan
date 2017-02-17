@@ -177,6 +177,11 @@
                             !value.match(typeof param == 'string' ? new RegExp(param) : param);
                 },
                 'Bạn nhập không đúng định dạng.');
+        $.validator.addMethod('space_regex', function(value, element, param) {
+                    return this.optional(element) ||
+                            !value.match(typeof param == 'string' ? new RegExp(param) : param);
+                },
+                'Bạn nhập không đúng định dạng.');
 
         //jquery validator
         $('form').validate({
@@ -185,7 +190,7 @@
             rules : {
                 title : {
                     required : true,
-//                    regex: /^[A-Za-z -()]+$/,
+                    space_regex : /^[ \s]+|[ \s]+$/,
                     in_regex: /[\<\>\!\@\#\$\%\^\&\*\+\:\;\\\"\']+/
                 },
                 subject_id : {
@@ -233,7 +238,7 @@
             messages : {
                 title : {
                     required : 'Bạn phải nhập tiêu đề !',
-//                    regex: 'Bạn nhập không đúng định dạng !',
+                    space_regex : 'Vui lòng không nhập khoảng trắng trước và sau !',
                     in_regex: 'Bạn nhập không đúng định dạng !'
                 },
                 subject_id : {
