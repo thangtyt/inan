@@ -293,6 +293,7 @@ module.exports = function (controller, component, app) {
         answers.map(function (answer) {
             answersIds.push(answer.id)
         });
+        //console.log(data);
         //kiểm tra dữ liệu
         if (data) {
             //lấy dữ liệu của câu trả lời để kiểm tra đúng sai
@@ -374,25 +375,35 @@ module.exports = function (controller, component, app) {
                             exam_id : data.exam_id
                         }
                     }),
-                    app.models.exam.increment({
-                        timeDoExam : 1
+                    app.models.exam.find({
+                        where: {
+                            id : data.exam_id
+                        }
                     })
                 ])
             })
             .then(function (result) {
-                //console.log('test',JSON.stringify(result,2,2));
+                //console.log('test',JSON.stringify(result[2],2,2));
                 let rate = result[0].count;
                 result[0].rows.map(function (score_val) {
                     if (score > score_val) {
                         rate--;
                     }
                 });
-                //tra ve thanh cong + thứ hạng hiện tại của user + danh sách câu trả lời và kết quả
-                res.status(200).jsonp({
-                    rate: rate,
-                    mark: data.mark,
-                    wrongAnswer : wrongAnswer
-                })
+                    //console.log(result[2].timeDoExam);
+                    return result[2].updateAttributes({
+                        timeDoExam : result[2].timeDoExam + 1
+                    })
+                        .then(function (re) {
+                            //console.log(JSON.stringify(re,2,2));
+                            //tra ve thanh cong + thứ hạng hiện tại của user + danh sách câu trả lời và kết quả
+                            res.status(200).jsonp({
+                                rate: rate,
+                                mark: data.mark,
+                                wrongAnswer : wrongAnswer
+                            })
+                    })
+
             })
             //tra ve loi
             .catch(function (err) {
