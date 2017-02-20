@@ -400,7 +400,7 @@ module.exports = function (controller, component, app) {
                 //console.log(userFB);
                 defaultJSON.display_name = userFB.name;
                 if (!_.has(userFB,'email') || userFB.email == null || userFB.email == ''){
-                    //userFB.email = userFB.id+'@example.com';
+                    userFB.email = userFB.id+'@example.com';
                     defaultJSON.user_email = userFB.id+'@example.com';
                 }
                 if (_.has(userFB,'cover')){
@@ -415,7 +415,6 @@ module.exports = function (controller, component, app) {
                     defaults: defaultJSON
 
                 }).then(function (_user) {
-                    //console.log(JSON.stringify(_user,2,2));
                     _user = _user[0] != false ? _user[0] : _user[1];
                     app.models.userInfo.findOrCreate({
                         where: {
@@ -442,6 +441,7 @@ module.exports = function (controller, component, app) {
 
                     //res.status(200).jsonp(_user);
                 }).catch(function (err) {
+                    console.log(err);
                     res.status(300).jsonp({
                         message: err.message
                     });
