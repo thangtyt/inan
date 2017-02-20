@@ -394,27 +394,31 @@ module.exports = function (controller, component, app) {
                     message: 'Lỗi không kết nối được với facebook !'
                 })
             }else{
+
                 let userFB = JSON.parse(body);
+                console.log(userFB);
                 if (!_.has(userFB,'email') || userFB.email == null || userFB.email == ''){
                     userFB.email = userFB.id+'@example.com';
                 }
+                //console.log(userFB);
                 app.models.user.findOrCreate({
                     where : {
                         user_email : userFB.email
                     },
-                    default: {
+                    defaults: {
                         display_name: userFB.name,
                         user_email : userFB.email,
                         user_image_url : userFB.cover.source
                     }
 
                 }).then(function (_user) {
+                    //console.log(JSON.stringify(_user,2,2));
                     _user = _user[0] != false ? _user[0] : _user[1];
                     app.models.userInfo.findOrCreate({
                         where: {
                             user_id : _user.id
                         },
-                        default: {
+                        defaults: {
                             user_id : _user.id,
                             score : 0,
                             city: '',
