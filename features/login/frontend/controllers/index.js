@@ -396,21 +396,23 @@ module.exports = function (controller, component, app) {
             }else{
 
                 let userFB = JSON.parse(body);
+                let defaultJSON = {};
                 //console.log(userFB);
+                defaultJSON.display_name = userFB.name;
                 if (!_.has(userFB,'email') || userFB.email == null || userFB.email == ''){
-                    userFB.email = userFB.id+'@example.com';
+                    //userFB.email = userFB.id+'@example.com';
+                    defaultJSON.user_email = userFB.id+'@example.com';
                 }
-                console.log(userFB);
-                console.log(userFB['cover']);
+                if (!_.has(userFB,'cover')){
+                    userFB.user_image_url = userFB['cover']['source'];
+                }
+                //console.log(userFB);
+                //console.log(userFB['cover']);
                 app.models.user.findOrCreate({
                     where : {
                         user_email : userFB.email
                     },
-                    defaults: {
-                        display_name: userFB.name,
-                        user_email : userFB.email,
-                        user_image_url : userFB['cover']['source']
-                    }
+                    defaults: defaultJSON
 
                 }).then(function (_user) {
                     //console.log(JSON.stringify(_user,2,2));
