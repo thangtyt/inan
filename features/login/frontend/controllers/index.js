@@ -403,7 +403,7 @@ module.exports = function (controller, component, app) {
                     //userFB.email = userFB.id+'@example.com';
                     defaultJSON.user_email = userFB.id+'@example.com';
                 }
-                if (!_.has(userFB,'cover')){
+                if (_.has(userFB,'cover')){
                     userFB.user_image_url = userFB['cover']['source'];
                 }
                 //console.log(userFB);
