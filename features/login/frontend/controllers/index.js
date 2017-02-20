@@ -396,7 +396,7 @@ module.exports = function (controller, component, app) {
             }else{
 
                 let userFB = JSON.parse(body);
-                console.log(userFB);
+                //console.log(userFB);
                 if (!_.has(userFB,'email') || userFB.email == null || userFB.email == ''){
                     userFB.email = userFB.id+'@example.com';
                 }
