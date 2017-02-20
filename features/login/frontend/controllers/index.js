@@ -416,6 +416,7 @@ module.exports = function (controller, component, app) {
 
                 }).then(function (_user) {
                     _user = _user[0] != false ? _user[0] : _user[1];
+                    _user = JSON.parse(JSON.stringify(_user));
                     app.models.userInfo.findOrCreate({
                         where: {
                             user_id : _user.id
@@ -428,7 +429,9 @@ module.exports = function (controller, component, app) {
                             school : '',
                             class: ''
                         }
-                    }).then(function (_userInfo) {
+                    }).then(function (_result) {
+                        let _userInfo =  _result[0] != false ? _result[0] : _result[1];
+                        _userInfo = JSON.parse(JSON.stringify(_userInfo,2,2));
                         _user.userInfo = _userInfo;
                         _user = optimizeUser(_user,host);
                         if(!_user.full_name)
@@ -454,6 +457,7 @@ module.exports = function (controller, component, app) {
 function optimizeUser(user,host){
 
     user = JSON.parse(JSON.stringify(user));
+    console.log(user);
     if(!user){
         return null;
     }else if(_.has(user,'display_name')){
@@ -464,7 +468,7 @@ function optimizeUser(user,host){
             user_image : user.user_image_url.indexOf('http') == -1 ? host+user.user_image_url : user.user_image_url,
             mark : _.has(user,'userInfo') ? Number(user.userInfo.score) : 0,
             level : Math.floor((Math.random() * 1000) + 1),
-            userInfo : _.has(user,'userInfo') ? user.userInfo : null
+            userInfo : user.userInfo
         };
     }else{
         //user.userInfo = _.has(user,'userInfo') ? user.userInfo : null;
