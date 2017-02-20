@@ -312,7 +312,7 @@ module.exports = function (controller, component, app) {
 
                 }else{
                     res.status(401).jsonp({
-                        message: 'Sai tên đang nhập !'
+                        message: 'Sai e-mail đăng nhập !'
                     })
                 }
             }).catch(function (err) {
@@ -410,9 +410,17 @@ module.exports = function (controller, component, app) {
 
                 }).then(function (_user) {
                     _user = _user[0] != false ? _user[0] : _user[1];
-                    app.models.userInfo.find({
+                    app.models.userInfo.findOrCreate({
                         where: {
                             user_id : _user.id
+                        },
+                        default: {
+                            user_id : _user.id,
+                            score : 0,
+                            city: '',
+                            district: '',
+                            school : '',
+                            class: ''
                         }
                     }).then(function (_userInfo) {
                         _user.userInfo = _userInfo;
@@ -452,7 +460,8 @@ function optimizeUser(user,host){
             userInfo : _.has(user,'userInfo') ? user.userInfo : null
         };
     }else{
-        return user
+        user.userInfo = _.has(user,'userInfo') ? user.userInfo : null;
+        return user;
     }
 }
 

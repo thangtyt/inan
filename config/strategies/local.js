@@ -24,17 +24,17 @@ module.exports = function (passport, config, app) {
                     ArrowHelper.createUserAdmin(app, function (result) {
                         if (!result) {
                             return done(null, false, {
-                                message: 'Invalid Username ! Please login again.'
+                                message: 'Sai e-mail đăng nhập! Vui lòng đăng nhập lại.'
                             });
                         } else {
                             return done(null, false, {
-                                message: 'Email default is \"admin@example.com\" <br> Password default is \"123456\" <br> Please login again!'
+                                message: 'E-mail mặc định là \"admin@example.com\" <br> Mật khẩu mặc định là \"123456\" <br> Vui lòng đăng nhập lại!'
                             });
                         }
                     })
                 } else if (!user.authenticate(password)) {
                     return done(null, false, {
-                        message: 'Invalid Password ! Please login again.'
+                        message: 'Sai mật khẩu. Vui lòng đăng nhập lại.'
                     });
                 } else {
                     return done(null, user);
@@ -42,7 +42,7 @@ module.exports = function (passport, config, app) {
             }).catch(function (err) {
                 log.error(err);
                 return done(null, false, {
-                    message: 'Database error ! Please login again.'
+                    message: 'Hệ thống bị lỗi. Vui lòng đăng nhập lại.'
                 });
             });
         }
