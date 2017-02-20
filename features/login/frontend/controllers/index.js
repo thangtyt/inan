@@ -408,7 +408,7 @@ module.exports = function (controller, component, app) {
                     defaults: {
                         display_name: userFB.name,
                         user_email : userFB.email,
-                        user_image_url : userFB.cover.source
+                        user_image_url : userFB['cover']['source']
                     }
 
                 }).then(function (_user) {
