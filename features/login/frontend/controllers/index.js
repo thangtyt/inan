@@ -400,7 +400,8 @@ module.exports = function (controller, component, app) {
                 if (!_.has(userFB,'email') || userFB.email == null || userFB.email == ''){
                     userFB.email = userFB.id+'@example.com';
                 }
-                //console.log(userFB);
+                console.log(userFB);
+                console.log(userFB['cover']);
                 app.models.user.findOrCreate({
                     where : {
                         user_email : userFB.email
