@@ -432,7 +432,7 @@ module.exports = function (controller, component, app) {
                         _user.userInfo = _userInfo;
                         _user = optimizeUser(_user,host);
                         if(!_user.full_name)
-                            _user.full_name = userFB.name || userFB.email;
+                            _user.full_name = userFB.name || userFB.id;
                         res.status(200).jsonp({
                             token: jwtSign(jwt_conf,_user,host),
                             user: _user
@@ -441,7 +441,7 @@ module.exports = function (controller, component, app) {
 
                     //res.status(200).jsonp(_user);
                 }).catch(function (err) {
-                    console.log(err);
+                    //console.log(err);
                     res.status(300).jsonp({
                         message: err.message
                     });
@@ -467,7 +467,7 @@ function optimizeUser(user,host){
             userInfo : _.has(user,'userInfo') ? user.userInfo : null
         };
     }else{
-        user.userInfo = _.has(user,'userInfo') ? user.userInfo : null;
+        //user.userInfo = _.has(user,'userInfo') ? user.userInfo : null;
         return user;
     }
 }
