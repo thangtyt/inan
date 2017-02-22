@@ -331,11 +331,13 @@ module.exports = function (controller, component, app) {
         let host = req.protocol + '://'+req.get('host');
         let user = req.user;
         let userInfo = req.body;
+        console.log(userInfo);
         user = optimizeUser(user,host);
         if( userInfo ){
             userInfo.user_id = user.id;
-            Promise.all([
-                        app.models.userInfo.findOrCreate({
+            Promise.all(
+                [
+                    app.models.userInfo.findOrCreate({
                         where: {
                             user_id: user.id
                         },
@@ -346,19 +348,19 @@ module.exports = function (controller, component, app) {
                             id: user.id
                         }
                     })
-            ])
+                ])
             .then(function (result) {
-                let _userInfo = result[0][0] ? result[0][0] : result[0][1];
                 return Promise.all([
                         result[1].updateAttributes({
                             display_name : userInfo.full_name || '[no name]'
                         }),
-                        _userInfo.updateAttributes(userInfo)
+                        result[0][0].updateAttributes(userInfo)
                     ])
             })
             .then(function (result) {
-                   let _user = optimizeUser(JSON.parse(JSON.stringify(result[0])),host);
+                   let _user = result[0];
                     _user.userInfo = result[1];
+                    _user = optimizeUser(JSON.parse(JSON.stringify(result[0])),host);
                     res.status(200);
                     res.jsonp({
                         user: _user
