@@ -457,7 +457,6 @@ module.exports = function (controller, component, app) {
 function optimizeUser(user,host){
 
     user = JSON.parse(JSON.stringify(user));
-    console.log(user);
     if(!user){
         return null;
     }else if(_.has(user,'display_name')){
