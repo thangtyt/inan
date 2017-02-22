@@ -171,8 +171,9 @@ module.exports = function (controller,component,app) {
                 if (!_ans.id.match(/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/)){
                     delete _ans.id;
                 }
-                return _ans;
+
             }
+            return _ans;
         });
         let question_id = '';
         //console.log(JSON.stringify(answers,2,2));
@@ -197,7 +198,6 @@ module.exports = function (controller,component,app) {
 
         })
         .then(function (answer) {
-                console.log('33333333',answer);
             if(answer == null){
                 return actions.delete([question_id]);
             }else{
