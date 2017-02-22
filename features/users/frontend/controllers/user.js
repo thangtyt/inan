@@ -101,7 +101,7 @@ module.exports = function (controller, component, app) {
         let host = req.protocol + '://'+req.get('host');
         let user = req.user;
         let data = req.body;
-        console.log('QQQQQQQQuserUpdateInfo : ',data);
+        console.log(data);
         if (!_.has(data,'full_name')){
             data.full_name = user.full_name
         }
