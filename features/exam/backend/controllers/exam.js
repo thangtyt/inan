@@ -273,8 +273,12 @@ module.exports = function (controller,component,app) {
             req.flash.success('Tạo mới đề thành công !');
             res.redirect(baseRoute);
         }).catch(function (err) {
-                //console.log(err);
             //req.flash.error(err.message);
+            if (err.name == ArrowHelper.UNIQUE_ERROR) {
+                req.flash.error('Tiêu đề đã được sử dụng vui lòng nhập tiêu đề khác !');
+            } else {
+                req.flash.error('Name: ' + err.name + '<br />' + 'Message: ' + err.message);
+            }
             app.models.subject.findAll()
             .then(function (subjects) {
                 res.backend.render('create-manual',{
@@ -284,11 +288,7 @@ module.exports = function (controller,component,app) {
                     toolbar: toolbar.render()
                 });
             }).catch(function (err) {
-                if (err.name == ArrowHelper.UNIQUE_ERROR) {
-                    req.flash.error('Tiêu đề đã được sử dụng vui lòng nhập tiêu đề khác !');
-                } else {
-                    req.flash.error('Name: ' + err.name + '<br />' + 'Message: ' + error.message);
-                }
+                req.flash.error('Name: ' + err.name + '<br />' + 'Message: ' + err.message);
                 res.backend.render('create-manual',{
                     title: 'Tạo mới đề',
                     toolbar: toolbar.render()

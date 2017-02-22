@@ -101,7 +101,7 @@ module.exports = function (controller, component, app) {
         let host = req.protocol + '://'+req.get('host');
         let user = req.user;
         let data = req.body;
-        console.log('userUpdateInfo : ',data);
+        console.log('QQQQQQQQuserUpdateInfo : ',data);
         if (!_.has(data,'full_name')){
             data.full_name = user.full_name
         }
@@ -150,21 +150,4 @@ module.exports = function (controller, component, app) {
         })
     }
 
-}
-function optimizeUser(user,host){
-    if(!user){
-        return null;
-    }else if(user.hasOwnProperty('display_name')){
-        return {
-            id : user.id,
-            user_email : user.user_email,
-            full_name : user.display_name,
-            user_image : user.user_image_url.indexOf('http') == -1 ? host+user.user_image_url : user.user_image_url,
-            mark : Math.floor((Math.random() * 100) + 1),
-            level : Math.floor((Math.random() * 1000) + 1)
-        };
-    }else{
-        return user
-    }
-    //console.log(user);
-}
+};
