@@ -9,7 +9,6 @@ exports.createFilter = function (req, res, columns, options) {
     let current_column = req.params.sort || columns[0].column || "id";
     let order = req.params.order || 'DESC';
     let page = req.params.page || 1;
-
     if (options) {
         limit = options.limit || 10;
         customCondition = options.customCondition;
@@ -24,6 +23,7 @@ exports.createFilter = function (req, res, columns, options) {
         }
     }
 
+    //console.log(req.query);
     let conditions = [];
     let values = [];
     let attributes = [];
@@ -38,7 +38,7 @@ exports.createFilter = function (req, res, columns, options) {
             logger.err("Wrong parameter");
         }
     };
-
+    
     Object.keys(req.query)
         .filter(function (key) {
             return req.query[key] !== '' && getColumn(key)
@@ -64,7 +64,6 @@ exports.createFilter = function (req, res, columns, options) {
     for (let i in columns) {
         if (columns[i].column != '') attributes.push(columns[i].column);
     }
-
     let tmp = conditions.length > 0 ? "(" + conditions.join(" AND ") + ")" : " 1=1 ";
     values[0] = tmp + (customCondition ? customCondition : '');
 
@@ -75,7 +74,6 @@ exports.createFilter = function (req, res, columns, options) {
     res.locals.currentPage = page;
 
     if (current_column.indexOf('.') > -1) current_column = current_column.replace(/(.*)\.(.*)/, '"$1"."$2"');
-
     return {
         order: current_column + " " + order,
         limit: limit,
@@ -129,7 +127,7 @@ function parseValue(value, col) {
         let newValue = value.match(/^[0-9]{4}-[0-9]{2}-[0-9]{2} - [0-9]{4}-[0-9]{2}-[0-9]{2}$/) ? value : '1970-01-01 - 1970-01-01';
         return newValue.split(/\s+-\s+/);
     } else if (col.filter.data_type == 'string') {
-        value = "%" + value + "%";
+        value = "%" + filterSpecial(value) + "%";
     } else if (col.filter.data_type == 'bytes') {
         let match = /([0-9]+)\s*(.*)/g.exec(value);
         if (match) {
@@ -158,4 +156,13 @@ function parseValue(value, col) {
     } else {
         return value.replace(/[><]/g, "");
     }
+}
+
+function filterSpecial(val){
+    if (val.match(/[%]/g)){
+        val = val.replace(/[%]/g,"\\%")
+    }else if (val.match(/[_]/g)){
+        val = val.replace(/[_]/g,"\\_")
+    }
+    return val;
 }
