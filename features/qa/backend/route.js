@@ -106,6 +106,13 @@ module.exports = function (component, app) {
                 authenticate : true,
                 permissions : [permission[0],permission[2]]
             }
+        },
+        "/qa/question-mark/:questionId([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})": {
+            get : {
+                handler: controller.questionMark,
+                authenticate: true,
+                permission: permission
+            }
         }
         //END Q&A *****************************
     }

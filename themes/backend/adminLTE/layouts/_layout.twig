@@ -87,6 +87,11 @@
 <!-- AdminLTE App -->
 <script src="/backend/adminLTE/dist/js/app.min.js"></script>
 <script src="/backend/adminLTE/assets/plugins/jquery-validation/js/jquery.validate.js"></script>
+
+
+{% block jsExtends %}{% endblock %}
+
+
 <script>
 
     $(function () {
@@ -182,8 +187,13 @@
                             !value.match(typeof param == 'string' ? new RegExp(param) : param);
                 },
                 'Bạn nhập không đúng định dạng.');
+        $.validator.addMethod('compareValue', function(value, element, param) {
+                    return this.optional(element) || value == param
+                },
+                'Vui lòng nhập giá trị bằng 10.');
 
         $('form').validate({
+            ignore: "",
             errorElement: "span",
             errorClass: "help-block",
             rules: {
@@ -196,8 +206,7 @@
                     required: true
                 },
                 total_mark: {
-                    min: 1,
-                    max: 10,
+                    compareValue: 10,
                     required: true,
                     number: true
                 },
@@ -247,8 +256,7 @@
                     required: 'Vui lòng chọn môn học !'
                 },
                 total_mark: {
-                    min: 'Tổng số điểm phải lớn hơn 0 !',
-                    max: 'Tổng số điểm tối đa là 10',
+                    compareValue: 'Vui lòng nhập thêm hoặc bớt câu hỏi để tổng điểm là 10 !',
                     number: 'Vui lòng chỉ nhập số',
                     required: 'Bạn phải nhập tổng điểm !'
                 },
@@ -292,8 +300,5 @@
 
     });
 </script>
-
-{% block jsExtends %}{% endblock %}
-
 </body>
 </html>

@@ -340,15 +340,15 @@ module.exports = function (controller, component, app) {
             .then(function (userInfo) {
                 let result = userInfo[0] ? userInfo[0] : userInfo[1];
                 //console.log(JSON.stringify(result,2,2));
-                score = Number(data.mark) ;
+                score = Number(data.mark).toFixed(1) ;
                 //score = score * Number(data.level);
                 //todo: check userInfo
-                if (Number(data.mark) < Number(data.total_mark / 2) ) {
+                if (Number(data.mark).toFixed(1) < Number(data.total_mark / 2).toFixed(1) ) {
                     score = 0;
                 }
                 //cap nhat diem so tong cua user
                 return app.models.userInfo.update({
-                    score: Number(result.score) + score
+                    score: Number(result.score) + score.toFixed(0)
                 },{
                     where: {
                         user_id: result.user_id
@@ -955,7 +955,7 @@ module.exports = function (controller, component, app) {
         }).then(function (_userInfo) {
             _userInfo.gift_codes = _userInfo.gift_codes ? _userInfo.gift_codes : [];
             if(!_userInfo){
-                throw new Error('Không tìm thấy đề thi nào !');
+                throw new Error('Không tìm th đề thi nào !');
             }else if(_userInfo.gift_codes.length == 0 || _userInfo.gift_codes == null){
                 return null;
             }else{

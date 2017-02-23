@@ -304,7 +304,7 @@ module.exports = function (controller,component,app) {
         let toolbar = new ArrowHelper.Toolbar();
         toolbar.addBackButton(req, 'exam_back_link');
         toolbar.addSaveButton();
-        //console.log(JSON.stringify(form));
+
         form.created_by = req.user.id;
         form.select2sections = form.select2sections ? form.select2sections : [];
         if(typeof form.select2sections == "string"){
@@ -318,29 +318,16 @@ module.exports = function (controller,component,app) {
             form.content = [];
         }
         //console.log(JSON.stringify(form,2,2));
-        Promise.all([
-            app.models.exam.find({
-                where: {
-                    id: examId
-                }
-            }),
-            app.models.userResult.count({
-                where: {
-                    exam_id : examId
-                }
-            })
-        ])
-        .then(function (result) {
-                //console.log(JSON.stringify(result, 2, 2));
-            //if(result[0] && result[1] < 1){
-            if(result[0]){
-                return result[0].updateAttributes(form);
-            }else{
-                throw new Error('');
+        app.models.exam.find({
+            where: {
+                id: examId
             }
+        })
+        .then(function (result) {
+             ///return result.updateAttributes(form);
         }).then(function () {
-            req.flash.success("Cập nhật thành công !");
-            next();
+            //req.flash.success("Cập nhật thành công !");
+  //          next();
         })
         .catch(function (err) {
             if (err.name == ArrowHelper.UNIQUE_ERROR) {
