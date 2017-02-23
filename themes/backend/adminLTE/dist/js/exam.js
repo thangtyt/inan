@@ -205,7 +205,7 @@ function countMark(sec_id,ques_id,isAdd){
         }
         $('#secTotalQues-'+sec_id).text(_countQuestionSection);
         $('#secTotalMark-'+sec_id).text(_markSection.toFixed(1));
-        $('#total_mark').val(_total_mark.toFixed(1));
+        //$('#total_mark').val(_total_mark.toFixed(1));
         $('#total_question').val(_total_question);
     });
 
