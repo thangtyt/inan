@@ -190,21 +190,22 @@ function countMark(sec_id,ques_id,isAdd){
     var _total_question = Number($('#total_question').val()) || 0;
     $.ajax({
         url: '/admin/qa/question-mark/'+ques_id,
-        type: 'GET'
+        type: 'GET',
+        async: false
     }).done(function(result){
         if (isAdd){
             _countQuestionSection += result.count;
-            _markSection += result.mark;
-            _total_mark += result.mark;
+            _markSection += Number(result.mark);
+            _total_mark += Number(result.mark);
             _total_question += result.count;
         }else{
             _countQuestionSection -= result.count;
-            _markSection -= result.mark;
-            _total_mark -= result.mark;
+            _markSection -= Number(result.mark);
+            _total_mark -= Number(result.mark);
             _total_question -= result.count;
         }
-        //$('#secTotalQues-'+sec_id).text(_countQuestionSection);
-        //$('#secTotalMark-'+sec_id).text(_markSection.toFixed(1));
+        $('#secTotalQues-'+sec_id).text(_countQuestionSection);
+        $('#secTotalMark-'+sec_id).text(_markSection.toFixed(1));
         $('#total_mark').val(_total_mark.toFixed(1));
         $('#total_question').val(_total_question);
     });
