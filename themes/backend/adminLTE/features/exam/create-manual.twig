@@ -245,8 +245,7 @@
                     $('#gifts').val('::' + listId.join('::') + '::');
                 }
             });
-            loadMarkEdit();
-            //console.log(JSON.stringify(content,2,2));
+            getInfoMarkCount();
             $('form').submit(function (e) {
                $('#content').val(JSON.stringify(content));
             });

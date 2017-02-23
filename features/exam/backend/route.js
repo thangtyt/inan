@@ -121,6 +121,13 @@ module.exports = function (component, app) {
                 authenticate: true,
                 permission: permission
             }
+        },
+        "/exam/data-mark-count":{
+            post: {
+                handler: controller.dataMarkCount,
+                authenticate: true,
+                permission: permission
+            }
         }
         //END EXAM
     }

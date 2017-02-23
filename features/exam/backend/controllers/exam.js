@@ -300,7 +300,6 @@ module.exports = function (controller,component,app) {
     controller.updateManual = function (req,res,next) {
         let form = req.body;
         let examId = req.params.examId;
-        //console.log(JSON.stringify(form));
         let toolbar = new ArrowHelper.Toolbar();
         toolbar.addBackButton(req, 'exam_back_link');
         toolbar.addSaveButton();
@@ -317,17 +316,16 @@ module.exports = function (controller,component,app) {
         }catch(err){
             form.content = [];
         }
-        //console.log(JSON.stringify(form,2,2));
         app.models.exam.find({
             where: {
                 id: examId
             }
         })
         .then(function (result) {
-             ///return result.updateAttributes(form);
+             return result.updateAttributes(form);
         }).then(function () {
-            //req.flash.success("Cập nhật thành công !");
-  //          next();
+            req.flash.success("Cập nhật thành công !");
+            next();
         })
         .catch(function (err) {
             if (err.name == ArrowHelper.UNIQUE_ERROR) {
@@ -643,4 +641,30 @@ module.exports = function (controller,component,app) {
         })
 
     };
+    controller.dataMarkCount = function (req,res) {
+        let data = [];
+        data = req.body;
+        let questions = [];
+        data.map(function (_elemment) {
+            _elemment.questions.map(function (_ques) {
+                questions.push(_ques)
+            })
+
+        });
+        app.models.answer.findAll({
+            where: {
+                question_id : {
+                    $in : questions
+                }
+            },
+            attributes : ['question_id','id','mark'],
+            group : ['id','mark'],
+            raw: true
+        }).then(function (result) {
+            res.jsonp(result)
+        }).catch(function (err) {
+            res.jsonp([])
+        })
+
+    }
 };

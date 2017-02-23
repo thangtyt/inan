@@ -2,7 +2,7 @@
  * Created by thangnv on 11/19/16.
  */
 var content = [];
-
+var dataMarkCount = [];
 var sectionDiv = `
             <div class="box box-info collapsed-box " id="$id$">
                 <div class="box-header with-border ui-state-default">
@@ -37,12 +37,12 @@ var sectionDiv = `
 
 
 function loadSections(){
+    //console.log('loadSections');
     var selectValue = [];
     var subjectId = $('select[name="subject_id"]').val();
     $.ajax({
         url: '/admin/exam/list-section/'+subjectId,
-        type: 'GET',
-        async:false
+        type: 'GET'
     }).done(function(results){
         if(!results) results =[];
         select2Sections.append(new Option('--Choose Subject--'));
@@ -79,8 +79,7 @@ function addSection(element) {
     $('#sortable').append(contentDiv);
     $.ajax({
         url: '/admin/exam/list-question/'+element.id,
-        type: 'GET',
-        async:false
+        type: 'GET'
     }).done(function(questions){
         if(!questions) questions =[];
         $('#question-'+element.id).select2();
@@ -114,13 +113,14 @@ function addSection(element) {
             $('#question-'+element.id).select2('val',_question);
 
             _question.map(function (ques) {
-                addElement(element.id,ques);
+                addElement(element.id,ques,true);
             })
         };
     });
 
 }
 function removeSection(element){
+    //console.log('removeSection');
     var index = 0;
     for (var i = 0 ; i < content.length ; i++){
         if (content[i].section_id == element.id){
@@ -133,14 +133,21 @@ function removeSection(element){
     content.splice(index,1);
     $('#'+element.id).remove();
 }
-function addElement(section_id,question_id){
+function addElement(section_id,question_id,isUpdate){
     //console.log('addElement',section_id,question_id);
     if(question_id == null){
         content.push({
             section_id: section_id,
             questions: []
         })
+    }else if(isUpdate) {
+        content.map(function (con) {
+            if(con.section_id == section_id){
+                con['questions'].push(question_id);
+            }
+        });
     }else{
+        //console.log(33333);
         content.map(function (con) {
             if(con.section_id == section_id){
                 con['questions'].push(question_id);
@@ -150,6 +157,7 @@ function addElement(section_id,question_id){
     }
 }
 function removeElement(section_id,question_id){
+    //console.log(222222);
     if(question_id == null){
         if( content.length > 0 ){
             for(var i = 0 ; i < content.length ; i++){
@@ -175,6 +183,7 @@ function removeElement(section_id,question_id){
     }
 }
 function countMark(sec_id,ques_id,isAdd){
+//console.log('countMark');
     var _countQuestionSection = Number($('#secTotalQues-'+sec_id).text());
     var _markSection = Number($('#secTotalMark-'+sec_id).text());
     var _total_mark = Number($('#total_mark').val()) || 0;
@@ -182,7 +191,7 @@ function countMark(sec_id,ques_id,isAdd){
     $.ajax({
         url: '/admin/qa/question-mark/'+ques_id,
         type: 'GET',
-        async:false
+        async: false
     }).done(function(result){
         if (isAdd){
             _countQuestionSection += result.count;
@@ -202,14 +211,41 @@ function countMark(sec_id,ques_id,isAdd){
     });
 
 }
+
+$(document).ajaxStop(function () {
+    loadMarkEdit();
+});
+function getInfoMarkCount(){
+    if (_content.length > 0){
+        //call ajax
+        $.ajax({
+            url: '/admin/exam/data-mark-count/',
+            type: 'POST',
+            dataType: "json",
+            contentType: 'application/json',
+            data: JSON.stringify(_content)
+        }).done(function(result){
+            dataMarkCount = result;
+        });
+
+    }
+}
 function loadMarkEdit(){
-    $('#total_mark').val(0);
-    $('#total_question').val(0);
-    _content.map(function (_con) {
-        $('#secTotalQues-'+_con.section_id).text(0);
-        $('#secTotalMark-'+_con.section_id).text(0);
-        _con['questions'].map(function (_ques_id) {
-            countMark(_con.section_id,_ques_id,true);
-        })
-    })
+    if (_content.length > 0){
+        _content.map(function (_con) {
+
+            var countQues = 0;
+            var markOfSec = 0;
+            _con['questions'].map(function (_ques_id) {
+                dataMarkCount.map(function (_val) {
+                    if (_val.question_id == _ques_id){
+                        markOfSec += Number(_val.mark);
+                        countQues++;
+                    }
+                })
+            });
+            $('#secTotalQues-'+_con.section_id).text(countQues);
+            $('#secTotalMark-'+_con.section_id).text(markOfSec.toFixed(1));
+        });
+    }
 }
