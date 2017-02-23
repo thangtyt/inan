@@ -135,6 +135,7 @@ function removeSection(element){
 }
 function addElement(section_id,question_id,isUpdate){
     //console.log('addElement',section_id,question_id);
+
     if(question_id == null){
         content.push({
             section_id: section_id,
@@ -167,7 +168,6 @@ function removeElement(section_id,question_id){
             }
         }
     }else{
-        //console.log('question_id != null');
         if( content.length > 0 ){
             for(var i = 0 ; i < content.length ; i++){
                 if(content[i].section_id == section_id){
@@ -190,8 +190,7 @@ function countMark(sec_id,ques_id,isAdd){
     var _total_question = Number($('#total_question').val()) || 0;
     $.ajax({
         url: '/admin/qa/question-mark/'+ques_id,
-        type: 'GET',
-        async: false
+        type: 'GET'
     }).done(function(result){
         if (isAdd){
             _countQuestionSection += result.count;
@@ -204,8 +203,8 @@ function countMark(sec_id,ques_id,isAdd){
             _total_mark -= result.mark;
             _total_question -= result.count;
         }
-        $('#secTotalQues-'+sec_id).text(_countQuestionSection);
-        $('#secTotalMark-'+sec_id).text(_markSection.toFixed(1));
+        //$('#secTotalQues-'+sec_id).text(_countQuestionSection);
+        //$('#secTotalMark-'+sec_id).text(_markSection.toFixed(1));
         $('#total_mark').val(_total_mark.toFixed(1));
         $('#total_question').val(_total_question);
     });
