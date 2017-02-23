@@ -183,30 +183,33 @@ function removeElement(section_id,question_id){
     }
 }
 function countMark(sec_id,ques_id,isAdd){
-    var _countQuestionSection = parseInt($('#secTotalQues-'+sec_id).text());
-    var _markSection = parseInt($('#secTotalMark-'+sec_id).text());
-    var _total_mark = parseInt($('#total_mark').val()) || 0;
-    var _total_question = parseInt($('#total_question').val()) || 0;
     $.ajax({
         url: '/admin/qa/question-mark/'+ques_id,
         type: 'GET',
-        async: false
+        async:false
     }).done(function(result){
+        var _countQuestionSection = +$('#secTotalQues-'+sec_id).text();
+        var _markSection = +$('#secTotalMark-'+sec_id).text();
+        var _total_mark = +$('#total_mark').val()
+        var _total_question = +$('#total_question').val();
+
         if (isAdd){
-            _countQuestionSection += Number(result.count);
-            _markSection += Number(result.mark);
-            _total_mark += Number(result.mark);
-            _total_question += Number(result.count);
+            _countQuestionSection = _countQuestionSection + Number(result.count);
+            _markSection = _markSection + Number(result.mark);
+            _total_mark = _total_mark + Number(result.mark);
+            _total_question = _total_question + Number(result.count);
         }else{
-            _countQuestionSection -= Number(result.count);
-            _markSection -= Number(result.mark);
-            _total_mark -= Number(result.mark);
-            _total_question -= Number(result.count);
+            _countQuestionSection = _countQuestionSection - result.count;
+            _markSection = _markSection - result.mark;
+            _total_mark = _total_mark - result.mark;
+            _total_question = _total_question - result.count;
         }
+
+        $('#total_mark').val(_total_mark.toFixed(1));
+        $('#total_question').val(_total_question);
+
         $('#secTotalQues-'+sec_id).text(_countQuestionSection);
         $('#secTotalMark-'+sec_id).text(_markSection.toFixed(1));
-        //$('#total_mark').val(_total_mark.toFixed(1));
-        $('#total_question').val(_total_question);
     });
 
 }
