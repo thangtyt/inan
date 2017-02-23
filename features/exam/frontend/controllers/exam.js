@@ -72,7 +72,7 @@ module.exports = function (controller, component, app) {
             offset: (page - 1) * itemOfPage
         }).then(function (result) {
             if(!result)
-                throw new Error('not found');
+                throw new Error('Không tìm thấy đề thi');
             //console.log('FIND ALL EXAM :',JSON.stringify(result.rows,2,2));
             let exams = JSON.parse(JSON.stringify(result.rows));
             exams = exams.filter(function (exam) {
@@ -752,12 +752,18 @@ module.exports = function (controller, component, app) {
                 offset: (page - 1) * itemOfPage
             }).then(function (result) {
                 if(result.rows.length < 1){
-                    throw new Error('Not fount !');
+                    throw new Error('Không tìm thấy đề thi nào !');
                 }
                 //console.log('FIND ALL EXAM :',JSON.stringify(result.rows,2,2));
                 let exams = JSON.parse(JSON.stringify(result.rows));
                 exams = exams.filter(function (exam) {
-                    exam.timeDoExam = Math.floor((Math.random() * 100) + 1);
+                    if (exam.level == 0){
+                        exam.level = 'dễ'
+                    }else if (exam.level == 1){
+                        exam.level = 'bình thường'
+                    } else {
+                        exam.level = 'khó'
+                    }
                     if (_.has(exam, 'subject')) {
                         try {
                             exam.subject.icons = JSON.parse(exam.subject.icons);
@@ -949,7 +955,7 @@ module.exports = function (controller, component, app) {
         }).then(function (_userInfo) {
             _userInfo.gift_codes = _userInfo.gift_codes ? _userInfo.gift_codes : [];
             if(!_userInfo){
-                throw new Error('Not found !');
+                throw new Error('Không tìm thấy đề thi nào !');
             }else if(_userInfo.gift_codes.length == 0 || _userInfo.gift_codes == null){
                 return null;
             }else{
@@ -981,7 +987,13 @@ module.exports = function (controller, component, app) {
                 //console.log('FIND ALL EXAM :',JSON.stringify(result.rows,2,2));
                 let exams = JSON.parse(JSON.stringify(result.rows));
                 exams = exams.filter(function (exam) {
-                    exam.timeDoExam = Math.floor((Math.random() * 100) + 1);
+                    if (exam.level == 0){
+                        exam.level = 'dễ'
+                    }else if (exam.level == 1){
+                        exam.level = 'bình thường'
+                    } else {
+                        exam.level = 'khó'
+                    }
                     if (_.has(exam, 'subject')) {
                         try {
                             exam.subject.icons = JSON.parse(exam.subject.icons);
@@ -1008,31 +1020,7 @@ module.exports = function (controller, component, app) {
                 message: err.message
             })
         })
-    }
-    //controller.getExamDone = function (req,res) {
-    //    let user = req.user;
-    //    Promise.all([
-    //        app.models.userResult.findAndCountAll({
-    //            //attributes: ['exam_id'],
-    //            where: {
-    //                user_id : user.id
-    //            },
-    //            include: [{
-    //                model : app.models.exam,
-    //                attributes : ['']
-    //            }]
-    //        })
-    //    ])
-    //    .then(function (exam) {
-    //        res.status(200).jsonp({
-    //            exam: exam
-    //        })
-    //    }).catch(function (err) {
-    //        res.status(300).jsonp({
-    //            message: err.message
-    //        })
-    //    })
-    //}
+    };
 };
 function createFilter(query){
     let result = [{},{}];

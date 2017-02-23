@@ -97,23 +97,24 @@ module.exports = function (controller,component,app) {
             for(var i = 0 ; i < _exams.length ; i++){
                 if(_exams[i]['rows'].length > 0){
                     let icons = JSON.parse(_exams[i]['rows'][0]['subject']['icons']);
-
                     icons['icon'].default = host + icons['icon'].default;
                     icons['icon'].hover = host + icons['icon'].hover;
 
                     result['items'][i]['done'] = _exams[i]['count'];
                     result['items'][i]['icons'] = icons['icon'];
-                    let _eIds = []
+                    let _eIds = [];
                     _exams[i]['rows'].map(function (_ex) {
                         _eIds.push(_ex.id)
-                    })
-                    examCounts.push(app.models.userResult.count({
+                    });
+                    examCounts.push(app.models.userResult.findAll({
                         where: {
                             exam_id: {
                                 $in: _eIds
                             },
                             user_id: user.id
-                        }
+                        },
+                        attributes: ['exam_id','user_id'],
+                        group : ['exam_id','user_id']
                     }));
                 }
 
@@ -122,9 +123,12 @@ module.exports = function (controller,component,app) {
             return Promise.all(examCounts);
 
         }).then(function (examCount) {
-            //console.log(JSON.stringify(examCount,2,2));
             for(var i = 0 ; i < examCount.length ; i++){
-                result['items'][i]['done'] = examCount[i]+'/'+ (result['items'][i]['done'] || 0)
+                let countExamDone = 0 ;
+                examCount[i].map(function (_eCount) {
+                    countExamDone++;
+                })
+                result['items'][i]['done'] = countExamDone+'/'+ (result['items'][i]['done'] || 0)
             }
             res.status(200).jsonp(result);
         }).catch(function (err) {

@@ -352,7 +352,7 @@ module.exports = function (controller, component, app) {
             .then(function (result) {
                 return Promise.all([
                         result[1].updateAttributes({
-                            display_name : userInfo.full_name || '[no name]'
+                            display_name : userInfo.full_name || '[Chưa có tên đầy đủ]'
                         }),
                         result[0][0].updateAttributes(userInfo)
                     ])
