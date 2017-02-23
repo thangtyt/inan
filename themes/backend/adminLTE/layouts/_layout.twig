@@ -86,10 +86,8 @@
 <script src="/backend/adminLTE/assets/plugins/fastclick/fastclick.min.js"></script>
 <!-- AdminLTE App -->
 <script src="/backend/adminLTE/dist/js/app.min.js"></script>
-<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.15.0/jquery.validate.min.js"></script>
+<script src="/backend/adminLTE/assets/plugins/jquery-validation/js/jquery.validate.js"></script>
 <script>
-
-
 
     $(function () {
         // Show, hide go top button
@@ -163,9 +161,11 @@
             $(this).attr('action', link.replace(/\/page\/([0-9])+/, '/page/1'));
         });
 
-        $.validator.setDefaults({
-            ignore: ""
-        });
+
+        //jquery validator
+//        $.validator.setDefaults({
+//            ignore: ""
+//        });
         $.validator.addMethod('regex', function(value, element, param) {
                     return this.optional(element) ||
                             value.match(typeof param == 'string' ? new RegExp(param) : param);
@@ -183,107 +183,113 @@
                 },
                 'Bạn nhập không đúng định dạng.');
 
-        //jquery validator
         $('form').validate({
-            errorElement : "span",
-            errorClass : "help-block",
-            rules : {
-                title : {
-                    required : true,
-                    space_regex : /^[ \s]+|[ \s]+$/,
+            errorElement: "span",
+            errorClass: "help-block",
+            rules: {
+                title: {
+                    required: true,
+                    space_regex: /^[\s]+$/,
                     in_regex: /[\<\>\!\@\#\$\%\^\&\*\+\:\;\\\"\']+/
                 },
-                subject_id : {
-                    required : true
+                subject_id: {
+                    required: true
                 },
-                total_mark : {
-                    min : 1,
-                    max : 10,
-                    required : true,
-                    number : true
+                total_mark: {
+                    min: 1,
+                    max: 10,
+                    required: true,
+                    number: true
                 },
-                total_question : {
-                    min : 1,
-                    digits :true,
-                    required : true,
-                    number : true
+                total_question: {
+                    min: 1,
+                    digits: true,
+                    required: true,
+                    number: true
                 },
-                total_time : {
-                    min : 1,
-                    required : true,
-                    number : true
+                total_time: {
+                    min: 1,
+                    required: true,
+                    number: true
                 },
-                answerMark : {
-                    min : 0.1,
-                    max : 10,
-                    number : true,
-                    required : true
+                answerMark: {
+                    min: 0.1,
+                    max: 10,
+                    number: true,
+                    required: true
                 },
-                answerTime : {
-                    min : 1,
-                    number : true,
-                    required : true
+                answerTime: {
+                    min: 1,
+                    number: true,
+                    required: true
                 },
-                user_pass : {
-                    minlength : 8
+                user_pass: {
+                    minlength: 8
                 },
-                user_confirm_pass : {
-                    minlength : 8,
+                user_confirm_pass: {
+                    minlength: 8,
                     equalTo: '#user_pass'
                 },
-                old_pass : {
-                    required : true
+                old_pass: {
+                    required: true
+                },
+                section_id: {
+                    required: true
                 }
             },
-            messages : {
-                title : {
-                    required : 'Bạn phải nhập tiêu đề !',
-                    space_regex : 'Vui lòng không nhập khoảng trắng trước và sau !',
+            messages: {
+                title: {
+                    required: 'Bạn phải nhập tiêu đề !',
+                    space_regex: 'Vui lòng không nhập khoảng trắng trước và sau !',
                     in_regex: 'Bạn nhập không đúng định dạng !'
                 },
-                subject_id : {
-                    required : 'Vui lòng chọn môn học !'
+                subject_id: {
+                    required: 'Vui lòng chọn môn học !'
                 },
-                total_mark : {
-                    min : 'Tổng số điểm phải lớn hơn 0 !',
-                    max : 'Tổng số điểm tối đa là 10',
-                    number : 'Vui lòng chỉ nhập số',
-                    required : 'Bạn phải nhập tổng điểm !'
+                total_mark: {
+                    min: 'Tổng số điểm phải lớn hơn 0 !',
+                    max: 'Tổng số điểm tối đa là 10',
+                    number: 'Vui lòng chỉ nhập số',
+                    required: 'Bạn phải nhập tổng điểm !'
                 },
-                total_question : {
-                    min : 'Tổng số câu hỏi phải lớn hơn 0 !',
-                    digits : 'Vui lòng chỉ nhập số nguyên dương !',
-                    number : 'Vui lòng chỉ nhập số',
-                    required : 'Bạn phải nhập tổng số câu hỏi !'
+                total_question: {
+                    min: 'Tổng số câu hỏi phải lớn hơn 0 !',
+                    digits: 'Vui lòng chỉ nhập số nguyên dương !',
+                    number: 'Vui lòng chỉ nhập số',
+                    required: 'Bạn phải nhập tổng số câu hỏi !'
                 },
-                total_time : {
-                    min : 'Tổng số thời gian thi phải lớn hơn 0 !',
-                    number : 'Vui lòng chỉ nhập số',
-                    required : 'Bạn phải nhập tổng thời gian thi !'
+                total_time: {
+                    min: 'Tổng số thời gian thi phải lớn hơn 0 !',
+                    number: 'Vui lòng chỉ nhập số',
+                    required: 'Bạn phải nhập tổng thời gian thi !'
                 },
-                answerMark : {
-                    min : 'Điểm phải lớn hơn 0 !',
-                    max : 'Câu hỏi không được quá 10 điểm !',
-                    number : 'Vui lòng chỉ nhập số',
-                    required : 'Bạn phải nhập điểm !'
+                answerMark: {
+                    min: 'Điểm phải lớn hơn 0 !',
+                    max: 'Câu hỏi không được quá 10 điểm !',
+                    number: 'Vui lòng chỉ nhập số',
+                    required: 'Bạn phải nhập điểm !'
                 },
-                answerTime : {
-                    min : 'Thời gian thi phải lớn hơn 0 !',
-                    number : 'Vui lòng chỉ nhập số !',
-                    required : 'Bạn phải nhập thời gian thi !'
+                answerTime: {
+                    min: 'Thời gian thi phải lớn hơn 0 !',
+                    number: 'Vui lòng chỉ nhập số !',
+                    required: 'Bạn phải nhập thời gian thi !'
                 },
-                user_pass : {
-                    minlength : 'Bạn phải nhập it nhất là 8 ký tự !'
+                user_pass: {
+                    minlength: 'Bạn phải nhập it nhất là 8 ký tự !'
                 },
-                user_confirm_pass : {
-                    minlength : 'Bạn phải nhập it nhất là 8 ký tự !',
+                user_confirm_pass: {
+                    minlength: 'Bạn phải nhập it nhất là 8 ký tự !',
                     equalTo: "Nhập lại mật khẩu không đúng !"
                 },
-                old_pass : {
-                    required : 'Bạn phải nhập mật khẩu cũ !'
+                old_pass: {
+                    required: 'Bạn phải nhập mật khẩu cũ !'
+                },
+                section_id: {
+                    required: 'Bạn phải chọn dạng câu hỏi'
                 }
             }
-        })
+        });
+
     });
 </script>
 

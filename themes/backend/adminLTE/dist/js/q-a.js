@@ -129,20 +129,10 @@ function initCkeditorBasic(list){
                 ['Image','Table','-','Mathjax','Source']
             ]
         } );
-        //CKEDITOR.inline( val, {
-        //    height: 100,
-        //    toolbar : [
-        //        ['Styles','Format','Font','FontSize'],
-        //        ['Bold','Italic','Underline','StrikeThrough','-','Undo','Redo','-','Cut','Copy','Paste','Find','Replace'],
-        //        ['NumberedList','BulletedList','-','JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock'],
-        //        ['Image','Table','-','TextColor','BGColor','Mathjax','Source']
-        //    ]
-        //} );
     })
 
 }
 function changeRightAnswer(id){
-    //console.log(id);
     var keys = [0,1,2,3];
     keys.map(function (i) {
         if($('#panelAnswer'+i).hasClass('box-success')){
@@ -250,29 +240,34 @@ function renderView(){
 }
 
 function fillAnswer(index,require,content){
-    var answerContent = require == 0 ? content : answers[index].content;
-    $('#answerMark').val(answers[index].mark);
-    $('#answerTime').val(answers[index].time);
-    $('#layout').val(answers[index].layout);
-    currentAnswerId = answers[index].id;
-    CKEDITOR.instances['answerContent'].setData(answerContent);
-    [0,1,2,3].map(function (i) {
-        if(answers[index].answer_keys[i].isTrue){
-            $('#answerRadio'+i).prop('checked', true);
-            $('input[name=rightAnswer]').val(i);
-            changeRightAnswer('panelAnswer'+i);
+    var answerContent = '';
+    if(answers.length > 0){
+        answerContent = require == 0 ? content : answers[index].content;
+        $('#answerMark').val(answers[index].mark);
+        $('#answerTime').val(answers[index].time);
+        $('#layout').val(answers[index].layout);
+        currentAnswerId = answers[index].id;
+        CKEDITOR.instances['answerContent'].setData(answerContent);
+        [0,1,2,3].map(function (i) {
+            if(answers[index].answer_keys[i].isTrue){
+                $('#answerRadio'+i).prop('checked', true);
+                $('input[name=rightAnswer]').val(i);
+                changeRightAnswer('panelAnswer'+i);
+            }
+            CKEDITOR.instances['answer'+i].setData(answers[index].answer_keys[i].answer);
+            CKEDITOR.instances['answerExplain'+i].setData(answers[index].answer_keys[i].explanation);
+        });
+        if ($('#require option:selected').val() == 1){
+            $('#addQuestionBtn').addClass('hidden');
+            $('#editQuestionBtn').removeClass('hidden');
+            $('#deleteDiv').removeClass('hidden');
+        }else{
+            $('#addQuestionBtn').addClass('hidden');
+            $('#editQuestionBtn').addClass('hidden');
         }
-        CKEDITOR.instances['answer'+i].setData(answers[index].answer_keys[i].answer);
-        CKEDITOR.instances['answerExplain'+i].setData(answers[index].answer_keys[i].explanation);
-    });
-    if ($('#require option:selected').val() == 1){
-        $('#addQuestionBtn').addClass('hidden');
-        $('#editQuestionBtn').removeClass('hidden');
-        $('#deleteDiv').removeClass('hidden');
-    }else{
-        $('#addQuestionBtn').addClass('hidden');
-        $('#editQuestionBtn').addClass('hidden');
     }
+
+
 
 }
 function pushAnswer(require){
@@ -287,7 +282,7 @@ function pushAnswer(require){
             isTrue: isTrue
         })
     })
-    var tempId = currentAnswerId == '' ? currentAnswerId : uuid();
+    var tempId = currentAnswerId != '' ? currentAnswerId : uuid();
     answers.push({
         id: tempId,
         mark: $('#answerMark').val(),
@@ -382,35 +377,3 @@ function deleteAnswer(){
     }
 }
 
-$(function(){
-    $('form').submit(function (e) {
-        if(answers){
-            try{
-                if(Number($('#require').val()) == 0){
-                    CKEDITOR.instances.content.setData(CKEDITOR.instances['answerContent'].getData());
-                    CKEDITOR.instances['answerContent'].setData('');
-                    if( answers.length < 1 ){
-                        pushAnswer(0);
-                    }else{
-                        editAnswer(0,0);
-                        var temp = [];
-                        temp.push(answers[0]);
-                        answers = temp;
-                    }
-                }else{
-                    if( answers.length < 1 ){
-                        pushAnswer(1);
-                    }
-                    if($('select[name=editAnswerIndex]').val() != -1){
-                        editAnswer($('select[name=editAnswerIndex]').val(),1);
-                    }
-                }
-                $('input[name=answers]').val(JSON.stringify(answers));
-                //return false;
-            }catch(err){
-                return false;
-            }
-        }
-    })
-
-});

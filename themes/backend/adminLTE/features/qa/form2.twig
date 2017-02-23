@@ -146,7 +146,7 @@
                                     <div class="form-group">
                                         <label>Điểm</label>
                                         <input name="answerMark" type="text" id="answerMark" class="form-control"
-                                               value="1">
+                                               value="0.2">
                                     </div>
                                     <div class="form-group">
                                         <label>Thời gian ( phút )</label>
@@ -367,6 +367,7 @@
     <script src="/backend/adminLTE/assets/plugins/ckeditor4.6/ckeditor.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/2.6-latest/MathJax.js?config=TeX-AMS_HTML">
     </script>
+    <script src="/backend/adminLTE/dist/js/q-a.js" defer="defer"></script>
     <script>
         $(function () {
             changeRightAnswer('panelAnswer0');
@@ -377,56 +378,90 @@
             CKEDITOR.replace('content', {
                 height: 200
             });
-            initCkeditorBasic([
-                'answer0',
-                'answerExplain0',
-                'answer1',
-                'answerExplain1',
-                'answer2',
-                'answerExplain2',
-                'answer3',
-                'answerExplain3']);
-            {% if sections %}
-            $.ajax({
-                url: '/admin/qa/list-chapter/' + '{{ question.subject_id }}',
-                type: 'GET'
-            }).done(function (result) {
-                $('#chapter_id').empty();
-                //$('#chapter_id').append();
-                chapters = result;
-                $('#chapter_id').append(new Option('-- Choose --', 0));
-                chapters.map(function (val) {
-                    var opt = new Option(val.title, val.id);
-                    $('#chapter_id').append(opt);
-                })
-                renderChapterLesson('{{ question.chapter_id }}', '{{ question.lesson }}');
+                initCkeditorBasic([
+                    'answer0',
+                    'answerExplain0',
+                    'answer1',
+                    'answerExplain1',
+                    'answer2',
+                    'answerExplain2',
+                    'answer3',
+                    'answerExplain3']);
+                {% if sections %}
+                    $.ajax({
+                        url: '/admin/qa/list-chapter/' + '{{ question.subject_id }}',
+                        type: 'GET'
+                    }).done(function (result) {
+                        $('#chapter_id').empty();
+                        //$('#chapter_id').append();
+                        chapters = result;
+                        $('#chapter_id').append(new Option('-- Choose --', 0));
+                        chapters.map(function (val) {
+                            var opt = new Option(val.title, val.id);
+                            $('#chapter_id').append(opt);
+                        })
+                        renderChapterLesson('{{ question.chapter_id }}', '{{ question.lesson }}');
+                    });
+                {% endif %}
+
+                {% if answers %}
+                    {% for answer in answers %}
+                        answers.push({{ answer | dump | safe }});
+                    {% endfor %}
+                {% endif %}
+                {% if question %}
+                    {% if question.require == 0 %}
+                        requirementQuestion(0);
+                        fillAnswer(0, 0, {{ question.content | dump | safe }});
+                    {% else %}
+                        requirementQuestion(1);
+                        CKEDITOR.instances['content'].setData({{ question.content | dump | safe }});
+                        fillAnswer(0, 1, '');
+                        renderEditAnswerChoose(0);
+                    {% endif %}
+            {% endif %}
+            $('form').submit(function (e) {
+                if(answers.length > 0){
+                    try{
+                        if(Number($('#require').val()) == 0){
+                            CKEDITOR.instances.content.setData(CKEDITOR.instances['answerContent'].getData());
+                            CKEDITOR.instances['answerContent'].setData('');
+                            if( answers.length < 1 ){
+                                pushAnswer(0);
+                            }else{
+                                editAnswer(0,0);
+                                var temp = [];
+                                temp.push(answers[0]);
+                                answers = temp;
+                            }
+                        }else{
+                            if( answers.length < 1 ){
+                                pushAnswer(1);
+                            }
+                            if($('select[name=editAnswerIndex]').val() != -1){
+                                editAnswer($('select[name=editAnswerIndex]').val(),1);
+                            }
+                        }
+
+                        $('input[name=answers]').val(JSON.stringify(answers));
+
+                    }catch(err){
+                        alert('Vui lòng nhập đầy đủ câu hỏi và trả lời');
+                        return false;
+                    }
+                }else {
+                    alert('Vui lòng nhập đầy đủ câu hỏi và trả lời');
+                    return false;
+                }
+            })
+            $('form').bind("keypress", function (e) {
+                if (e.keyCode == 13) {
+                    e.preventDefault();
+                    return false;
+                }
             });
-            {% endif %}
-
-            {% if answers %}
-            {% for answer in answers %}
-            answers.push({{ answer | dump | safe }});
-            {% endfor %}
-            {% endif %}
-            {% if question %}
-            {% if question.require == 0 %}
-            requirementQuestion(0);
-            fillAnswer(0, 0, {{ question.content | dump | safe }});
-            {% else %}
-            requirementQuestion(1);
-            CKEDITOR.instances['content'].setData({{ question.content | dump | safe }});
-            fillAnswer(0, 1, '');
-            renderEditAnswerChoose(0);
-
-            {% endif %}
-            {% endif %}
         });
-        $('form').bind("keypress", function (e) {
-            if (e.keyCode == 13) {
-                e.preventDefault();
-                return false;
-            }
-        });
+
 
 
         function clickNav(id) {
@@ -436,6 +471,7 @@
         function openDeleteConfirmModal() {
             $('#confirm-delete-answer-modal').modal('show');
         }
+
+
     </script>
-    <script src="/backend/adminLTE/dist/js/q-a.js"></script>
 {% endblock %}
