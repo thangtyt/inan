@@ -186,6 +186,7 @@ function countMark(sec_id,ques_id,isAdd){
 //console.log('countMark');
     var _countQuestionSection = Number($('#secTotalQues-'+sec_id).text());
     var _markSection = Number($('#secTotalMark-'+sec_id).text());
+    console.log(typeof _markSection);
     var _total_mark = Number($('#total_mark').val()) || 0;
     var _total_question = Number($('#total_question').val()) || 0;
     $.ajax({
@@ -194,15 +195,15 @@ function countMark(sec_id,ques_id,isAdd){
         async: false
     }).done(function(result){
         if (isAdd){
-            _countQuestionSection += result.count;
+            _countQuestionSection += Number(result.count);
             _markSection += Number(result.mark);
             _total_mark += Number(result.mark);
-            _total_question += result.count;
+            _total_question += Number(result.count);
         }else{
-            _countQuestionSection -= result.count;
+            _countQuestionSection -= Number(result.count);
             _markSection -= Number(result.mark);
             _total_mark -= Number(result.mark);
-            _total_question -= result.count;
+            _total_question -= Number(result.count);
         }
         $('#secTotalQues-'+sec_id).text(_countQuestionSection);
         $('#secTotalMark-'+sec_id).text(_markSection.toFixed(1));
