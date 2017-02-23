@@ -183,12 +183,10 @@ function removeElement(section_id,question_id){
     }
 }
 function countMark(sec_id,ques_id,isAdd){
-//console.log('countMark');
-    var _countQuestionSection = Number($('#secTotalQues-'+sec_id).text());
-    var _markSection = Number($('#secTotalMark-'+sec_id).text());
-    console.log(typeof _markSection);
-    var _total_mark = Number($('#total_mark').val()) || 0;
-    var _total_question = Number($('#total_question').val()) || 0;
+    var _countQuestionSection = parseInt($('#secTotalQues-'+sec_id).text());
+    var _markSection = parseInt($('#secTotalMark-'+sec_id).text());
+    var _total_mark = parseInt($('#total_mark').val()) || 0;
+    var _total_question = parseInt($('#total_question').val()) || 0;
     $.ajax({
         url: '/admin/qa/question-mark/'+ques_id,
         type: 'GET',
