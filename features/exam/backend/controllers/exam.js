@@ -199,22 +199,27 @@ module.exports = function (controller,component,app) {
         })
     }
     controller.getQuestions = function (req,res) {
+        //console.log(req.params.sectionId);
         app.models.question.findAll({
             where: {
                 section_id: req.params.sectionId
             },
-            include: [
-                {
-                    model: app.models.answer,
-                    as: 'answers',
-                    where: ['1=1']
-                }
-            ],
-            order: 'created_at desc'
+            attributes: ['id','title','section_id'],
+            //include: [
+            //    {
+            //        model: app.models.answer,
+            //        as: 'answers',
+            //        where: ['1=1']
+            //    }
+            //],
+            order: 'created_at desc',
+            raw : true
         })
         .then(function (questions) {
-            res.jsonp(JSON.parse(JSON.stringify(questions)));
+                //console.log(JSON.stringify(questions,2,2));
+            res.jsonp(questions);
         }).catch(function (err) {
+                console.log(err);
             res.jsonp(null);
         })
     };
