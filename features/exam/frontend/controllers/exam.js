@@ -338,7 +338,7 @@ module.exports = function (controller, component, app) {
                 });
             })
             .then(function (userInfo) {
-                let result = userInfo[0] ? userInfo[0] : userInfo[1];
+                let result = userInfo[0];
                 //console.log(JSON.stringify(result,2,2));
                 score = Number(data.mark).toFixed(1) ;
                 //score = score * Number(data.level);
@@ -346,9 +346,9 @@ module.exports = function (controller, component, app) {
                 if (score < Number(data.total_mark / 2).toFixed(1) ) {
                     score = 0;
                 }
-                score = +result[0].score + score;
+                score = +result.score + score;
                 //cap nhat diem so tong cua user
-                return result[0].updateAttributes({
+                return result.updateAttributes({
                     score: score
                 })
             })
