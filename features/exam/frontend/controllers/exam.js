@@ -346,9 +346,10 @@ module.exports = function (controller, component, app) {
                 if (Number(data.mark).toFixed(1) < Number(data.total_mark / 2).toFixed(1) ) {
                     score = 0;
                 }
+                    score = Number(result.score) + score;
                 //cap nhat diem so tong cua user
                 return app.models.userInfo.update({
-                    score: Number(result.score) + score.toFixed()
+                    score: score
                 },{
                     where: {
                         user_id: result.user_id
