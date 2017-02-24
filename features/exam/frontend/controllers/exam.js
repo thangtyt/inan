@@ -343,10 +343,10 @@ module.exports = function (controller, component, app) {
                 score = Number(data.mark).toFixed(1) ;
                 //score = score * Number(data.level);
                 //todo: check userInfo
-                if (score < Number(data.total_mark / 2).toFixed(1) ) {
+                if (Number(score) < Number(data.total_mark / 2).toFixed(1) ) {
                     score = 0;
                 }
-                score = +result.score + score;
+                score = Number(result.score) + Number(score);
                 //cap nhat diem so tong cua user
                 return result.updateAttributes({
                     score: score
