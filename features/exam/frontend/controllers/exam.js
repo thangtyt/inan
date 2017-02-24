@@ -348,7 +348,7 @@ module.exports = function (controller, component, app) {
                 }
                 //cap nhat diem so tong cua user
                 return app.models.userInfo.update({
-                    score: Number(result.score) + score.toFixed(0)
+                    score: Number(result.score) + score.toFixed()
                 },{
                     where: {
                         user_id: result.user_id
