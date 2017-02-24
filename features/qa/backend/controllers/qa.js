@@ -58,14 +58,39 @@ module.exports = function (controller,component,app) {
                 }
             },
             {
+                column : 'require',
+                width : '10%',
+                header : 'Loại câu hỏi',
+                type : 'custom',
+                alias : {
+                    "0" : '<span class="badge bg-light-blue">Câu hỏi đơn</span>' ,
+                    "1" : '<span class="badge bg-green">Nhóm câu hỏi</span>'
+                },
+                filter : {
+                    type : 'select',
+                    filter_key : 'require',
+                    data_source : [
+                        {
+                            name : 'Câu hỏi đơn',
+                            value : 0
+                        },{
+                            name : 'Nhóm câu hỏi',
+                            value : 1
+                        }
+                    ],
+                    display_key : 'name',
+                    value_key : 'value'
+                }
+            },
+            {
                 column : 'level',
                 width : '10%',
                 header : 'Độ khó',
                 type : 'custom',
                 alias : {
-                    "0" : 'Dễ' ,
-                    "1" : 'Bình thường',
-                    "2" : 'Khó'
+                    "0" : '<span class="badge bg-light-blue">Dễ</span>' ,
+                    "1" : '<span class="badge bg-green">Bình thường</span>',
+                    "2" : '<span class="badge bg-yellow">Khó</span>'
                 },
                 filter : {
                     type : 'select',
@@ -108,8 +133,6 @@ module.exports = function (controller,component,app) {
             ]
         })
         .then(function (results) {
-
-                //console.log(JSON.stringify(results,2,2));
                 let totalPage = Math.ceil(results.count / itemOfPage);
                 let items = results.rows;
                 res.backend.render('listChoice',{
@@ -292,7 +315,6 @@ module.exports = function (controller,component,app) {
         toolbar.addSaveButton();
         let questionId = req.params.questionId;
         let data = req.body;
-
         actions.findById(questionId)
         .then(function (question) {
             return actions.update(question,data)
@@ -319,12 +341,21 @@ module.exports = function (controller,component,app) {
                 });
         })
         .then(function (count) {
-            let answers = JSON.parse(data.answers);
+            let answers = [];
+            try{
+                answers =  JSON.parse(data.answers);
+            }catch(err){
+                answers = []
+            }
             let answerPromise = [];
-            answers.map(function(answer){
-                answer.question_id = questionId;
-                answerPromise.push(app.models.answer.create(answer));
-            });
+            if (answers.length > 0){
+                answers.map(function(answer){
+                    answer.question_id = questionId;
+                    answerPromise.push(app.models.answer.create(answer));
+                });
+            }else{
+                return null;
+            }
             return Promise.all(answerPromise) ;
         })
         .then(function (answers) {
@@ -332,6 +363,7 @@ module.exports = function (controller,component,app) {
             res.redirect(baseRoute+'/choice/'+questionId);
         })
         .catch(function (err) {
+                console.log(err);
             if (err.name == ArrowHelper.UNIQUE_ERROR) {
                 req.flash.error('Tiêu đề đã được sử dụng vui lòng nhập tiêu đề khác !');
             } else {
@@ -687,5 +719,33 @@ module.exports = function (controller,component,app) {
                     res.redirect(baseRoute+'/report/'+reportId);
                 })
         }
+    };
+    controller.questionMark = function (req,res) {
+        let questionId = req.params.questionId;
+        app.models.answer.findAll({
+            where: {
+                question_id : questionId
+            },
+            attributes: ['mark'],
+            raw: true
+        })
+        .then(function (answers) {
+            let mark = 0;
+            let count = 0;
+            answers.map(function (ans) {
+                mark+=Number(ans.mark);
+                count++;
+            });
+                mark = Math.round(mark * 10) / 10;
+            res.json({
+                mark: mark,
+                count: count
+            });
+        }).catch(function (err) {
+            res.json({
+                mark: 0
+            });
+        })
     }
+
 }
