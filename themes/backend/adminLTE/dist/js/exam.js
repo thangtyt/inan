@@ -185,7 +185,8 @@ function removeElement(section_id,question_id){
 function countMark(sec_id,ques_id,isAdd){
     $.ajax({
         url: '/admin/qa/question-mark/'+ques_id,
-        type: 'GET'
+        type: 'GET',
+        async: false
     }).done(function  (result) {
             result = JSON.parse(JSON.stringify(result));
         //console.log($('#secTotalQues_' + sec_id).text());
