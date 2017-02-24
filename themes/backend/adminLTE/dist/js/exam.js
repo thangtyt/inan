@@ -25,10 +25,10 @@ var sectionDiv = `
                 <!-- /.box-body -->
                 <div class="box-footer" style="display: none;">
                    <span class="pull-left">
-                        Number of questions : <span style="color:blue" id='secTotalQues-$id$'>0</span> ( Bao gồm các câu hỏi thuộc nhóm câu hỏi nếu chọn nhóm câu hỏi )
+                        Number of questions : <span style="color:blue" id='secTotalQues_$id$'>0</span> ( Bao gồm các câu hỏi thuộc nhóm câu hỏi nếu chọn nhóm câu hỏi )
                     </span>
                     <span class="pull-right">
-                        Total mark : <span style="color:blue" id='secTotalMark-$id$'>0</span>
+                        Total mark : <span style="color:blue" id='secTotalMark_$id$'>0</span>
                 </div>
                 <!-- /.box-footer-->
             </div>
@@ -73,7 +73,7 @@ function loadSections(){
     });
 }
 function addSection(element) {
-    //console.log('addSection',JSON.stringify(element,2,2));
+
     var contentDiv = sectionDiv.replace(/\$id\$/g,element.id);
     contentDiv = contentDiv.replace(/\$section-title\$/g,element.text);
     $('#sortable').append(contentDiv);
@@ -81,6 +81,7 @@ function addSection(element) {
         url: '/admin/exam/list-question/'+element.id,
         type: 'GET'
     }).done(function(questions){
+        //console.log('addSection',JSON.stringify(questions,2,2));
         if(!questions) questions =[];
         $('#question-'+element.id).select2();
         //console.log(JSON.stringify(questions,3,3));
@@ -99,23 +100,19 @@ function addSection(element) {
 
         //for update exam
         var _question = [];
-
-        if( _content ){
+        if( _content.length > 0 ){
             _content.map(function (con) {
                 if (con.section_id == element.id){
                     con.questions.map(function (ques) {
                         _question.push(ques);
+                        addElement(element.id,ques,true);
                     })
 
                 }
             });
-
             $('#question-'+element.id).select2('val',_question);
-
-            _question.map(function (ques) {
-                addElement(element.id,ques,true);
-            })
         };
+        loadMarkEdit();
     });
 
 }
@@ -125,9 +122,12 @@ function removeSection(element){
     for (var i = 0 ; i < content.length ; i++){
         if (content[i].section_id == element.id){
             index = i;
-            content[i].questions.map(function (_quesId) {
-                countMark(element.id,_quesId,false);
-            })
+            var _secTotalQues = $('#secTotalQues_'+content[i].section_id).text();
+            var _secTotalMark = $('#secTotalMark_'+content[i].section_id).text();
+            var _total_mark = $('#total_mark').val();
+            var _total_question = $('#total_question').val();
+            $('#total_mark').val(Number(_total_mark) - Number(_secTotalMark));
+            $('#total_question').val(Number(_total_question) - Number(_secTotalQues));
         }
     }
     content.splice(index,1);
@@ -185,38 +185,35 @@ function removeElement(section_id,question_id){
 function countMark(sec_id,ques_id,isAdd){
     $.ajax({
         url: '/admin/qa/question-mark/'+ques_id,
-        type: 'GET',
-        async:false
-    }).done(function(result){
-        var _countQuestionSection = +$('#secTotalQues-'+sec_id).text();
-        var _markSection = +$('#secTotalMark-'+sec_id).text();
-        var _total_mark = +$('#total_mark').val()
-        var _total_question = +$('#total_question').val();
+        type: 'GET'
+    }).done(function  (result) {
+            result = JSON.parse(JSON.stringify(result));
+        //console.log($('#secTotalQues_' + sec_id).text());
+            var _countQuestionSection = Number($('#secTotalQues_'+sec_id).text());
+            var _markSection = Number($('#secTotalMark_'+sec_id).text());
+            var _total_mark = Number($('#total_mark').val());
+            var _total_question = Number($('#total_question').val());
+            if (isAdd){
+                _countQuestionSection = _countQuestionSection + Number(result.count);
+                _markSection = _markSection + Number(result.mark);
+                _total_mark = _total_mark + Number(result.mark);
+                _total_question = _total_question + Number(result.count);
+            }else{
+                _countQuestionSection = _countQuestionSection - Number(result.count);
+                _markSection = _markSection - Number(result.mark);
+                _total_mark = _total_mark - Number(result.mark);
+                _total_question = _total_question - Number(result.count);
+            }
 
-        if (isAdd){
-            _countQuestionSection = _countQuestionSection + Number(result.count);
-            _markSection = _markSection + Number(result.mark);
-            _total_mark = _total_mark + Number(result.mark);
-            _total_question = _total_question + Number(result.count);
-        }else{
-            _countQuestionSection = _countQuestionSection - result.count;
-            _markSection = _markSection - result.mark;
-            _total_mark = _total_mark - result.mark;
-            _total_question = _total_question - result.count;
-        }
+            $('#secTotalQues_'+sec_id).text(_countQuestionSection.toString());
+            $('#secTotalMark_'+sec_id).text(_markSection.toFixed(1).toString());
 
-        $('#total_mark').val(_total_mark.toFixed(1));
-        $('#total_question').val(_total_question);
-
-        $('#secTotalQues-'+sec_id).text(_countQuestionSection);
-        $('#secTotalMark-'+sec_id).text(_markSection.toFixed(1));
-    });
+            $('#total_mark').val(_total_mark.toFixed(1));
+            $('#total_question').val(_total_question);
+        //console.log($('#secTotalQues_' + sec_id).text());
+        });
 
 }
-
-$(document).ajaxStop(function () {
-    loadMarkEdit();
-});
 function getInfoMarkCount(){
     if (_content.length > 0){
         //call ajax
@@ -233,6 +230,7 @@ function getInfoMarkCount(){
     }
 }
 function loadMarkEdit(){
+    //console.log(222222);
     if (_content.length > 0){
         _content.map(function (_con) {
 
@@ -246,8 +244,8 @@ function loadMarkEdit(){
                     }
                 })
             });
-            $('#secTotalQues-'+_con.section_id).text(countQues);
-            $('#secTotalMark-'+_con.section_id).text(markOfSec.toFixed(1));
+            $('#secTotalQues_'+_con.section_id).text(countQues.toString());
+            $('#secTotalMark_'+_con.section_id).text(markOfSec.toFixed(1).toString());
         });
     }
 }
