@@ -112,7 +112,7 @@ function addSection(element) {
             });
             $('#question-'+element.id).select2('val',_question);
         };
-        loadMarkEdit();
+        //loadMarkEdit();
     });
 
 }
@@ -134,7 +134,7 @@ function removeSection(element){
     $('#'+element.id).remove();
 }
 function addElement(section_id,question_id,isUpdate){
-    //console.log('addElement',section_id,question_id);
+    //console.log('addElement');
 
     if(question_id == null){
         content.push({
@@ -189,7 +189,6 @@ function countMark(sec_id,ques_id,isAdd){
         async: false
     }).done(function  (result) {
             result = JSON.parse(JSON.stringify(result));
-        //console.log($('#secTotalQues_' + sec_id).text());
             var _countQuestionSection = Number($('#secTotalQues_'+sec_id).text());
             var _markSection = Number($('#secTotalMark_'+sec_id).text());
             var _total_mark = Number($('#total_mark').val());
@@ -205,13 +204,11 @@ function countMark(sec_id,ques_id,isAdd){
                 _total_mark = _total_mark - Number(result.mark);
                 _total_question = _total_question - Number(result.count);
             }
-
             $('#secTotalQues_'+sec_id).text(_countQuestionSection.toString());
             $('#secTotalMark_'+sec_id).text(_markSection.toFixed(1).toString());
 
             $('#total_mark').val(_total_mark.toFixed(1));
             $('#total_question').val(_total_question);
-        //console.log($('#secTotalQues_' + sec_id).text());
         });
 
 }
@@ -226,27 +223,33 @@ function getInfoMarkCount(){
             data: JSON.stringify(_content)
         }).done(function(result){
             dataMarkCount = result;
+            loadMarkEdit();
         });
 
     }
 }
 function loadMarkEdit(){
-    //console.log(222222);
+    var totalMark = 0;
+    var totalQuestion = 0;
     if (_content.length > 0){
-        _content.map(function (_con) {
-
+        _content.map(function (_section) {
             var countQues = 0;
             var markOfSec = 0;
-            _con['questions'].map(function (_ques_id) {
+            _section['questions'].map(function (_ques_id) {
                 dataMarkCount.map(function (_val) {
                     if (_val.question_id == _ques_id){
                         markOfSec += Number(_val.mark);
                         countQues++;
+                        //for all exam
+                        totalQuestion++;
+                        totalMark += Number(_val.mark);
                     }
-                })
+                });
             });
-            $('#secTotalQues_'+_con.section_id).text(countQues.toString());
-            $('#secTotalMark_'+_con.section_id).text(markOfSec.toFixed(1).toString());
+            $('#secTotalQues_'+_section.section_id).text(countQues);
+            $('#secTotalMark_'+_section.section_id).text(markOfSec.toFixed(1).toString());
         });
     }
+    $('#total_mark').val(totalMark.toFixed(1));
+    $('#total_question').val(totalQuestion);
 }

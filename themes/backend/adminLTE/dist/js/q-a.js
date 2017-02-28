@@ -160,7 +160,7 @@ function addAnswer(){
 }
 // reset
 function resetAnswer(){
-    $('#answerMark').val(1);
+    $('#answerMark').val(0.2);
     $('#answerTime').val(1);
     $('#layout').val(0);
     CKEDITOR.instances['answerContent'].setData('');
@@ -177,6 +177,7 @@ function resetAnswer(){
     $('#editQuestionBtn').addClass('hidden');
     $('#addQuestionBtn').removeClass('hidden');
     renderEditAnswerChoose();
+    currentAnswerId = '';
 }
 
 function renderChapterLesson(chapter_id,lesson){

@@ -647,8 +647,7 @@ module.exports = function (controller,component,app) {
 
     };
     controller.dataMarkCount = function (req,res) {
-        let data = [];
-        data = req.body;
+        let data = req.body || [];
         let questions = [];
         data.map(function (_elemment) {
             _elemment.questions.map(function (_ques) {
@@ -663,7 +662,7 @@ module.exports = function (controller,component,app) {
                 }
             },
             attributes : ['question_id','id','mark'],
-            group : ['id','mark'],
+            //group : ['id','mark'],
             raw: true
         }).then(function (result) {
             res.jsonp(result)

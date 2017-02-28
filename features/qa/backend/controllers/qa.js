@@ -341,17 +341,17 @@ module.exports = function (controller,component,app) {
                 });
         })
         .then(function (count) {
-            let answers = [];
+            let _answers = [];
             try{
-                answers =  JSON.parse(data.answers);
+                _answers =  JSON.parse(data.answers);
             }catch(err){
-                answers = []
+                _answers = []
             }
             let answerPromise = [];
-            if (answers.length > 0){
-                answers.map(function(answer){
-                    answer.question_id = questionId;
-                    answerPromise.push(app.models.answer.create(answer));
+            if (_answers.length > 0){
+                _answers.map(function(_answer){
+                    _answer.question_id = questionId;
+                    answerPromise.push(app.models.answer.create(_answer));
                 });
             }else{
                 return null;
@@ -363,7 +363,7 @@ module.exports = function (controller,component,app) {
             res.redirect(baseRoute+'/choice/'+questionId);
         })
         .catch(function (err) {
-                console.log(err);
+                //console.log(err.message);
             if (err.name == ArrowHelper.UNIQUE_ERROR) {
                 req.flash.error('Tiêu đề đã được sử dụng vui lòng nhập tiêu đề khác !');
             } else {
