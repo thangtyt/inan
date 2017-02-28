@@ -545,6 +545,7 @@ module.exports = function (controller,component,app) {
         }).catch(function (err) {
             //console.log(err);
             //logger.error(err.message);
+            req.flash.error("Không lấy được danh sách các câu hỏi được báo lỗi !");
             res.backend.render('listReport',{
                 title : 'Danh sách câu hỏi bị lỗi ',
                 toolbar : toolbar
@@ -632,7 +633,7 @@ module.exports = function (controller,component,app) {
         let user_id = req.user.id;
         let reportId = req.params['reportId'];
         let data = req.body;
-        console.log(JSON.stringify(data,2,2));
+        //console.log(JSON.stringify(data,2,2));
         if (data.report_status == 2){
             app.models.questionReport.update({
                     status : 2

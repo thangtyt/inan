@@ -85,8 +85,8 @@ module.exports = function (controller, component, app) {
                 queryString: (req.url.indexOf('?') == -1) ? '' : ('?' + req.url.split('?').pop())
             });
         }).catch(function (err) {
-            logger.error(err);
-            req.flash.error('Name: ' + err.name + '<br />' + 'Message: ' + err.message);
+            //logger.error(err);
+            req.flash.error('Không lấy được danh sách danh mục !');
 
             // Render view if has error
             res.backend.render('category/index', {

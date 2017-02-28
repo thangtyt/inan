@@ -157,8 +157,8 @@ module.exports = function (controller, component, app) {
                 baseRoute: baseRoute
             });
         }).catch(function (err) {
-            logger.error(err);
-            req.flash.error('Name: ' + err.name + '<br />' + 'Message: ' + err.message);
+            //logger.error(err);
+            req.flash.error('Không lấy được danh sách các trang page !');
 
             // Render view if has error
             res.backend.render('page/index', {

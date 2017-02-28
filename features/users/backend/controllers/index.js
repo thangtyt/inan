@@ -163,7 +163,7 @@ module.exports = function (controller, component, app) {
             });
         }).catch(function (error) {
             logger.error(error);
-            req.flash.error('Name: ' + error.name + '<br />' + 'Message: ' + error.message);
+            req.flash.error('Không lấy được danh sách người dùng.');
             res.backend.render('index', {
                 title: __('m_users_backend_controllers_index_list'),
                 totalPage: 1,

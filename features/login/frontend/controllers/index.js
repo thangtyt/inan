@@ -172,7 +172,7 @@ module.exports = function (controller, component, app) {
     controller.requireToken = function (req,res) {
         res.status(499);
         res.jsonp({
-            message: 'Token is required'
+            message: 'Yêu cầu đăng nhập hệ thống.'
         })
     };
     controller.jwtSuccess = function (req,res) {
@@ -184,7 +184,7 @@ module.exports = function (controller, component, app) {
             user.role_ids = [];
             res.status(200);
             res.jsonp({
-                message: 'login successful !',
+                message: 'Đăng nhập thành công !',
                 token: jwtSign(jwt_conf,user,host)
             })
         }else{
@@ -194,7 +194,7 @@ module.exports = function (controller, component, app) {
     controller.jwtFailure = function (req,res) {
         res.status(400);
         res.jsonp({
-            message: 'Login failure'
+            message: 'Đăng nhập không thành công.'
         })
     };
     controller.getUserInfo = function (req,res) {
@@ -234,7 +234,7 @@ module.exports = function (controller, component, app) {
                 //console.log(err);
             res.status(503);
             res.jsonp({
-                user: null
+                message : err.message
             })
         })
 
@@ -248,7 +248,7 @@ module.exports = function (controller, component, app) {
             if(user){
                 res.status(300);
                 res.jsonp({
-                    error: "Email đã được đăng ký ! Vui lòng nhập email khác !"
+                    message: "Email đã được đăng ký ! Vui lòng nhập email khác !"
                 })
             }else{
                 return app.feature.users.actions.create({
@@ -272,7 +272,7 @@ module.exports = function (controller, component, app) {
         .catch(function (err) {
             res.status(503);
             res.jsonp({
-                error: err.message
+                message: err.message
 
             })
         });
@@ -318,7 +318,7 @@ module.exports = function (controller, component, app) {
             }).catch(function (err) {
                 //console.log(err);
                 res.status(451).jsonp({
-                    message: 'Error !!'
+                    message: 'Lỗi không đăng nhập được. Vui lòng đăng nhập lại !'
                 })
             })
         }else{
@@ -369,14 +369,14 @@ module.exports = function (controller, component, app) {
             .catch(function (err) {
                 res.status(503);
                 res.jsonp({
-                    error: 'Không thể thêm thông tin của user vui lòng nhập lại !'
+                    message: 'Không thể thêm thông tin của user vui lòng nhập lại !'
                 })
             })
 
         }else{
             res.status(503);
             res.jsonp({
-                error: 'Không có thông tin gửi lên !'
+                message: 'Không có thông tin gửi lên !'
             })
         }
 
@@ -448,7 +448,7 @@ module.exports = function (controller, component, app) {
                 }).catch(function (err) {
                     //console.log(err);
                     res.status(300).jsonp({
-                        message: err.message
+                        message: "Đăng nhập bằng Facebook không thành công. Vui lòng đăng nhập lại."
                     });
                 })
 

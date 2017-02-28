@@ -146,7 +146,7 @@ module.exports = function (controller,component,app) {
                 baseRoute: baseRoute
             })
         }).catch(function (err) {
-            req.flash.error(err.message);
+            req.flash.error('Không lấy được danh sách đề thi. Vui lòng thử lại');
             res.backend.render('list',{
                 title: 'Danh sách các đề thi',
                 toolbar : toolbar

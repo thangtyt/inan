@@ -103,7 +103,7 @@ module.exports = function (controller, component, app) {
         }).catch(function (err) {
             res.status(300);
             res.jsonp({
-                error: err.message
+                message: err.message
             })
         })
 
@@ -172,7 +172,7 @@ module.exports = function (controller, component, app) {
         }).catch(function (err) {
             res.status(404);
             res.jsonp({
-                error: err.message
+                message: err.message
             })
         })
 
@@ -195,13 +195,13 @@ module.exports = function (controller, component, app) {
                 res.status(200).jsonp(result);
             } else {
                 res.status(404).jsonp({
-                    error: 'not found !'
+                    message: 'Không tìm thấy đáp án của câu hỏi !'
                 })
             }
 
         }).catch(function (err) {
             res.status(404).jsonp({
-                error: err.message
+                message: err.message
             })
         })
     };
@@ -222,7 +222,7 @@ module.exports = function (controller, component, app) {
             res.jsonp(exams);
         }).catch(function (err) {
             res.status(404).jsonp({
-                error: err.message
+                message: err.message
             });
         })
     };
@@ -260,16 +260,16 @@ module.exports = function (controller, component, app) {
                     });
                     res.status(200).jsonp(answerReturn);
                 } else {
-                    throw new Error('Not Found answers');
+                    throw new Error('Không tìm thấy câu trả lời !');
                 }
             }).catch(function (err) {
                 res.status(404).jsonp({
-                    error: err.message
+                    message: err.message
                 })
             })
         } else {
             res.status(404).jsonp({
-                error: 'Not found answers'
+                message: 'Không tìm thấy câu trả lời !'
             })
         }
     };
@@ -405,12 +405,12 @@ module.exports = function (controller, component, app) {
             //tra ve loi
             .catch(function (err) {
                 res.status(499).jsonp({
-                    error: err.message
+                    message: err.message
                 })
             })
         } else {
             res.status(411).jsonp({
-                error: 'Not found data to update !'
+                message: 'Không tìm thấy dữ liệu để cập nhật !'
             })
         }
     };
@@ -440,7 +440,7 @@ module.exports = function (controller, component, app) {
                     })
                 ])
             }else{
-                throw new Error('You did not do this exam');
+                throw new Error('Bạn chưa làm bài thi này !');
             }
         }).then(function (lists) {
             let exam = lists[0];
@@ -546,7 +546,7 @@ module.exports = function (controller, component, app) {
                 res.status(200).jsonp(result);
             })
         }).catch(function (err) {
-            res.status('204').jsonp({error : err.message});
+            res.status('204').jsonp({message : err.message});
         })
 
     };
@@ -782,7 +782,7 @@ module.exports = function (controller, component, app) {
         }).catch(function (err) {
             res.status(300);
             res.jsonp({
-                error: err.message
+                message: "Lỗi khi lấy danh sách các đề thi đã lưu !"
             })
         });
     }

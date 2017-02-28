@@ -143,7 +143,7 @@ module.exports = function (controller,component,app) {
             })
         }).catch(function (err) {
             //console.log(err);
-            req.flash.error(err.message);
+            req.flash.error("Không lấy được danh sách các phần quà tặng !");
             res.backend.render('list', {
                 title: 'Danh sách các phần quà tặng',
                 toolbar: toolbar

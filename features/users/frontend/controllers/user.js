@@ -91,7 +91,7 @@ module.exports = function (controller, component, app) {
                 })
                 .catch(function (err) {
                     res.status(500).jsonp({
-                        message: err.message
+                        message: "Không cập nhật được ảnh đại diện. Vui lòng cập nhật lại !"
                     })
                 });
             }
@@ -145,7 +145,9 @@ module.exports = function (controller, component, app) {
             result[1].full_name = result[0].display_name;
             res.status(200).jsonp(result[1]);
         }).catch(function (err) {
-            res.status(500).jsonp(err.message);
+            res.status(500).jsonp({
+                message: 'Không cập nhật được thông tin. Vui lòng cập nhật lại !'
+            });
         })
     }
 

@@ -94,11 +94,11 @@ module.exports = function (controller, component, app) {
                 baseRoute: baseRoute
             });
         }).catch(function (err) {
-            logger.error(err);
-            req.flash.error('Name: ' + err.name + '<br />' + 'Message: ' + err.message);
+            //logger.error(err);
+            req.flash.error('Không lấy được danh sách các dạng câu hỏi.');
 
             // Render view if has error
-            res.backend.render('section/list', {
+            res.backend.render('list', {
                 title: 'Các dạng câu hỏi',
                 totalPage: 1,
                 items: null,
