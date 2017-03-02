@@ -340,13 +340,15 @@ module.exports = function (controller, component, app) {
             .then(function (userInfo) {
                 let result = userInfo[0];
                 //console.log(JSON.stringify(result,2,2));
-                score = Number(data.mark).toFixed(2) ;
+                score = Number(data.mark) ;
                 //score = score * Number(data.level);
                 //todo: check userInfo
-                if (Number(score) < Number(data.total_mark / 2).toFixed(2) ) {
-                    score = 0;
+                if (Number(score) > 5 ) {
+                    score = Number(result.score) + Number(score);
+                }else{
+                    score = result.score;
                 }
-                score = Number(result.score) + Number(score);
+                console.log(score);
                 //cap nhat diem so tong cua user
                 return result.updateAttributes({
                     score: score
