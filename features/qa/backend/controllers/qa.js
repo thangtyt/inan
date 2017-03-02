@@ -737,7 +737,7 @@ module.exports = function (controller,component,app) {
                 mark+=Number(ans.mark);
                 count++;
             });
-                mark = Math.round(mark * 10) / 10;
+                mark = Math.round(mark * 100) / 100;
             res.json({
                 mark: mark,
                 count: count

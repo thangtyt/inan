@@ -205,9 +205,9 @@ function countMark(sec_id,ques_id,isAdd){
                 _total_question = _total_question - Number(result.count);
             }
             $('#secTotalQues_'+sec_id).text(_countQuestionSection.toString());
-            $('#secTotalMark_'+sec_id).text(_markSection.toFixed(1).toString());
+            $('#secTotalMark_'+sec_id).text(parseFloat(_markSection.toFixed(2)));
 
-            $('#total_mark').val(_total_mark.toFixed(1));
+            $('#total_mark').val(parseFloat(_total_mark.toFixed(2)));
             $('#total_question').val(_total_question);
         });
 
@@ -247,9 +247,9 @@ function loadMarkEdit(){
                 });
             });
             $('#secTotalQues_'+_section.section_id).text(countQues);
-            $('#secTotalMark_'+_section.section_id).text(markOfSec.toFixed(1).toString());
+            $('#secTotalMark_'+_section.section_id).text(parseFloat(markOfSec.toFixed(2)));
         });
     }
-    $('#total_mark').val(totalMark.toFixed(1));
+    $('#total_mark').val(parseFloat(totalMark.toFixed(2)));
     $('#total_question').val(totalQuestion);
 }

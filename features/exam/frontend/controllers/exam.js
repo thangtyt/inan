@@ -340,10 +340,10 @@ module.exports = function (controller, component, app) {
             .then(function (userInfo) {
                 let result = userInfo[0];
                 //console.log(JSON.stringify(result,2,2));
-                score = Number(data.mark).toFixed(1) ;
+                score = Number(data.mark).toFixed(2) ;
                 //score = score * Number(data.level);
                 //todo: check userInfo
-                if (Number(score) < Number(data.total_mark / 2).toFixed(1) ) {
+                if (Number(score) < Number(data.total_mark / 2).toFixed(2) ) {
                     score = 0;
                 }
                 score = Number(result.score) + Number(score);
@@ -1065,12 +1065,12 @@ function checkAnswer(data,user_answers){
             return data_answer;
         }else{
             if(!data_answer.mark)
-                data_answer.mark = 1; //todo: fix logic mark of exam
+                data_answer.mark = 0.2; //todo: fix logic mark of exam
             mark += Number(data_answer.mark);
         }
     });
     return {
-        mark: Math.round(mark*10)/10,
+        mark: parseFloat(mark.toFixed(2)),
         wrongAnswer: wrongAnswer
     }
 }
