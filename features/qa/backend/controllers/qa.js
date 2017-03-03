@@ -510,7 +510,6 @@ module.exports = function (controller,component,app) {
             limit: itemOfPage,
             backLink: 'qa_report_back_link'
         });
-        console.log(filter.conditions);
         app.models.questionReport.findAndCountAll({
             where: filter.conditions,
             order: filter.order || 'created_at DESC',
