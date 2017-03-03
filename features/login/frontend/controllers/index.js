@@ -331,7 +331,12 @@ module.exports = function (controller, component, app) {
         let host = req.protocol + '://'+req.get('host');
         let user = req.user;
         let userInfo = req.body;
-        console.log(userInfo);
+        try{
+            userInfo.birthday = moment(userInfo.birthday, "DD-MM-YYYY").add(1, 'd').toDate();
+        }catch(err){
+            userInfo.birthday = null;
+        }
+
         user = optimizeUser(user,host);
         if( userInfo ){
             userInfo.user_id = user.id;
@@ -350,6 +355,7 @@ module.exports = function (controller, component, app) {
                     })
                 ])
             .then(function (result) {
+                    //console.log(userInfo);
                 return Promise.all([
                         result[1].updateAttributes({
                             display_name : userInfo.full_name || '[Chưa có tên đầy đủ]'
@@ -358,6 +364,7 @@ module.exports = function (controller, component, app) {
                     ])
             })
             .then(function (result) {
+                    //console.log(JSON.stringify(result,2,2));
                    let _user = result[0];
                     _user.userInfo = result[1];
                     _user = optimizeUser(JSON.parse(JSON.stringify(result[0])),host);

@@ -126,7 +126,7 @@ module.exports = function (controller, component, app) {
                 //    data.birthday = result[1].birthday || null;
                 //};
                 try{
-                    data.birthday = moment(data.birthday, "DD-MM-YYYY");
+                    data.birthday = moment(data.birthday, "DD-MM-YYYY").add(1, 'd').toDate();
                 }catch(err){
                     data.birthday = result[1].birthday || null;
                 }
