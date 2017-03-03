@@ -101,6 +101,7 @@ module.exports = function (controller, component, app) {
         let host = req.protocol + '://'+req.get('host');
         let user = req.user;
         let data = req.body;
+        console.log(data);
         if (!_.has(data,'full_name')){
             data.full_name = user.full_name
         }
@@ -119,11 +120,16 @@ module.exports = function (controller, component, app) {
         ])
 
         .then(function (result) {
-                if (_.isDate(data.birthday)){
+                //if (_.isDate(data.birthday)){
+                //    data.birthday = moment(data.birthday, "DD-MM-YYYY");
+                //}else{
+                //    data.birthday = result[1].birthday || null;
+                //};
+                try{
                     data.birthday = moment(data.birthday, "DD-MM-YYYY");
-                }else{
+                }catch(err){
                     data.birthday = result[1].birthday || null;
-                };
+                }
             return Promise.all([
                 result[0].updateAttributes({
                     display_name: data.full_name
