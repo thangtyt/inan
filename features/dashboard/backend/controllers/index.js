@@ -34,9 +34,9 @@ module.exports = function (cont, comp, app) {
         ]).then(function (results) {
             results[1].rows.filter(function (_exam) {
                 _exam.icon = JSON.parse(_exam['subject.icons']).icon.default;
-                console.log(_exam);
                 return _exam;
-            })
+            });
+            console.log(results);
             res.backend.render('index', {
                 questionStatistic: results[2],
                 examStatistic: results[1].count,
