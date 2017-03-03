@@ -162,10 +162,7 @@ module.exports = function (controller, component, app) {
 
     }
     controller.notHavePermission = function (req, res) {
-        res.jsonp({
-            status: 403,
-            message: 'The request was a valid request'
-        })
+        res.render('_403');
     }
 
 };

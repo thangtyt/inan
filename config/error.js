@@ -43,11 +43,14 @@ module.exports = {
         redirect: '500'
     },
     error: {
+        "403": {
+            render: "/themes/backend/adminLTE/layouts/_403.twig"
+        },
         "404": {
-            render: "/themes/frontend/:frontendTheme/layouts/_404.twig"
+            render: "/themes/backend/adminLTE/layouts/_404.twig"
         },
         "500": {
-            render: "/themes/frontend/:frontendTheme/layouts/_500.twig"
+            render: "/themes/backend/adminLTE/layouts/_500.twig"
         }
     }
 };

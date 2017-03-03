@@ -8,8 +8,7 @@ module.exports = function (component, app) {
         "/": {
             get: {
                 handler: controller.view,
-                authenticate: true,
-
+                authenticate: true
             }
         }
     }

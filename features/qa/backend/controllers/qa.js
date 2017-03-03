@@ -443,7 +443,7 @@ module.exports = function (controller,component,app) {
         let itemOfPage = app.getConfig('pagination').numberItem || 10;
         //start create toolbar
         let toolbar = new ArrowHelper.Toolbar();
-        toolbar.addRefreshButton(baseRoute+'/choice');
+        toolbar.addRefreshButton(baseRoute+'/report');
         toolbar.addSearchButton(isAllow(req, permission.index));
         toolbar = toolbar.render();
         //end toolbar
@@ -486,7 +486,7 @@ module.exports = function (controller,component,app) {
                 },
                 filter : {
                     type : 'select',
-                    filter_key : 'status',
+                    filter_key : 'questionReport.status',
                     data_source : [
                         {
                             name : 'Chờ sửa',
@@ -510,6 +510,7 @@ module.exports = function (controller,component,app) {
             limit: itemOfPage,
             backLink: 'qa_report_back_link'
         });
+        console.log(filter.conditions);
         app.models.questionReport.findAndCountAll({
             where: filter.conditions,
             order: filter.order || 'created_at DESC',
@@ -543,7 +544,6 @@ module.exports = function (controller,component,app) {
                 baseRoute: baseRoute+'/report/'
             })
         }).catch(function (err) {
-            //console.log(err);
             //logger.error(err.message);
             req.flash.error("Không lấy được danh sách các câu hỏi được báo lỗi !");
             res.backend.render('listReport',{
