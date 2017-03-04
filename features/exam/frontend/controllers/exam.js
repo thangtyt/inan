@@ -276,6 +276,7 @@ module.exports = function (controller, component, app) {
     controller.submitExam = function (req, res) {
         let user = req.user;
         let data = req.body;
+        console.log(data);
         let answers = [];
         let wrongAnswer = [];
         data.user_id = user.id;
@@ -406,6 +407,7 @@ module.exports = function (controller, component, app) {
             })
             //tra ve loi
             .catch(function (err) {
+                    console.log(err);
                 res.status(499).jsonp({
                     message: err.message
                 })
