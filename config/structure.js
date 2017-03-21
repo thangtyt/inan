@@ -75,8 +75,7 @@ module.exports = {
                 path: {
                     'name': 'frontend',
                     'folder': 'frontend',
-                    'file': 'route.js',
-                    'prefix': '/api'
+                    'file': 'route.js'
                 }
             }
         ]

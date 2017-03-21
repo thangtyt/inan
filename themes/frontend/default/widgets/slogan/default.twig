@@ -1,0 +1,6 @@
+{% if widget %}
+    <div class="dividerHeading">
+        <h4><span>{{ widget.title }}</span></h4>
+    </div>
+    {{ widget.desc | safe }}
+{% endif %}

@@ -1,0 +1,13 @@
+{% if widget %}
+<div class="widget_title">
+    <h4><span>Liên Hệ</span></h4>
+</div>
+<div class="widget_content">
+    <p>{{ widget.desc }}</p>
+    <ul class="contact-details-alt">
+        <li><i class="fa fa-map-marker"></i> <p><strong>Địa chỉ </strong>: {{ widget.address }}</p></li>
+        <li><i class="fa fa-user"></i> <p><strong>Điện thoại </strong>: {{ widget.phone }}</p></li>
+        <li><i class="fa fa-envelope"></i> <p><strong>Email</strong>: <a href="#">{{ widget.email }}</a></p></li>
+    </ul>
+</div>
+{% endif %}

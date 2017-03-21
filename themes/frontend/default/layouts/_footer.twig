@@ -1,0 +1,36 @@
+<footer class="footer">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6 col-md-6 col-lg-6">
+                {{ getSidebar("footer-info") | async | safe }}
+            </div>
+            <div class="col-sm-6 col-md-6 col-lg-6">
+                {{ getSidebar("footer-map") | async | safe }}
+            </div>
+        </div>
+    </div>
+</footer>
+<!--end footer-->
+
+<section class="footer_bottom">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6 ">
+                <p class="copyright">&copy; Copyright 2014 Eve | Theme design by  <a href="http://www.jqueryrain.com/">jQuery Rain</a></p>
+            </div>
+
+            <div class="col-lg-6 ">
+                <div class="footer_social">
+                    {#<ul class="footbot_social">#}
+                        {#<li><a class="fb" href="#." data-placement="top" data-toggle="tooltip" title="Facbook"><i class="fa fa-facebook"></i></a></li>#}
+                        {#<li><a class="twtr" href="#." data-placement="top" data-toggle="tooltip" title="Twitter"><i class="fa fa-twitter"></i></a></li>#}
+                        {#<li><a class="dribbble" href="#." data-placement="top" data-toggle="tooltip" title="Dribbble"><i class="fa fa-dribbble"></i></a></li>#}
+                        {#<li><a class="skype" href="#." data-placement="top" data-toggle="tooltip" title="Skype"><i class="fa fa-skype"></i></a></li>#}
+                        {#<li><a class="rss" href="#." data-placement="top" data-toggle="tooltip" title="RSS"><i class="fa fa-rss"></i></a></li>#}
+                    {#</ul>#}
+                    <p class="copyright">Trang web được làm bởi <a href="#">thangtyt@gmail.com</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

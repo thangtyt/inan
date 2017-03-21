@@ -1,0 +1,23 @@
+{% if posts %}
+    <div class="slider-wrapper">
+        <div class="slider">
+            {#<div class="fs_loader"></div>#}
+            {% for post in posts %}
+            <div class="slide">
+                <img src="/img/background.jpg" data-in="fade" data-out="fade" width="1920" height="450"/>                                     <!--3- slide background-->
+
+                <p class="claim light-pink" data-position="30,250" data-in="top" data-out="top" data-ease-in="easeOutBounce" data-delay="600">{{ post.title | title(100,'') }}</p>
+
+
+                <div class="para-3"	data-position="100,250" data-in="left" data-out="right" data-delay="1000">
+                    {{ post.intro_text | title(300) }}
+                </div>
+                <img src="{{ post.image }}" width="600" height="600" data-position="8,1240" data-in="bottomLeft" data-delay="500" data-out="fade" style="width:auto; height:auto">
+
+                <a href="#"	class="slider-read" data-position="360,250" data-in="bottom"  data-out="Right" data-delay="1500">Xem Chi tiết</a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endif %}
+

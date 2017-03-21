@@ -1,0 +1,32 @@
+{% if widget %}
+    <div class="widget_title">
+        <h4><span>Bản đồ</span></h4>
+    </div>
+    <div class="widget_content">
+        <div id="map"></div>
+        <style>
+            #map {
+                width: 100%;
+                height: 200px;
+                background-color: grey;
+            }
+        </style>
+        <script>
+            var a = {{ widget.a }};
+            var b = {{ widget.b }};
+            function initMap() {
+                var map = new google.maps.Map(document.getElementById('map'), {
+                    zoom: 16,
+                    center: new google.maps.LatLng(Number(a), Number(b))
+                });
+                var marker = new google.maps.Marker({
+                    position: new google.maps.LatLng(Number(a), Number(b)),
+                    map: map
+                });
+            }
+        </script>
+        <script async defer
+                src="https://maps.googleapis.com/maps/api/js?key=AIzaSyClArxB0egaptbEbV24m57_fuRVe-NNnzw&callback=initMap">
+        </script>
+    </div>
+{% endif %}

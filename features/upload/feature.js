@@ -14,10 +14,6 @@ module.exports = {
             name: 'upload_manage_all',
             title: 'Manage all files'
         }
-    ],
-    backend_menu: {
-        title:"File Manager",
-        icon: "fa fa-file"
-    }
+    ]
 };
 

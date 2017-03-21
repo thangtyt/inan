@@ -1,0 +1,43 @@
+<section class="latest_work">
+    <div class="container">
+        <div class="row sub_content">
+            <div class="carousel-intro">
+                <div class="col-md-12">
+                    <div class="dividerHeading">
+                        <h4><span>{{ widget.title }}</span></h4>
+                    </div>
+                    <div class="carousel-navi">
+                        <div id="work-prev" class="arrow-left jcarousel-prev"><i class="fa fa-angle-left"></i></div>
+                        <div id="work-next" class="arrow-right jcarousel-next"><i class="fa fa-angle-right"></i></div>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+
+            <div class="jcarousel recent-work-jc">
+                <ul class="jcarousel-list">
+                    <!-- Recent Work Item -->
+                    {% for post in posts %}
+                    <li class="col-sm-3 col-md-3 col-lg-3">
+                        <div class="recent-item">
+                            <figure>
+                                <div class="touching medium">
+                                    <img src="{{ post.image }}" alt="" />
+                                </div>
+                                <div class="option">
+                                    {#<a href="/frontend/default/assets/images/portfolio/full/portfolio_1.png" class="hover-zoom mfp-image" ><i class="fa fa-search"></i></a>#}
+                                    <a href="/blog/posts/{{ post.id }}/{{ post.alias }}" class="hover-link"><i class="fa fa-link"></i></a>
+                                </div>
+                                <figcaption class="item-description">
+                                    <h5>{{ post.title }}</h5>
+                                    {#<span>Technology</span>#}
+                                </figcaption>
+                            </figure>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>

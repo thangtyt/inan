@@ -1,9 +1,7 @@
 'use strict';
 
 let logger = require('arrowjs').logger;
-let jwt = require('jsonwebtoken');
 module.exports = function (passport, app) {
-    let jwt_conf = app.getConfig('jwt');
     return {
         serializeUser: function (user, done) {
             done(null, user.id);
@@ -88,33 +86,6 @@ module.exports = function (passport, app) {
                 successRedirect: '/api/jwt',
                 failureRedirect: '/api/jwt/failure',
                 failureFlash: true
-            }
-        },
-        front_user_register: {
-            strategy: 'local',
-            option: {
-                successRedirect: '/api/register/success',
-                failureRedirect: '/api/register/failure',
-                failureFlash: false
-            }
-        },
-        facebook_login: {
-            strategy: 'facebook',
-            option: {
-                successRedirect: '/api/jwt',
-                failureRedirect: '/api/jwt/failure',
-                failureFlash: true
-
-            }
-        },
-        google_login: {
-            strategy: 'google',
-            option: {
-                successRedirect: '/api/jwt',
-                failureRedirect: '/api/jwt/failure',
-                failureFlash: true,
-                scope: 'https://www.googleapis.com/auth/userinfo.email'
-
             }
         }
     }

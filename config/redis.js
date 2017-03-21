@@ -4,9 +4,9 @@ module.exports = {
     redis: {
         host: 'localhost',
         port: '6379',
-        type: 'fakeredis'
+        type: 'redis'
     },
-    redis_prefix: 'arrowCMS_',
+    redis_prefix: 'ctyin_',
     redis_key: {
         configs: 'site_setting',
         features: 'all_features',

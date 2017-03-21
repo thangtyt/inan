@@ -1,0 +1,12 @@
+{% if widget %}
+    <div class="widget widget_search">
+        <div class="site-search-area">
+            <form method="get" id="site-searchform" action="/blog/posts/search">
+                <div>
+                    <input class="input-text" name="s" id="s" placeholder="Nhập từ khóa ..." type="text" />
+                    <input id="searchsubmit" value="Tìm kiếm" type="submit" />
+                </div>
+            </form>
+        </div><!-- end site search -->
+    </div>
+{% endif %}

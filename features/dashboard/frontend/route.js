@@ -6,8 +6,7 @@ module.exports = function (component) {
     return {
         "/": {
             get: {
-                handler: controller.index,
-                authenticate: true
+                handler: controller.index
             }
         }
     }

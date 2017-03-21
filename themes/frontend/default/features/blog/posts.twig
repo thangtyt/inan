@@ -1,0 +1,117 @@
+{% extends '_layout.' + getConfig('viewExtension') %}
+
+{% block content %}
+        <section class="page_head">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <h2>Blog Medium Images</h2>
+                        <nav id="breadcrumbs">
+                            <ul>
+                                <li>You are here:</li>
+                                <li><a href="/">Home</a></li>
+                                <li><a href="/blog/posts">Tất cả sản phẩm</a></li>
+                                <li>Tất cả sản phẩm</li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="content blog">
+            <div class="container">
+                <div class="row">
+                    <div class="col-xs-12 col-sm-8 col-md-8 col-lg-8">
+                        <div class="blog_medium">
+                            {% for post in posts %}
+                            <article class="post">
+                                <div class="post_date">
+                                    <span class="day">{{ post.created_at | moment('d') }}</span>
+                                    <span class="month">{{ post.created_at | moment('MMM') }}</span>
+                                </div>
+                                <figure class="post_img">
+                                    <a href="/blog/posts/{{ post.id }}/{{ post.alias }}">
+                                        <img src="{{ post.image }}" alt="blog post">
+                                    </a>
+                                </figure>
+                                <div class="post_content">
+                                    <div class="post_meta">
+                                        <h2>
+                                            <a href="/blog/posts/{{ post.id }}/{{ post.alias }}">{{ post.title }}</a>
+                                        </h2>
+                                        <div class="metaInfo">
+                                            <span><i class="fa fa-user"></i> By <a href="#">{{ post['user.display_name'] }}</a> </span>
+                                        </div>
+                                    </div>
+                                    <p>{{ post.intro_text | safe | title(400) }}</p>
+                                    <a class="btn btn-small btn-default" href="/blog/posts/{{ post.id }}/{{ post.alias }}">Chi tiết</a>
+
+                                </div>
+                            </article>
+                            {% endfor %}
+                        </div>
+                        <div class="col-lg-12 col-md-12 col-sm-12">
+                        {{ paginateLinks(totalPage, currentPage, baseURL,5,null,null,'pagination pull-left mrgt-0') | safe }}
+                        </div>
+
+                    </div>
+
+                    <!--Sidebar Widget-->
+                    <div class="col-xs-12 col-md-4 col-lg-4 col-sm-4">
+                        <div class="sidebar">
+                            {{ getSidebar("right-sidebar") | async | safe }}
+                        </div>
+                    </div>
+                </div><!--/.row-->
+            </div> <!--/.container-->
+        </section>
+
+
+    {#<section id="blog" class="container">#}
+        {#<div class="blog">#}
+            {#<div class="row">#}
+                {#<div class="col-md-8">#}
+                    {#{% for post in posts %}#}
+                        {#<div class="blog-item">#}
+                            {#<div class="row">#}
+                                {#<div class="col-xs-12 col-sm-2 text-center">#}
+                                    {#<div class="entry-meta">#}
+                                        {#<span id="publish_date">#}
+                                            {#{{ post.published_at | moment("ll") }}#}
+                                        {#</span>#}
+                                    {#</div>#}
+                                {#</div>#}
+
+                                {#<div class="col-xs-12 col-sm-10 blog-content">#}
+                                    {#<a href="/blog/posts/{{ post.id }}/{{ post.alias }}"><img#}
+                                                {#class="img-responsive img-blog" src="{{ post.image }}" width="100%"#}
+                                                {#alt=""/></a>#}
+
+                                    {#<h2>#}
+                                        {#<a href="/blog/posts/{{ post.id }}/{{ post.alias }}l">{{ post.title | safe }}</a>#}
+                                    {#</h2>#}
+
+                                    {#<h3>{{ post.intro_text | safe }}</h3>#}
+                                    {#<a class="btn btn-primary readmore"#}
+                                       {#href="/blog/posts/{{ post.id }}/{{ post.alias }}">Read More <i#}
+                                                {#class="fa fa-angle-right"></i></a>#}
+                                {#</div>#}
+                            {#</div>#}
+                        {#</div><!--/.blog-item-->#}
+                    {#{% endfor %}#}
+
+                    {#<div class="text-center">#}
+                        {#{{ paginateLinks(totalPage, currentPage, baseURL) | safe }}#}
+                    {#</div>#}
+                {#</div>#}
+                {#<!--/.col-md-8-->#}
+
+                {#<aside class="col-md-4">#}
+                    {#{{ getSidebar("right-sidebar") | async | safe }}#}
+                {#</aside>#}
+            {#</div>#}
+            {#<!--/.row-->#}
+        {#</div>#}
+    {#</section><!--/#blog-->#}
+{% endblock %}

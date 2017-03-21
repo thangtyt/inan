@@ -40,6 +40,12 @@ module.exports = function (controller, component, app) {
         let postId = req.params.postId;
 
         app.feature.blog.actions.find({
+            include: [
+                {
+                    model : app.models.user,
+                    attributes : ['id','display_name']
+                }
+            ],
             where: {
                 id: postId,
                 type: 'post',

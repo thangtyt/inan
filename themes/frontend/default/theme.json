@@ -1,9 +1,59 @@
 {
-  "name": "default",
-  "version": "2.3.0",
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/almasaeed2010/AdminLTE.git"
+  "information": {
+    "theme_name": "Eve",
+    "theme_uri": "https://shapebootstrap.net/item/1524962-corlate-free-responsive-business-html-template",
+    "author": "jQuery Rain",
+    "author_email": "support@shapebootstrap.net",
+    "version": "1.0",
+    "description": "Free Responsive Business HTML Template",
+    "license": "GNU General Public License v2 or later",
+    "license_uri": "http://www.gnu.org/licenses/gpl-2.0.html",
+    "tag": "bootstrap, corporate, html, responsive, corlate"
   },
-  "license": "MIT"
+  "sidebars": [
+    {
+      "name": "right-sidebar",
+      "title": "Khu vực bên phải"
+    },
+    {
+      "name": "top-products",
+      "title": "3 sản phẩm nổi bật"
+    },
+    {
+      "name": "main-menu",
+      "title": "Danh mục chính"
+    },
+    {
+      "name": "slider",
+      "title": "Slider"
+    },
+    {
+      "name": "recent_posts",
+      "title": "Khu vực các sản phẩm khác"
+    },
+    {
+      "name": "header",
+      "title": "Thông tin header"
+    },
+    {
+      "name": "footer-info",
+      "title": "Thông tin công ty"
+    },
+    {
+      "name": "footer-map",
+      "title": "Bản đồ"
+    },
+    {
+      "name": "client",
+      "title": "Đối tác"
+    },
+    {
+      "name": "slogan",
+      "title": "Phương châm"
+    },
+    {
+      "name": "slogan2",
+      "title": "Cam kết"
+    }
+  ]
 }

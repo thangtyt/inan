@@ -1,0 +1,28 @@
+{% if widget %}
+    {% macro render_child(mn, menu_data ,isSubMenus) %}
+        <li class="">
+            <a href="{{ menu_data.link }}">
+                <i class="fa fa-angle-right"></i>
+                {{ menu_data.name }}
+            </a>
+        </li>
+    {% endmacro %}
+<div class="widget widget_categories">
+    <div class="widget_title">
+        <h4><span>{{ widget.title }}</span></h4>
+    </div>
+    <ul class="arrows_list">
+        {% for mn in menuOrder %}
+            {% set menu_data = mn.id|get_menu_data(menuItems) %}
+            {{ render_child(mn, menu_data,false) }}
+        {% endfor %}
+        {#<li><a href="#"><i class="fa fa-angle-right"></i> Grapic Design (10)</a></li>#}
+        {#<li><a href="#"><i class="fa fa-angle-right"></i> Web Design & Development (25)</a></li>#}
+        {#<li><a href="#"><i class="fa fa-angle-right"></i> Photography (29)</a></li>#}
+        {#<li><a href="#"><i class="fa fa-angle-right"></i> Custom Illustrations (19)</a></li>#}
+        {#<li><a href="#"><i class="fa fa-angle-right"></i> Wordpress Themes(38)</a></li>#}
+        {#<li><a href="#"><i class="fa fa-angle-right"></i> Videography (33)</a></li>#}
+    </ul>
+</div>
+
+{% endif %}

@@ -2,9 +2,9 @@
 
 module.exports = {
     app: {
-        title: 'TKBooks',
-        description: 'Hệ thống thi thử TKBOOKS',
-        keywords: 'exams ',
+        title: 'Tên Cty In ...',
+        description: 'Cong ty TTHH',
+        keywords: 'in an',
         logo: '',
         icon: ''
     },
@@ -12,7 +12,7 @@ module.exports = {
     language: 'en_US',
     uploadPath: '/fileman/uploads',
     long_stack: false,
-    port: process.env.PORT || 8000,
+    //port: process.env.PORT || 8000,
     admin_prefix: 'admin',
     ArrowHelper: '/library/js_utilities/',
     token : {

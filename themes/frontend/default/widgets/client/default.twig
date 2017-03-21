@@ -1,0 +1,8 @@
+{% if widget %}
+    <li class="col-sm-3 col-md-3 col-lg-3">
+        <a target="_blank" href="{{ widget.url }}"
+            data-placement="bottom" data-toggle="tooltip" title="{{ widget.name }}" >
+                <img class="clients" src="{{ widget.image_url }}" alt="" />
+        </a>
+    </li>
+{% endif %}

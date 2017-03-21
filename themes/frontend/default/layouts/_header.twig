@@ -1,0 +1,23 @@
+<header id="header">
+    {{ getSidebar("header") | async | safe }}
+    <!-- LOGO bar -->
+    {#<div id="logo-bar" class="clearfix">#}
+        {#<!-- Container -->#}
+        {#<div class="container">#}
+            {#<div class="row">#}
+                {#<!-- Logo / Mobile Menu -->#}
+                {#<div class="col-xs-12">#}
+                    {#<div id="logo">#}
+                        {#<h1><a href="index.html"><img src="images/logo.png" alt="Eve" /></a></h1>#}
+                    {#</div>#}
+                {#</div>#}
+            {#</div>#}
+        {#</div>#}
+        {#<!-- Container / End -->#}
+    {#</div>#}
+    <!--LOGO bar / End-->
+
+    <!-- Navigation
+================================================== -->
+    {{ getSidebar("main-menu") | async | safe }}
+</header>

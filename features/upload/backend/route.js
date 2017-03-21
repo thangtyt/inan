@@ -6,13 +6,6 @@ module.exports = function (component, app) {
     let permissions = ['upload_manage', 'upload_manage_all'];
 
     return {
-        "/upload": {
-            get: {
-                handler: controller.view,
-                authenticate: true,
-                permissions: permissions
-            }
-        },
         "/uploads/dirtree": {
             post: {
                 handler: controller.dirTree,

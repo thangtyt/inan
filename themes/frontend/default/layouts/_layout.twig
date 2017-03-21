@@ -1,0 +1,101 @@
+
+<!DOCTYPE html>
+<!--[if IE 8 ]><html class="ie ie8" class="no-js" lang="en"> <![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!--><html class="no-js" lang="en"> <!--<![endif]-->
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="description" content="Chuyên in ấn bao bì sản phẩm">
+    <meta name="keywords" content="in ấn, bao bì, sách ...">
+    <title>{% if post.title %}In ấn chuyên nghiệp{% else %}{{ title }}{% endif %}</title>
+        {{ getPlugin('facebook', 'head_tag', {url: url}) | async | safe }}
+    {% block headExtends %}
+    {% endblock %}
+    <!-- CSS FILES -->
+    <link rel="stylesheet" href="/frontend/default/assets/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="/frontend/default/assets/css/style.css">
+    <link rel="stylesheet" type="text/css" href="/frontend/default/assets/css/style.css" media="screen" data-name="skins">
+    <link rel="stylesheet" href="/frontend/default/assets/css/layout/wide.css" data-name="layout">
+
+    <link rel="stylesheet" href="/frontend/default/assets/css/fractionslider.css"/>
+    <link rel="stylesheet" href="/frontend/default/assets/css/style-fraction.css"/>
+
+    <link rel="stylesheet" type="text/css" href="/frontend/default/assets/css/switcher.css" media="screen" />
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body>
+<!--Start Header-->
+{% include '_header.twig' %}
+<!--End Header-->
+
+<!--start wrapper-->
+<section class="wrapper">
+    {% block content %}
+    {% endblock %}
+</section>
+    <section class="clients">
+        <div class="container">
+            <div class="row sub_content">
+                <div class="col-lg-12 col-md-12 col-sm-12">
+                    <div class="dividerHeading">
+                        <h4><span>Đối tác</span></h4>
+                    </div>
+
+                    <div class="our_clients">
+                        <ul class="client_items clearfix">
+                           {{ getSidebar('client') | async | safe }}
+                        </ul><!--/ .client_items-->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</section>
+<!--end wrapper-->
+
+<!-- Footer --->
+{% include '_footer.twig' %}
+<!-- End footer -->
+<script type="text/javascript" src="/frontend/default/assets/js/jquery-1.10.2.min.js"></script>
+<script src="/frontend/default/assets/js/bootstrap.min.js"></script>
+<script src="/frontend/default/assets/js/jquery.easing.1.3.js"></script>
+<script src="/frontend/default/assets/js/retina-1.1.0.min.js"></script>
+<script type="text/javascript" src="/frontend/default/assets/js/jquery.cookie.js"></script> <!-- jQuery cookie -->
+<script type="text/javascript" src="/frontend/default/assets/js/styleswitch.js"></script> <!-- Style Colors Switcher -->
+<script src="/frontend/default/assets/js/jquery.fractionslider.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript" src="/frontend/default/assets/js/jquery.smartmenus.min.js"></script>
+<script type="text/javascript" src="/frontend/default/assets/js/jquery.smartmenus.bootstrap.min.js"></script>
+<script type="text/javascript" src="/frontend/default/assets/js/jquery.jcarousel.js"></script>
+<script type="text/javascript" src="/frontend/default/assets/js/jflickrfeed.js"></script>
+<script type="text/javascript" src="/frontend/default/assets/js/jquery.magnific-popup.min.js"></script>
+<script type="text/javascript" src="/frontend/default/assets/js/jquery.isotope.min.js"></script>
+<script type="text/javascript" src="/frontend/default/assets/js/swipe.js"></script>
+<script type="text/javascript" src="/frontend/default/assets/js/jquery-scrolltofixed-min.js"></script>
+
+<script src="/frontend/default/assets/js/main.js"></script>
+
+<!-- Start Style Switcher -->
+{#<div class="switcher"></div>#}
+<!-- End Style Switcher -->
+<script>
+    $(window).load(function(){
+        $('.slider').fractionSlider({
+            'fullWidth': 			true,
+            'controls': 			true,
+            'responsive': 			true,
+            'dimensions': 			"1920,450",
+            'increase': 			true,
+            'pauseOnHover': 		true,
+            'slideEndAnimation': 	true,
+            'autoChange':           true
+        });
+    });
+</script>
+</body>
+</html>

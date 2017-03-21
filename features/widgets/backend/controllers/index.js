@@ -120,7 +120,7 @@ module.exports = function (controller, component, application) {
         let mainAttributes = ['id', 'widget_name', 'sidebar', 'ordering'];
         let optionAttributes = {};
         for (let i in data) {
-            if (data.hasOwnProperty(i) && mainAttributes.indexOf(i) == -1) {
+            if ( mainAttributes.indexOf(i) == -1) {
                 optionAttributes[i] = data[i];
                 delete data[i];
             }

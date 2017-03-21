@@ -74,13 +74,6 @@ module.exports = function (app, config, setting) {
 
         next();
     });
-    app.use(function (req, res, next) {
-        if (req.originalUrl == '/'){
-            res.redirect('/admin');
-        }else{
-            next()
-        }
-    });
     app.use(cors);
     return app;
 };
