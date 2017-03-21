@@ -9,9 +9,9 @@ module.exports = {
      */
     port: process.env.PORT || 8005,
     db: {
-        host: 'nodejsdb.cweudbl8prsv.us-west-2.rds.amazonaws.com',
+        host: 'nodejsdb2.cgrt7780r6hk.ap-southeast-1.rds.amazonaws.com',
         port: '5432',
-        database: 'postgres',
+        database: 'inanphat',
         username: 'thangnv',
         password: 'khaiminh11092006',
         logging: false
