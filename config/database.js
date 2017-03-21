@@ -8,9 +8,7 @@ module.exports = {
         username: 'postgres',
         password: '',
         dialect: 'postgres',
-        dialectOptions: {
-            ssl: true
-        },
+        native: true,
         logging: false
     },
     associate: function (models) {

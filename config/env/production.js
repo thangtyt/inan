@@ -15,9 +15,7 @@ module.exports = {
         username: 'kiqmjhxlaycxkv',
         password: 'e8e4956acaed84e65c970a82d082e6488f7a241ae5ad9de861fcf10a769bf413',
         dialect: 'postgres',
-        dialectOptions: {
-            ssl: true
-        },
+        native: true,
         logging: false
     },
     redis: {
