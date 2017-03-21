@@ -5,25 +5,25 @@ module.exports = {
      * Uncomment to override config in development environment
      */
     port: process.env.PORT || 5000,
-    //db: {
-    //    host: 'ec2-54-243-124-240.compute-1.amazonaws.com',
-    //    port: '5432',
-    //    database: 'd8r3pqlfg6fm4n',
-    //    username: 'kiqmjhxlaycxkv',
-    //    password: 'e8e4956acaed84e65c970a82d082e6488f7a241ae5ad9de861fcf10a769bf413',
-    //    native: true,
-    //    ssl:true,
-    //    logging: false
-    //},
     db: {
-        host: 'localhost',
+        host: 'ec2-54-225-236-102.compute-1.amazonaws.com',
         port: '5432',
-        database: 'printer_db2',
-        username: 'postgres',
-        password: 'admin',
-        dialect: 'postgres',
-        logging: true
+        database: 'dikmicpu1tfvq',
+        username: 'vilkjlacngwnke',
+        password: '48a63851c2c1ef572d37d64b14b5fc0b284071bc6eec6fa65e33214a8117ad65',
+        native: true,
+        ssl:true,
+        logging: false
     },
+    //db: {
+    //    host: 'localhost',
+    //    port: '5432',
+    //    database: 'printer_db2',
+    //    username: 'postgres',
+    //    password: 'admin',
+    //    dialect: 'postgres',
+    //    logging: true
+    //},
     redis: {
         host: 'localhost',
         port: '6379'
