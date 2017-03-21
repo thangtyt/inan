@@ -6,19 +6,17 @@ module.exports = {
      */
     port: process.env.PORT || 5000,
     db: {
-        host: 'ec2-54-225-236-102.compute-1.amazonaws.com',
+        host: 'nodejsdb2.cgrt7780r6hk.ap-southeast-1.rds.amazonaws.com',
         port: '5432',
-        database: 'dikmicpu1tfvq',
-        username: 'vilkjlacngwnke',
-        password: '48a63851c2c1ef572d37d64b14b5fc0b284071bc6eec6fa65e33214a8117ad65',
-        native: true,
-        ssl:true,
+        database: 'inanphat',
+        username: 'thangnv',
+        password: 'khaiminh11092006',
         logging: false
     },
     //db: {
     //    host: 'localhost',
     //    port: '5432',
-    //    database: 'printer_db2',
+    //    database: 'printer_db',
     //    username: 'postgres',
     //    password: 'admin',
     //    dialect: 'postgres',

@@ -9,13 +9,11 @@ module.exports = {
      */
     port: process.env.PORT || 8005,
     db: {
-        host: 'ec2-54-225-236-102.compute-1.amazonaws.com',
+        host: 'nodejsdb.cweudbl8prsv.us-west-2.rds.amazonaws.com',
         port: '5432',
-        database: 'dikmicpu1tfvq',
-        username: 'vilkjlacngwnke',
-        password: '48a63851c2c1ef572d37d64b14b5fc0b284071bc6eec6fa65e33214a8117ad65',
-        native: true,
-        ssl:true,
+        database: 'postgres',
+        username: 'thangnv',
+        password: 'khaiminh11092006',
         logging: false
     },
     redis: {
