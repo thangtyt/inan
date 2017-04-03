@@ -9,11 +9,11 @@ module.exports = {
      */
     port: process.env.PORT || 8005,
     db: {
-        host: '',
+        host: 'localhost',
         port: '5432',
-        database: '',
-        username: '',
-        password: '',
+        database: 'inanphat',
+        username: 'postgres',
+        password: 'inanphat',
         logging: false
     },
     redis: {
