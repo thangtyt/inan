@@ -1,27 +1,27 @@
 {% extends '_layout.' + getConfig('viewExtension') %}
 {% block content %}
     <!--Start Slider-->
-    {#{{ getSidebar("slider") | async | safe }}#}
-    {#<!--End Slider-->#}
+    {{ getSidebar("slider") | async | safe }}
+    <!--End Slider-->
 
-    {#<!--start info service-->#}
-    {#{{ getSidebar("top-products") | async | safe }}#}
-    {#<!--end info service-->#}
+    <!--start info service-->
+    {{ getSidebar("top-products") | async | safe }}
+    <!--end info service-->
 
-    {#<!--Start recent work-->#}
-    {#{{ getSidebar('recent_posts') | async | safe }}#}
-    {#<!--Start recent work-->#}
+    <!--Start recent work-->
+    {{ getSidebar('recent_posts') | async | safe }}
+    <!--Start recent work-->
 
-    {#<section class="fetaure_bottom">#}
-    {#<div class="container">#}
-        {#<div class="row sub_content">#}
-            {#<div class="col-lg-6 ">#}
-                {#{{ getSidebar("slogan2") | async | safe }}#}
-            {#</div>#}
+    <section class="fetaure_bottom">
+    <div class="container">
+        <div class="row sub_content">
+            <div class="col-lg-6 ">
+                {{ getSidebar("slogan2") | async | safe }}
+            </div>
 
-            {#<div class="col-lg-6 ">#}
-                {#{{ getSidebar("slogan") | async | safe }}#}
-            {#</div>#}
-        {#</div>#}
-    {#</div>#}
+            <div class="col-lg-6 ">
+                {{ getSidebar("slogan") | async | safe }}
+            </div>
+        </div>
+    </div>
 {% endblock %}
