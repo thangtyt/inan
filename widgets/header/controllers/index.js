@@ -7,6 +7,7 @@ module.exports = function (controller, component, application) {
         let layouts = component.getLayouts(widget.widget_name);
         // Create setting form
         let form = new ArrowHelper.WidgetForm(widget);
+        form.addText('company_name', 'Tên công ty :');
         form.addText('email', 'email');
         form.addText('phone', 'Điện thoại');
         form.addText('facebook', 'Facebook');
