@@ -4,9 +4,9 @@ module.exports = {
     /**
      * Uncomment to override config in development environment
      */
-    port: process.env.PORT || 5000,
+    port: process.env.PORT || 80,
     db: {
-        host: 'localhost',
+        host: '103.28.39.214',
         port: '5432',
         database: 'inanphat',
         username: 'postgres',
