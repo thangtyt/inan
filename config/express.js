@@ -1,7 +1,7 @@
 "use strict";
 
 let favicon = require('serve-favicon');
-let cors = require('cors')();
+let cors = require('cors');
 /**
  * Setting for express
  * @param app
@@ -74,6 +74,6 @@ module.exports = function (app, config, setting) {
 
         next();
     });
-    app.use(cors);
+    app.use(cors({credentials: true}));
     return app;
 };
