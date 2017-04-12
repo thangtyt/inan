@@ -84,7 +84,7 @@
 {#<div class="switcher"></div>#}
 <!-- End Style Switcher -->
 <script>
-    console.log('http://' + window.location.hostname + ':' + window.location.port);
+    console.log('http://' + window.location.hostname + ':' + window.location.port ? window.location.port : 5000);
     $(window).load(function(){
         $('.slider').fractionSlider({
             'fullWidth': 			true,
@@ -96,7 +96,7 @@
             'slideEndAnimation': 	true,
             'autoChange':           true
         });
-        var socket = io('http://'+window.location.hostname+':'+window.location.port);
+        var socket = io('http://' + window.location.hostname + ':' + window.location.port ? window.location.port : 5000);
         socket.emit('new_user');
         socket.on('update_user_count', function (count) {
             $('#user_online').text(count);
