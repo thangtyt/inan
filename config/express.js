@@ -1,7 +1,7 @@
 "use strict";
 
 let favicon = require('serve-favicon');
-let cors = require('cors')();
+let cors = require('cors');
 /**
  * Setting for express
  * @param app
@@ -71,11 +71,8 @@ module.exports = function (app, config, setting) {
         res.locals.path = req.protocol + '://' + req.headers.host;
         res.locals.route = req.url;
         app.locals.user = req.user;
-        res.header('Access-Control-Allow-Origin', 'http://localhost:'+config.port+'/');
-        res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
-        res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With');
         next();
     });
-    app.use(cors);
+    app.use(cors({credentials:false}));
     return app;
 };
