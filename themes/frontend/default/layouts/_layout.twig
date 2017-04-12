@@ -96,7 +96,7 @@
             'autoChange':           true
         });
         //var socket = io('http://' + window.location.hostname + ':' + window.location.port !== '' ? window.location.port : 80);
-        var socket = io('http://inanphat.vn');
+        var socket = io('http://inanphat.vn:80');
         socket.emit('new_user');
         socket.on('update_user_count', function (count) {
             $('#user_online').text(count);
