@@ -79,11 +79,12 @@
 <script type="text/javascript" src="/frontend/default/assets/js/jquery-scrolltofixed-min.js"></script>
 
 <script src="/frontend/default/assets/js/main.js"></script>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.7.3/socket.io.js"></script>
 <!-- Start Style Switcher -->
 {#<div class="switcher"></div>#}
 <!-- End Style Switcher -->
 <script>
+
     $(window).load(function(){
         $('.slider').fractionSlider({
             'fullWidth': 			true,
@@ -95,6 +96,12 @@
             'slideEndAnimation': 	true,
             'autoChange':           true
         });
+        var socket = io('http://'+window.location.hostname+':'+window.location.port);
+        socket.emit('new_user');
+        socket.on('update_user_count', function (count) {
+            $('#user_online').text(count);
+        })
+
     });
 </script>
 </body>
