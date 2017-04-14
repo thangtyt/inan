@@ -73,6 +73,6 @@ module.exports = function (app, config, setting) {
         app.locals.user = req.user;
         next();
     });
-    app.use(cors({credentials:false}));
+    app.use(cors({credentials: false}));
     return app;
 };
