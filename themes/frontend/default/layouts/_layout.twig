@@ -96,11 +96,11 @@
             'autoChange':           true
         });
         //var socket = io('http://' + window.location.hostname + ':' + window.location.port !== '' ? window.location.port : 80);
-//        var socket = io.connect('http://103.28.39.214:5000');
-//        socket.emit('new_user');
-//        socket.on('update_user_count', function (count) {
-//            $('#user_online').text(count);
-//        })
+        var socket = io.connect('http://inanphat.vn:4000');
+        socket.emit('new_user');
+        socket.on('update_user_count', function (count) {
+            $('#user_online').text(count);
+        })
 
     });
 </script>
