@@ -28,8 +28,8 @@ module.exports = {
     mailer_config: {
         service: 'Gmail',
         auth: {
-            user: 'thangtyt@gmail.com',
-            pass: 'Khaiminh11092006'
+            user: '',
+            pass: ''
         },
         from: 'thangtyt@gmail.com'
     },
