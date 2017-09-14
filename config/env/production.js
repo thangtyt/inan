@@ -11,9 +11,9 @@ module.exports = {
     db: {
         host: 'localhost',
         port: '5432',
-        database: 'inanphat',
-        username: 'postgres',
-        password: 'inanphat',
+        database: '',
+        username: '',
+        password: '',
         logging: false
     },
     redis: {
@@ -32,10 +32,10 @@ module.exports = {
     mailer_config: {
         service: 'Gmail',
         auth: {
-            user: 'app@mcbooks.vn',
-            pass: '123123123e'
+            user: '',
+            pass: ''
         },
-        from: 'app@mcbooks.vn'
+        from: ''
     },
     //set time expires for token of reset password
     timeExpires: 600000 // 600000 milisecond = 10 minute
