@@ -8,9 +8,9 @@ module.exports = {
     db: {
         host: '103.28.39.214',
         port: '5432',
-        database: 'inanphat',
-        username: 'postgres',
-        password: 'inanphat',
+        database: '',
+        username: '',
+        password: '',
         dialect: 'postgres',
         logging: false
     },
